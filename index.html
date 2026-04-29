@@ -188,16 +188,16 @@ canvas{max-height:320px}
 </div>
 
 <div class="pane" id="pane-chart-devices">
+  <div class="chart-controls" id="nivel-filter-dev" style="margin-bottom:16px"></div>
   <div class="chart-wrap">
-    <div class="chart-title">Pedidos e Ativacoes por Modelo e Mes</div>
+    <div class="chart-title">Pedidos por Modelo</div>
     <div class="chart-sub">Point Pro vs Point Smart - Jan-Abr/26</div>
-    <div class="chart-controls" id="nivel-filter-dev"></div>
-    <canvas id="chartDevices"></canvas>
+    <canvas id="chartDevicesPedidos"></canvas>
   </div>
   <div class="chart-wrap">
-    <div class="chart-title">Mix de Modelos - % de Pedidos</div>
-    <div class="chart-sub">Participacao Point Pro vs Smart por mes (empilhado 100%)</div>
-    <canvas id="chartMix"></canvas>
+    <div class="chart-title">Ativos por Modelo</div>
+    <div class="chart-sub">Point Pro vs Point Smart - Jan-Abr/26</div>
+    <canvas id="chartDevicesAtivos"></canvas>
   </div>
 </div>
 
@@ -416,7 +416,7 @@ function renderChartTpv(){
     `<button class="filter-btn${activeNivelTpvDaily===n?' active':''}" onclick="activeNivelTpvDaily='${n}';renderChartTpv()">${n}</button>`).join('');
 }
 
-let chartDev=null,chartMix=null,activeNivelDev='Todos';
+let chartDevPedidos=null,chartDevAtivos=null,activeNivelDev='Todos';
 function renderChartDevices(){
   let data=[...RAW];
   if(activeNivelDev!=='Todos')data=data.filter(r=>r.nivel===activeNivelDev);
@@ -424,29 +424,30 @@ function renderChartDevices(){
   const smartData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.pedidos_smart,0));
   const ativProData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.ativos_pro,0));
   const ativSmartData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.ativos_smart,0));
-  if(chartDev)chartDev.destroy();
-  chartDev=new Chart(document.getElementById('chartDevices').getContext('2d'),{
+
+  const tooltipDev=(items,label)=>`${label}: `+fmtN(items.reduce((s,i)=>s+(i.raw||0),0));
+  const devOpts=(footerLabel)=>({responsive:true,
+    plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{mode:'index',intersect:false,callbacks:{
+        label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
+        footer:items=>tooltipDev(items,footerLabel)
+      }}},
+    scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}});
+
+  if(chartDevPedidos)chartDevPedidos.destroy();
+  chartDevPedidos=new Chart(document.getElementById('chartDevicesPedidos').getContext('2d'),{
     type:'bar',data:{labels:MES_ORDER,datasets:[
-      {label:'Pro - Pedidos',data:proData,backgroundColor:'#1A1F6B',borderRadius:4},
-      {label:'Smart - Pedidos',data:smartData,backgroundColor:'#FFE600',borderRadius:4},
-      {label:'Pro - Ativos',data:ativProData,backgroundColor:'#1A1F6B44',borderRadius:4},
-      {label:'Smart - Ativos',data:ativSmartData,backgroundColor:'#FFE60044',borderRadius:4},
-    ]},options:{responsive:true,
-      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
-        tooltip:{mode:'index',intersect:false,callbacks:{
-          label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
-          footer:items=>'TOTAL PEDIDOS: '+fmtN(items.filter(i=>i.dataset.label.includes('Pedidos')).reduce((s,i)=>s+(i.raw||0),0))
-        }}},
-      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
-  });
-  if(chartMix)chartMix.destroy();
-  const mixData=MES_ORDER.map((m,i)=>{const t=proData[i]+smartData[i];return t?Math.round(proData[i]/t*100):0;});
-  chartMix=new Chart(document.getElementById('chartMix').getContext('2d'),{
+      {label:'Point Pro',data:proData,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'Point Smart',data:smartData,backgroundColor:'#FFE600',borderRadius:4},
+    ]},options:devOpts('TOTAL PEDIDOS')});
+
+  if(chartDevAtivos)chartDevAtivos.destroy();
+  chartDevAtivos=new Chart(document.getElementById('chartDevicesAtivos').getContext('2d'),{
     type:'bar',data:{labels:MES_ORDER,datasets:[
-      {label:'% Pro',data:mixData,backgroundColor:'#1A1F6B',borderRadius:4},
-      {label:'% Smart',data:mixData.map(v=>100-v),backgroundColor:'#FFE600',borderRadius:4},
-    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11}}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'#f0f0f0'}}}}
-  });
+      {label:'Point Pro',data:ativProData,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'Point Smart',data:ativSmartData,backgroundColor:'#FFE600',borderRadius:4},
+    ]},options:devOpts('TOTAL ATIVOS')});
+
   document.getElementById('nivel-filter-dev').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelDev===n?' active':''}" onclick="activeNivelDev='${n}';renderChartDevices()">${n}</button>`).join('');
 }
 
