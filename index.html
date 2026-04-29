@@ -365,13 +365,18 @@ document.getElementById('mes-filters-mod').addEventListener('click',e=>{if(!e.ta
 const MES_TO_YYYYMM={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
 const MES_LABEL={"2026-01":"Jan/26","2026-02":"Fev/26","2026-03":"Mar/26","2026-04":"Abr/26"};
 
+const tooltipTotal=(items,yFmt)=>'TOTAL: '+yFmt(items.reduce((s,i)=>s+(i.raw||0),0));
+
 function makeLineChart(canvasId,labels,datasets,yFmt){
   const existing=Chart.getChart(canvasId);if(existing)existing.destroy();
   return new Chart(document.getElementById(canvasId).getContext('2d'),{
     type:'line',data:{labels,datasets},
     options:{responsive:true,
       plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
-        tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`}}},
+        tooltip:{mode:'index',intersect:false,callbacks:{
+          label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`,
+          footer:items=>tooltipTotal(items,yFmt)
+        }}},
       scales:{x:{ticks:{maxRotation:45,font:{size:10},maxTicksLimit:25},grid:{display:false}},
         y:{ticks:{callback:v=>yFmt(v),font:{size:10}},grid:{color:'#f0f0f0'}}},
       interaction:{mode:'index',intersect:false}}
@@ -384,7 +389,10 @@ function makeBarsChart(canvasId,labels,datasets,yFmt){
     type:'bar',data:{labels,datasets},
     options:{responsive:true,
       plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
-        tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`}}},
+        tooltip:{mode:'index',intersect:false,callbacks:{
+          label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`,
+          footer:items=>tooltipTotal(items,yFmt)
+        }}},
       scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>yFmt(v),font:{size:10}},grid:{color:'#f0f0f0'}}}}
   });
 }
