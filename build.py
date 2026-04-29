@@ -205,12 +205,6 @@ canvas{max-height:320px}
     <canvas id="chartDailyM1"></canvas>
   </div>
 
-  <!-- Grafico 4: TPV Total diario -->
-  <div class="chart-wrap">
-    <div class="chart-title">TPV Total Portfolio por Dia</div>
-    <div class="chart-sub" id="sub-total">TPV total da carteira do reseller no mes selecionado</div>
-    <canvas id="chartDailyTotal"></canvas>
-  </div>
 
 </div>
 
@@ -452,12 +446,10 @@ function renderChartTpv(){
 
   makeLineChart('chartDailyM0',dates,dailyDatasets('tpv_m0'),fmtK);
   makeLineChart('chartDailyM1',dates,dailyDatasets('tpv_m1'),fmtK);
-  makeLineChart('chartDailyTotal',dates,dailyDatasets('tpv_total'),fmtK);
 
   // update subtitles
   document.getElementById('sub-m0').textContent='Sellers novos (M0) captados em '+activeMesTpvDaily+' - TPV por dia';
   document.getElementById('sub-m1').textContent='Sellers M0 de '+activeMesTpvDaily+' no mes seguinte - TPV por dia';
-  document.getElementById('sub-total').textContent='TPV total da carteira em '+activeMesTpvDaily+' - por dia';
 
   // filtros
   document.getElementById('mes-filter-tpv-daily').innerHTML=MES_ORDER.map(m=>
