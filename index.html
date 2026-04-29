@@ -3,241 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resellers 2026 — por Nível e Mês</title>
+  <title>Renda na Mão — Resultado Resellers 2026</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; color: #1a1a2e; }
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0f0f0f;
-      color: #e0e0e0;
-      padding: 32px;
+    /* HEADER */
+    .header { background: #FFE600; padding: 28px 40px 48px; position: relative; }
+    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .mp-logo { height: 36px; }
+    .programa-badge {
+      display: inline-flex; align-items: center;
+      background: #1A1F6B; color: #fff;
+      border-radius: 20px; padding: 6px 18px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
     }
+    .programa-badge span { color: #FFE600; margin-left: 4px; }
 
-    h1 {
-      font-size: 20px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 6px;
+    .header-body { display: flex; align-items: flex-end; gap: 28px; }
+
+    .renda-badge {
+      background: #1A1F6B; border-radius: 50% 50% 50% 0;
+      padding: 22px 30px; color: #fff; line-height: 1.1; flex-shrink: 0;
     }
+    .renda-linha { display: flex; align-items: baseline; gap: 6px; }
+    .renda-badge .word-big  { font-size: 38px; font-weight: 900; letter-spacing: -1px; }
+    .renda-badge .word-na   { font-size: 13px; font-weight: 700; color: #FFE600; }
 
-    .subtitle {
-      font-size: 13px;
-      color: #888;
-      margin-bottom: 28px;
+    .header-sub { padding-bottom: 4px; }
+    .header-sub h2 {
+      font-size: 13px; font-weight: 800; color: #1A1F6B; text-transform: uppercase;
+      letter-spacing: 0.07em; background: rgba(255,255,255,0.65);
+      display: inline-block; padding: 5px 16px; border-radius: 20px; margin-bottom: 8px;
     }
+    .header-sub p { font-size: 12px; color: #1A1F6B; opacity: 0.65; }
 
-    .controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .filter-group {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid #333;
-      background: #1a1a1a;
-      color: #aaa;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .filter-btn:hover { border-color: #555; color: #ddd; }
-    .filter-btn.active { background: #009ee3; border-color: #009ee3; color: #fff; }
-
-    .search-box {
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid #333;
-      background: #1a1a1a;
-      color: #ddd;
-      font-size: 12px;
-      outline: none;
-      width: 180px;
-    }
-
-    .search-box:focus { border-color: #009ee3; }
-
-    .grid-wrapper {
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #222;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-
-    thead th {
-      background: #161616;
-      padding: 12px 16px;
-      text-align: left;
-      font-weight: 600;
-      color: #aaa;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid #222;
-      cursor: pointer;
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    thead th:hover { color: #009ee3; }
-    thead th.sorted-asc::after { content: ' ↑'; color: #009ee3; }
-    thead th.sorted-desc::after { content: ' ↓'; color: #009ee3; }
-
-    thead th:not(:first-child):not(:nth-child(2)) {
-      text-align: right;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid #1c1c1c;
-      transition: background 0.1s;
-    }
-
-    tbody tr:hover { background: #1a1a1a; }
-
-    tbody tr.group-total {
-      background: #161616;
-      border-top: 1px solid #2a2a2a;
-    }
-
-    tbody tr.group-total td {
-      font-weight: 600;
-      color: #ccc;
-    }
-
-    td {
-      padding: 11px 16px;
-      color: #d0d0d0;
-    }
-
-    td:not(:first-child):not(:nth-child(2)) {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .mes-badge {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 600;
-      background: #1e1e1e;
-      border: 1px solid #2e2e2e;
-      color: #ccc;
-    }
-
-    .nivel-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .nivel-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .nivel-aprendiz .nivel-dot  { background: #666; }
-    .nivel-especialista .nivel-dot { background: #3b82f6; }
-    .nivel-empreendedor .nivel-dot { background: #f59e0b; }
-    .nivel-top .nivel-dot { background: #009ee3; }
-
-    .tpv-value { color: #e0e0e0; }
-    .tpv-zero  { color: #444; }
-
-    .bar-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .bar-bg {
-      width: 60px;
-      height: 4px;
-      background: #222;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      border-radius: 2px;
-      background: #009ee3;
-      transition: width 0.3s;
-    }
+    /* BODY */
+    .body { padding: 32px 32px 40px; }
 
     .summary-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-      margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 14px; margin-bottom: 24px;
     }
-
     .card {
-      background: #161616;
-      border: 1px solid #222;
-      border-radius: 10px;
-      padding: 16px;
+      background: #fff; border-radius: 12px; padding: 16px 20px;
+      border-left: 4px solid #1A1F6B;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
+    .card-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+    .card-value { font-size: 22px; font-weight: 800; color: #1A1F6B; }
+    .card-sub   { font-size: 10px; color: #bbb; margin-top: 2px; }
 
-    .card-label {
-      font-size: 11px;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
+    .controls { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+
+    .filter-btn {
+      padding: 5px 14px; border-radius: 20px; border: 1.5px solid #ddd;
+      background: #fff; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
     }
+    .filter-btn:hover { border-color: #1A1F6B; color: #1A1F6B; }
+    .filter-btn.active { background: #1A1F6B; border-color: #1A1F6B; color: #FFE600; }
 
-    .card-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
+    .search-box {
+      padding: 5px 14px; border-radius: 20px; border: 1.5px solid #ddd;
+      background: #fff; color: #333; font-size: 12px; outline: none; width: 170px; margin-left: auto;
     }
+    .search-box:focus { border-color: #1A1F6B; }
 
-    .card-sub {
-      font-size: 11px;
-      color: #555;
-      margin-top: 2px;
+    .grid-wrapper { border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+    thead th {
+      background: #1A1F6B; padding: 13px 18px; text-align: left;
+      font-weight: 700; color: #FFE600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      cursor: pointer; user-select: none; white-space: nowrap;
     }
+    thead th:hover { background: #22287a; }
+    thead th.sorted-asc::after  { content: ' ↑'; color: #fff; }
+    thead th.sorted-desc::after { content: ' ↓'; color: #fff; }
+    thead th:not(:first-child):not(:nth-child(2)) { text-align: right; }
 
-    .hidden { display: none; }
+    tbody tr { border-bottom: 1px solid #f0f0f0; background: #fff; transition: background 0.1s; }
+    tbody tr:hover { background: #fffde6; }
+    tbody tr.group-total { background: #f5f5ff; }
+    tbody tr.group-total td { font-weight: 700; color: #1A1F6B; }
+
+    td { padding: 11px 18px; color: #333; }
+    td:not(:first-child):not(:nth-child(2)) { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .mes-badge {
+      display: inline-block; padding: 3px 12px; border-radius: 10px;
+      font-size: 11px; font-weight: 700; background: #FFE600; color: #1A1F6B;
+    }
+    .nivel-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; }
+    .nivel-dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .nivel-aprendiz    .nivel-dot { background: #9ca3af; }
+    .nivel-especialista .nivel-dot { background: #3b82f6; }
+    .nivel-empreendedor .nivel-dot { background: #f59e0b; }
+    .nivel-top          .nivel-dot { background: #1A1F6B; }
+
+    .tpv-value { color: #1A1F6B; font-weight: 600; }
+    .tpv-zero  { color: #ccc; }
+
+    .bar-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+    .bar-bg   { width: 60px; height: 4px; background: #eee; border-radius: 2px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 2px; background: #FFE600; }
+
+    .footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; }
   </style>
 </head>
 <body>
 
-  <h1>Resellers Mercado Pago 2026</h1>
-  <p class="subtitle">Performance por nível e mês · Jan–Abr/26 · null tratado como Aprendiz</p>
-
-  <div class="summary-cards" id="summary-cards"></div>
-
-  <div class="controls">
-    <div class="filter-group" id="mes-filters"></div>
-    <div class="filter-group" id="nivel-filters"></div>
-    <input class="search-box" type="text" placeholder="Buscar..." id="search-input" />
+<div class="header">
+  <div class="header-top">
+    <svg class="mp-logo" viewBox="0 0 190 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="20" fill="#009EE3"/>
+      <text x="20" y="26" text-anchor="middle" font-family="Segoe UI,sans-serif" font-weight="900" font-size="15" fill="#fff">mp</text>
+      <text x="50" y="16" font-family="Segoe UI,sans-serif" font-weight="700" font-size="13" fill="#1A1F6B">mercado</text>
+      <text x="50" y="32" font-family="Segoe UI,sans-serif" font-weight="400" font-size="13" fill="#1A1F6B">pago</text>
+    </svg>
+    <div class="programa-badge">Programa de<span>Revenda</span></div>
   </div>
 
+  <div class="header-body">
+    <div class="renda-badge">
+      <div class="renda-linha">
+        <span class="word-big">RENDA</span>
+      </div>
+      <div class="renda-linha">
+        <span class="word-na">na</span>
+        <span class="word-big">MÃO</span>
+      </div>
+    </div>
+    <div class="header-sub">
+      <h2>Resultado por Nível · 2026</h2>
+      <p>Jan – Abr/26 &nbsp;·&nbsp; null tratado como Aprendiz</p>
+    </div>
+  </div>
+</div>
+
+<div class="body">
+  <div class="summary-cards" id="summary-cards"></div>
+  <div class="controls">
+    <div id="mes-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <div id="nivel-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <input class="search-box" type="text" placeholder="🔍 Buscar..." id="search-input" />
+  </div>
   <div class="grid-wrapper">
-    <table id="grid">
+    <table>
       <thead>
         <tr>
           <th data-col="mes">Mês</th>
@@ -252,198 +167,89 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+</div>
+
+<div class="footer">Mercado Pago · Programa Renda na Mão · Fonte: BD_CUST_RESELLER_INFO</div>
 
 <script>
 const RAW = [
-  { mes:"Jan/26", nivel:"Aprendiz",         resellers:914,  pedidos:2884, ativos:2391, tpv_m0:5904529,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Especialista",      resellers:113,  pedidos:1397, ativos:1170, tpv_m0:3045114,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Empreendedor",      resellers:50,   pedidos:938,  ativos:830,  tpv_m0:3139062,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Top Empreendedor",  resellers:38,   pedidos:1739, ativos:1648, tpv_m0:6647500,  tpv_m1:null },
-  { mes:"Fev/26", nivel:"Aprendiz",         resellers:983,  pedidos:2834, ativos:2149, tpv_m0:5455402,  tpv_m1:8589250  },
-  { mes:"Fev/26", nivel:"Especialista",      resellers:117,  pedidos:1338, ativos:1102, tpv_m0:3811769,  tpv_m1:4598512  },
-  { mes:"Fev/26", nivel:"Empreendedor",      resellers:52,   pedidos:1246, ativos:996,  tpv_m0:2698795,  tpv_m1:4720787  },
-  { mes:"Fev/26", nivel:"Top Empreendedor",  resellers:38,   pedidos:2111, ativos:1772, tpv_m0:6183822,  tpv_m1:12309138 },
-  { mes:"Mar/26", nivel:"Aprendiz",         resellers:922,  pedidos:2467, ativos:1478, tpv_m0:6653238,  tpv_m1:7695710  },
-  { mes:"Mar/26", nivel:"Especialista",      resellers:83,   pedidos:896,  ativos:523,  tpv_m0:3397338,  tpv_m1:5027261  },
-  { mes:"Mar/26", nivel:"Empreendedor",      resellers:48,   pedidos:1341, ativos:837,  tpv_m0:4084953,  tpv_m1:5424752  },
-  { mes:"Mar/26", nivel:"Top Empreendedor",  resellers:39,   pedidos:1966, ativos:1409, tpv_m0:7784389,  tpv_m1:11010999 },
-  { mes:"Abr/26", nivel:"Aprendiz",         resellers:675,  pedidos:1448, ativos:530,  tpv_m0:5294588,  tpv_m1:7556262  },
-  { mes:"Abr/26", nivel:"Especialista",      resellers:77,   pedidos:549,  ativos:148,  tpv_m0:2316205,  tpv_m1:4682157  },
-  { mes:"Abr/26", nivel:"Empreendedor",      resellers:36,   pedidos:547,  ativos:173,  tpv_m0:2400932,  tpv_m1:5836200  },
-  { mes:"Abr/26", nivel:"Top Empreendedor",  resellers:41,   pedidos:1843, ativos:664,  tpv_m0:5803605,  tpv_m1:13406624 },
+  { mes:"Jan/26", nivel:"Aprendiz",        resellers:914,  pedidos:2884, ativos:2391, tpv_m0:5904529,  tpv_m1:null },
+  { mes:"Jan/26", nivel:"Especialista",     resellers:113,  pedidos:1397, ativos:1170, tpv_m0:3045114,  tpv_m1:null },
+  { mes:"Jan/26", nivel:"Empreendedor",     resellers:50,   pedidos:938,  ativos:830,  tpv_m0:3139062,  tpv_m1:null },
+  { mes:"Jan/26", nivel:"Top Empreendedor", resellers:38,   pedidos:1739, ativos:1648, tpv_m0:6647500,  tpv_m1:null },
+  { mes:"Fev/26", nivel:"Aprendiz",        resellers:983,  pedidos:2834, ativos:2149, tpv_m0:5455402,  tpv_m1:8589250  },
+  { mes:"Fev/26", nivel:"Especialista",     resellers:117,  pedidos:1338, ativos:1102, tpv_m0:3811769,  tpv_m1:4598512  },
+  { mes:"Fev/26", nivel:"Empreendedor",     resellers:52,   pedidos:1246, ativos:996,  tpv_m0:2698795,  tpv_m1:4720787  },
+  { mes:"Fev/26", nivel:"Top Empreendedor", resellers:38,   pedidos:2111, ativos:1772, tpv_m0:6183822,  tpv_m1:12309138 },
+  { mes:"Mar/26", nivel:"Aprendiz",        resellers:922,  pedidos:2467, ativos:1478, tpv_m0:6653238,  tpv_m1:7695710  },
+  { mes:"Mar/26", nivel:"Especialista",     resellers:83,   pedidos:896,  ativos:523,  tpv_m0:3397338,  tpv_m1:5027261  },
+  { mes:"Mar/26", nivel:"Empreendedor",     resellers:48,   pedidos:1341, ativos:837,  tpv_m0:4084953,  tpv_m1:5424752  },
+  { mes:"Mar/26", nivel:"Top Empreendedor", resellers:39,   pedidos:1966, ativos:1409, tpv_m0:7784389,  tpv_m1:11010999 },
+  { mes:"Abr/26", nivel:"Aprendiz",        resellers:675,  pedidos:1448, ativos:530,  tpv_m0:5294588,  tpv_m1:7556262  },
+  { mes:"Abr/26", nivel:"Especialista",     resellers:77,   pedidos:549,  ativos:148,  tpv_m0:2316205,  tpv_m1:4682157  },
+  { mes:"Abr/26", nivel:"Empreendedor",     resellers:36,   pedidos:547,  ativos:173,  tpv_m0:2400932,  tpv_m1:5836200  },
+  { mes:"Abr/26", nivel:"Top Empreendedor", resellers:41,   pedidos:1843, ativos:664,  tpv_m0:5803605,  tpv_m1:13406624 },
 ];
 
-const MES_ORDER  = ["Jan/26","Fev/26","Mar/26","Abr/26"];
-const NIV_ORDER  = ["Aprendiz","Especialista","Empreendedor","Top Empreendedor"];
-const NIV_CLASS  = { "Aprendiz":"nivel-aprendiz","Especialista":"nivel-especialista","Empreendedor":"nivel-empreendedor","Top Empreendedor":"nivel-top" };
+const MES_ORDER = ["Jan/26","Fev/26","Mar/26","Abr/26"];
+const NIV_ORDER = ["Aprendiz","Especialista","Empreendedor","Top Empreendedor"];
+const NIV_CLASS = {"Aprendiz":"nivel-aprendiz","Especialista":"nivel-especialista","Empreendedor":"nivel-empreendedor","Top Empreendedor":"nivel-top"};
+const maxTPV = Math.max(...RAW.map(r=>r.tpv_m0));
 
-const maxTPV = Math.max(...RAW.map(r => r.tpv_m0));
+let sortCol=null, sortDir=1, activeMes=null, activeNivel=null, searchTerm='';
 
-function fmt(n) {
-  if (n == null) return '<span class="tpv-zero">—</span>';
-  if (n >= 1e6) return '<span class="tpv-value">R$ ' + (n/1e6).toFixed(2).replace('.',',') + 'M</span>';
-  return '<span class="tpv-value">R$ ' + n.toLocaleString('pt-BR') + '</span>';
-}
-
-function fmtN(n) { return n.toLocaleString('pt-BR'); }
-
-let sortCol = null, sortDir = 1;
-let activeMes   = null;
-let activeNivel = null;
-let searchTerm  = '';
+const fmt  = n => n==null ? '<span class="tpv-zero">—</span>' : n>=1e6 ? `<span class="tpv-value">R$ ${(n/1e6).toFixed(2).replace('.',',')}M</span>` : `<span class="tpv-value">R$ ${n.toLocaleString('pt-BR')}</span>`;
+const fmtN = n => n.toLocaleString('pt-BR');
 
 function getData() {
   let d = [...RAW];
-  if (activeMes)   d = d.filter(r => r.mes   === activeMes);
-  if (activeNivel) d = d.filter(r => r.nivel === activeNivel);
-  if (searchTerm)  d = d.filter(r => Object.values(r).join(' ').toLowerCase().includes(searchTerm));
-  if (sortCol) {
-    d.sort((a,b) => {
-      let av = a[sortCol], bv = b[sortCol];
-      if (av == null) av = -Infinity;
-      if (bv == null) bv = -Infinity;
-      if (typeof av === 'string') return av.localeCompare(bv) * sortDir;
-      return (av - bv) * sortDir;
-    });
-  } else {
-    d.sort((a,b) => MES_ORDER.indexOf(a.mes) - MES_ORDER.indexOf(b.mes) || NIV_ORDER.indexOf(a.nivel) - NIV_ORDER.indexOf(b.nivel));
-  }
+  if (activeMes)   d = d.filter(r=>r.mes===activeMes);
+  if (activeNivel) d = d.filter(r=>r.nivel===activeNivel);
+  if (searchTerm)  d = d.filter(r=>Object.values(r).join(' ').toLowerCase().includes(searchTerm));
+  if (sortCol) d.sort((a,b)=>{ let av=a[sortCol]??-Infinity, bv=b[sortCol]??-Infinity; return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDir; });
+  else d.sort((a,b)=>MES_ORDER.indexOf(a.mes)-MES_ORDER.indexOf(b.mes)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
   return d;
 }
 
 function renderTable() {
   const data = getData();
-  const tbody = document.getElementById('tbody');
-  let html = '';
-  let prevMes = null;
-
-  // Group totals per mes
   const totals = {};
   RAW.forEach(r => {
-    if (!totals[r.mes]) totals[r.mes] = { resellers:0, pedidos:0, ativos:0, tpv_m0:0, tpv_m1:0, haM1:false };
-    totals[r.mes].resellers += r.resellers;
-    totals[r.mes].pedidos   += r.pedidos;
-    totals[r.mes].ativos    += r.ativos;
-    totals[r.mes].tpv_m0   += r.tpv_m0;
-    if (r.tpv_m1 != null) { totals[r.mes].tpv_m1 += r.tpv_m1; totals[r.mes].haM1 = true; }
+    if (!totals[r.mes]) totals[r.mes]={resellers:0,pedidos:0,ativos:0,tpv_m0:0,tpv_m1:0,haM1:false};
+    totals[r.mes].resellers+=r.resellers; totals[r.mes].pedidos+=r.pedidos; totals[r.mes].ativos+=r.ativos; totals[r.mes].tpv_m0+=r.tpv_m0;
+    if (r.tpv_m1!=null){totals[r.mes].tpv_m1+=r.tpv_m1;totals[r.mes].haM1=true;}
   });
-
-  for (let i = 0; i < data.length; i++) {
-    const r = data[i];
-    const isLastOfGroup = (i === data.length - 1) || data[i+1].mes !== r.mes;
-    const nivelClass = NIV_CLASS[r.nivel] || '';
-    const barPct = Math.round((r.tpv_m0 / maxTPV) * 100);
-
-    html += `<tr>
-      <td><span class="mes-badge">${r.mes}</span></td>
-      <td><span class="nivel-badge ${nivelClass}"><span class="nivel-dot"></span>${r.nivel}</span></td>
-      <td>${fmtN(r.resellers)}</td>
-      <td>${fmtN(r.pedidos)}</td>
-      <td>${fmtN(r.ativos)}</td>
-      <td><div class="bar-cell">${fmt(r.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${barPct}%"></div></div></div></td>
-      <td>${fmt(r.tpv_m1)}</td>
-    </tr>`;
-
-    if (isLastOfGroup && !activeMes && !sortCol) {
-      const t = totals[r.mes];
-      html += `<tr class="group-total">
-        <td><span class="mes-badge">${r.mes}</span></td>
-        <td style="color:#666;font-size:11px">TOTAL</td>
-        <td>${fmtN(t.resellers)}</td>
-        <td>${fmtN(t.pedidos)}</td>
-        <td>${fmtN(t.ativos)}</td>
-        <td>${fmt(t.tpv_m0)}</td>
-        <td>${t.haM1 ? fmt(t.tpv_m1) : fmt(null)}</td>
-      </tr>`;
-    }
-  }
-
-  tbody.innerHTML = html || '<tr><td colspan="7" style="text-align:center;color:#444;padding:32px">Sem resultados</td></tr>';
+  let html='';
+  data.forEach((r,i)=>{
+    const isLast=i===data.length-1||data[i+1].mes!==r.mes;
+    const bp=Math.round((r.tpv_m0/maxTPV)*100);
+    html+=`<tr><td><span class="mes-badge">${r.mes}</span></td><td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td><td>${fmtN(r.resellers)}</td><td>${fmtN(r.pedidos)}</td><td>${fmtN(r.ativos)}</td><td><div class="bar-cell">${fmt(r.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td><td>${fmt(r.tpv_m1)}</td></tr>`;
+    if (isLast&&!activeMes&&!sortCol){const t=totals[r.mes];html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td><td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td><td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td></tr>`;}
+  });
+  document.getElementById('tbody').innerHTML = html||'<tr><td colspan="7" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
 }
 
 function renderSummary() {
-  const totalResellers = [...new Set(RAW.map(r=>r.nivel+r.mes))].length;
-  const totalPedidos   = RAW.reduce((s,r) => s + r.pedidos, 0);
-  const totalAtivos    = RAW.reduce((s,r) => s + r.ativos, 0);
-  const totalTPVM0     = RAW.reduce((s,r) => s + r.tpv_m0, 0);
-
-  document.getElementById('summary-cards').innerHTML = `
-    <div class="card">
-      <div class="card-label">Total Registros</div>
-      <div class="card-value">${RAW.length}</div>
-      <div class="card-sub">4 meses × 4 níveis</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Devices Pedidos</div>
-      <div class="card-value">${fmtN(totalPedidos)}</div>
-      <div class="card-sub">Jan–Abr/26</div>
-    </div>
-    <div class="card">
-      <div class="card-label">Devices Ativos</div>
-      <div class="card-value">${fmtN(totalAtivos)}</div>
-      <div class="card-sub">Jan–Abr/26</div>
-    </div>
-    <div class="card">
-      <div class="card-label">TPV M0 Total</div>
-      <div class="card-value">R$ ${(totalTPVM0/1e6).toFixed(1).replace('.',',')}M</div>
-      <div class="card-sub">Jan–Abr/26</div>
-    </div>
-  `;
+  const tp=RAW.reduce((s,r)=>s+r.pedidos,0), ta=RAW.reduce((s,r)=>s+r.ativos,0);
+  const tm=RAW.reduce((s,r)=>s+r.tpv_m0,0), tm1=RAW.filter(r=>r.tpv_m1).reduce((s,r)=>s+r.tpv_m1,0);
+  document.getElementById('summary-cards').innerHTML=`
+    <div class="card"><div class="card-label">Devices Pedidos</div><div class="card-value">${fmtN(tp)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card"><div class="card-label">Devices Ativos</div><div class="card-value">${fmtN(ta)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card"><div class="card-label">TPV M0 Total</div><div class="card-value">R$ ${(tm/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card"><div class="card-label">TPV M1 Total</div><div class="card-value">R$ ${(tm1/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Fev–Abr/26</div></div>`;
 }
 
 function renderFilters() {
-  const mesEl = document.getElementById('mes-filters');
-  mesEl.innerHTML = ['Todos', ...MES_ORDER].map(m => `
-    <button class="filter-btn${(!activeMes && m==='Todos') || activeMes===m ? ' active' : ''}" data-mes="${m}">${m}</button>
-  `).join('');
-
-  const nivEl = document.getElementById('nivel-filters');
-  nivEl.innerHTML = ['Todos', ...NIV_ORDER].map(n => `
-    <button class="filter-btn${(!activeNivel && n==='Todos') || activeNivel===n ? ' active' : ''}" data-nivel="${n}">${n}</button>
-  `).join('');
+  document.getElementById('mes-filters').innerHTML=['Todos',...MES_ORDER].map(m=>`<button class="filter-btn${(!activeMes&&m==='Todos')||activeMes===m?' active':''}" data-mes="${m}">${m}</button>`).join('');
+  document.getElementById('nivel-filters').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${(!activeNivel&&n==='Todos')||activeNivel===n?' active':''}" data-nivel="${n}">${n}</button>`).join('');
 }
 
-function render() {
-  renderFilters();
-  renderTable();
-}
+document.getElementById('mes-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMes=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderFilters();renderTable();});
+document.getElementById('nivel-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeNivel=e.target.dataset.nivel==='Todos'?null:e.target.dataset.nivel;renderFilters();renderTable();});
+document.getElementById('search-input').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase().trim();renderTable();});
+document.querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;sortDir=sortCol===th.dataset.col?sortDir*-1:1;sortCol=th.dataset.col;document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');renderTable();});
 
-// Eventos filtros mês
-document.getElementById('mes-filters').addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-btn')) return;
-  const v = e.target.dataset.mes;
-  activeMes = (v === 'Todos') ? null : v;
-  render();
-});
-
-// Eventos filtros nível
-document.getElementById('nivel-filters').addEventListener('click', e => {
-  if (!e.target.classList.contains('filter-btn')) return;
-  const v = e.target.dataset.nivel;
-  activeNivel = (v === 'Todos') ? null : v;
-  render();
-});
-
-// Search
-document.getElementById('search-input').addEventListener('input', e => {
-  searchTerm = e.target.value.toLowerCase().trim();
-  render();
-});
-
-// Sort
-document.querySelector('thead').addEventListener('click', e => {
-  const th = e.target.closest('th');
-  if (!th) return;
-  const col = th.dataset.col;
-  if (sortCol === col) { sortDir *= -1; }
-  else { sortCol = col; sortDir = 1; }
-  document.querySelectorAll('thead th').forEach(t => t.classList.remove('sorted-asc','sorted-desc'));
-  th.classList.add(sortDir === 1 ? 'sorted-asc' : 'sorted-desc');
-  renderTable();
-});
-
-renderSummary();
-render();
+renderSummary(); renderFilters(); renderTable();
 </script>
 </body>
 </html>
