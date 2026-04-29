@@ -114,7 +114,7 @@ canvas{max-height:320px}
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('tabela',this)">&#128202; Tabela</div>
-  <div class="tab" onclick="showTab('modelos',this)">&#128424; Modelos</div>
+  <div class="tab" onclick="showTab('modelos',this)">&#128424; TPV</div>
   <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV Diario</div>
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
 </div>
