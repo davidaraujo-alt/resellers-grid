@@ -445,7 +445,13 @@ function renderChartDevices(){
       {label:'Smart - Pedidos',data:smartData,backgroundColor:'#FFE600',borderRadius:4},
       {label:'Pro - Ativos',data:ativProData,backgroundColor:'#1A1F6B44',borderRadius:4},
       {label:'Smart - Ativos',data:ativSmartData,backgroundColor:'#FFE60044',borderRadius:4},
-    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+    ]},options:{responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+        tooltip:{mode:'index',intersect:false,callbacks:{
+          label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
+          footer:items=>'TOTAL PEDIDOS: '+fmtN(items.filter(i=>i.dataset.label.includes('Pedidos')).reduce((s,i)=>s+(i.raw||0),0))
+        }}},
+      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
   });
   if(chartMix)chartMix.destroy();
   const mixData=MES_ORDER.map((m,i)=>{const t=proData[i]+smartData[i];return t?Math.round(proData[i]/t*100):0;});
