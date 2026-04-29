@@ -153,12 +153,51 @@ canvas{max-height:320px}
 </div>
 
 <div class="pane" id="pane-chart-tpv">
+
+  <!-- Grafico 1: Mensal overview -->
   <div class="chart-wrap">
-    <div class="chart-title">TPV M0 e M1 Diario por Nivel</div>
-    <div class="chart-sub">Acumulado diario Jan-Abr/26. M1 disponivel a partir de Fev/26. Linha tracejada = M1.</div>
-    <div class="chart-controls" id="nivel-filter-tpv"></div>
-    <canvas id="chartTpv"></canvas>
+    <div class="chart-title">TPV Total do Canal por Mes</div>
+    <div class="chart-sub">Visao geral Jan-Abr/26 - M0 + M1 + Total portfolio empilhado por nivel</div>
+    <div class="chart-controls" id="nivel-filter-tpv-bar"></div>
+    <canvas id="chartTpvBar"></canvas>
   </div>
+
+  <!-- Filtros compartilhados para os graficos diarios -->
+  <div style="background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+    <div style="font-size:11px;font-weight:700;color:#1A1F6B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Filtros para graficos diarios</div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:10px;color:#999;margin-bottom:6px">MES</div>
+        <div id="mes-filter-tpv-daily" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#999;margin-bottom:6px">NIVEL</div>
+        <div id="nivel-filter-tpv-daily" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafico 2: TPV M0 diario -->
+  <div class="chart-wrap">
+    <div class="chart-title">TPV M0 por Dia</div>
+    <div class="chart-sub" id="sub-m0">TPV dos sellers novos (M0) captados no mes selecionado</div>
+    <canvas id="chartDailyM0"></canvas>
+  </div>
+
+  <!-- Grafico 3: TPV M1 diario -->
+  <div class="chart-wrap">
+    <div class="chart-title">TPV M1 por Dia</div>
+    <div class="chart-sub" id="sub-m1">TPV dos sellers M0 no mes seguinte (M1 disponivel a partir de Fev/26)</div>
+    <canvas id="chartDailyM1"></canvas>
+  </div>
+
+  <!-- Grafico 4: TPV Total diario -->
+  <div class="chart-wrap">
+    <div class="chart-title">TPV Total Portfolio por Dia</div>
+    <div class="chart-sub" id="sub-total">TPV total da carteira do reseller no mes selecionado</div>
+    <canvas id="chartDailyTotal"></canvas>
+  </div>
+
 </div>
 
 <div class="pane" id="pane-chart-devices">
@@ -322,23 +361,87 @@ function renderModelos(){
 }
 document.getElementById('mes-filters-mod').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMesMod=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderModelos();});
 
-let chartTpv=null,activeNivelTpv='Todos';
+// ── HELPERS ──
+const MES_TO_YYYYMM={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+const MES_LABEL={"2026-01":"Jan/26","2026-02":"Fev/26","2026-03":"Mar/26","2026-04":"Abr/26"};
+
+function makeLineChart(canvasId,labels,datasets,yFmt){
+  const existing=Chart.getChart(canvasId);if(existing)existing.destroy();
+  return new Chart(document.getElementById(canvasId).getContext('2d'),{
+    type:'line',data:{labels,datasets},
+    options:{responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+        tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`}}},
+      scales:{x:{ticks:{maxRotation:45,font:{size:10},maxTicksLimit:25},grid:{display:false}},
+        y:{ticks:{callback:v=>yFmt(v),font:{size:10}},grid:{color:'#f0f0f0'}}},
+      interaction:{mode:'index',intersect:false}}
+  });
+}
+
+function makeBarsChart(canvasId,labels,datasets,yFmt){
+  const existing=Chart.getChart(canvasId);if(existing)existing.destroy();
+  return new Chart(document.getElementById(canvasId).getContext('2d'),{
+    type:'bar',data:{labels,datasets},
+    options:{responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+        tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${yFmt(i.raw)}`}}},
+      scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>yFmt(v),font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+}
+
+const fmtK=v=>v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1000).toFixed(1)+'K';
+
+let activeMesTpvDaily='Fev/26',activeNivelTpvBar='Todos',activeNivelTpvDaily='Todos';
+
 function renderChartTpv(){
-  const niv=activeNivelTpv==='Todos'?NIV_ORDER:[activeNivelTpv];
-  const dates=[...new Set(DAILY.map(d=>d.data))].sort();
-  const datasets=[];
+  // ── Grafico 1: mensal bar ──
+  const niv=activeNivelTpvBar==='Todos'?NIV_ORDER:[activeNivelTpvBar];
+  const barDatasets=[];
   niv.forEach(n=>{
-    const map=Object.fromEntries(DAILY.filter(d=>d.nivel===n).map(d=>[d.data,d]));
-    datasets.push({label:n+' M0',data:dates.map(d=>map[d]?.tpv_m0||0),borderColor:NIV_COLOR[n],backgroundColor:NIV_COLOR[n]+'22',borderWidth:2,pointRadius:0,fill:false,tension:.3});
-    datasets.push({label:n+' M1',data:dates.map(d=>map[d]?.tpv_m1||0),borderColor:NIV_COLOR[n],borderDash:[5,3],borderWidth:1.5,pointRadius:0,fill:false,tension:.3});
+    barDatasets.push({
+      label:n+' M0',
+      data:MES_ORDER.map(m=>RAW.filter(r=>r.mes===m&&r.nivel===n).reduce((s,r)=>s+r.tpv_m0,0)),
+      backgroundColor:NIV_COLOR[n],borderRadius:3,stack:n
+    });
+    barDatasets.push({
+      label:n+' Total',
+      data:MES_ORDER.map(m=>RAW.filter(r=>r.mes===m&&r.nivel===n).reduce((s,r)=>s+r.tpv_total,0)),
+      backgroundColor:NIV_COLOR[n]+'55',borderRadius:3,stack:n
+    });
   });
-  if(chartTpv)chartTpv.destroy();
-  chartTpv=new Chart(document.getElementById('chartTpv').getContext('2d'),{
-    type:'line',data:{labels:dates,datasets},
-    options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: R$ ${(i.raw/1000).toFixed(1)}K`}}},
-    scales:{x:{ticks:{maxRotation:45,font:{size:10},maxTicksLimit:20},grid:{display:false}},y:{ticks:{callback:v=>'R$ '+(v/1000).toFixed(0)+'K',font:{size:10}},grid:{color:'#f0f0f0'}}},interaction:{mode:'index',intersect:false}}
-  });
-  document.getElementById('nivel-filter-tpv').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelTpv===n?' active':''}" onclick="activeNivelTpv='${n}';renderChartTpv()">${n}</button>`).join('');
+  makeBarsChart('chartTpvBar',MES_ORDER,barDatasets,fmtK);
+
+  // filtro nivel barra
+  document.getElementById('nivel-filter-tpv-bar').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${activeNivelTpvBar===n?' active':''}" onclick="activeNivelTpvBar='${n}';renderChartTpv()">${n}</button>`).join('');
+
+  // ── Graficos 2-4: diarios ──
+  const prefix=MES_TO_YYYYMM[activeMesTpvDaily];
+  const diasMes=DAILY.filter(d=>d.data.startsWith(prefix));
+  const dates=[...new Set(diasMes.map(d=>d.data))].sort();
+  const niv2=activeNivelTpvDaily==='Todos'?NIV_ORDER:[activeNivelTpvDaily];
+
+  function dailyDatasets(field){
+    return niv2.map(n=>{
+      const map=Object.fromEntries(diasMes.filter(d=>d.nivel===n).map(d=>[d.data,d]));
+      return {label:n,data:dates.map(d=>map[d]?.[field]||0),borderColor:NIV_COLOR[n],backgroundColor:NIV_COLOR[n]+'22',borderWidth:2,pointRadius:2,fill:false,tension:.3};
+    });
+  }
+
+  makeLineChart('chartDailyM0',dates,dailyDatasets('tpv_m0'),fmtK);
+  makeLineChart('chartDailyM1',dates,dailyDatasets('tpv_m1'),fmtK);
+  makeLineChart('chartDailyTotal',dates,dailyDatasets('tpv_total'),fmtK);
+
+  // update subtitles
+  document.getElementById('sub-m0').textContent='Sellers novos (M0) captados em '+activeMesTpvDaily+' - TPV por dia';
+  document.getElementById('sub-m1').textContent='Sellers M0 de '+activeMesTpvDaily+' no mes seguinte - TPV por dia';
+  document.getElementById('sub-total').textContent='TPV total da carteira em '+activeMesTpvDaily+' - por dia';
+
+  // filtros
+  document.getElementById('mes-filter-tpv-daily').innerHTML=MES_ORDER.map(m=>
+    `<button class="filter-btn${activeMesTpvDaily===m?' active':''}" onclick="activeMesTpvDaily='${m}';renderChartTpv()">${m}</button>`).join('');
+  document.getElementById('nivel-filter-tpv-daily').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${activeNivelTpvDaily===n?' active':''}" onclick="activeNivelTpvDaily='${n}';renderChartTpv()">${n}</button>`).join('');
 }
 
 let chartDev=null,chartMix=null,activeNivelDev='Todos';
