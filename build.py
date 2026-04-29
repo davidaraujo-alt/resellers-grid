@@ -220,14 +220,9 @@ canvas{max-height:320px}
       </div>
     </div>
   </div>
-  <div class="grid-wrapper">
-    <table>
-      <thead><tr>
-        <th data-col-d="data">Data</th>
-        <th data-col-d="cadastrados" style="text-align:right">Cadastrados</th>
-        <th data-col-d="convertidos" style="text-align:right">Convertidos</th>
-        <th data-col-d="taxa" style="text-align:right">Taxa Conv. %</th>
-      </tr></thead>
+  <div style="overflow-x:auto">
+    <table id="table-diar" style="min-width:600px">
+      <thead><tr id="thead-diar-row"></tr></thead>
       <tbody id="tbody-diar"></tbody>
     </table>
   </div>
@@ -487,17 +482,21 @@ function renderDiarizado(){
     <div class="card"><div class="card-label">Convertidos</div><div class="card-value">${fmtN(totConv)}</div><div class="card-sub">fizeram 1a venda</div></div>
     <div class="card"><div class="card-label">Taxa Conversao</div><div class="card-value">${totCad?(totConv/totCad*100).toFixed(2)+'%':'—'}</div><div class="card-sub">convertidos / cadastrados</div></div>`;
 
-  let html='';
-  data.forEach(r=>{
-    const taxa=r.cadastrados?(r.convertidos/r.cadastrados*100):0;
-    html+=`<tr>
-      <td>${r.data}</td>
-      <td style="text-align:right">${fmtN(r.cadastrados)}</td>
-      <td style="text-align:right">${fmtN(r.convertidos)}</td>
-      <td style="text-align:right">${taxa.toFixed(2)}%</td>
-    </tr>`;
-  });
-  document.getElementById('tbody-diar').innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+  // Cabeçalho: Métrica | dia1 | dia2 | ...
+  const dates=data.map(r=>r.data);
+  const shortDate=d=>d.slice(8)+'/'+d.slice(5,7); // dd/mm
+  document.getElementById('thead-diar-row').innerHTML=
+    `<th style="background:#1A1F6B;color:#FFE600;padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Metrica</th>`+
+    dates.map(d=>`<th style="background:#1A1F6B;color:#FFE600;padding:10px 12px;text-align:right;font-size:11px;white-space:nowrap">${shortDate(d)}</th>`).join('');
+
+  const row=(label,vals,style='')=>
+    `<tr>${'<td style="padding:10px 14px;font-weight:600;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px">'+label+'</td>'}${vals.map(v=>`<td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${style}">${v}</td>`).join('')}</tr>`;
+
+  document.getElementById('tbody-diar').innerHTML = data.length ? [
+    row('Cadastrados', data.map(r=>fmtN(r.cadastrados))),
+    row('Convertidos',  data.map(r=>fmtN(r.convertidos))),
+    row('Taxa Conv. %', data.map(r=>(r.cadastrados?r.convertidos/r.cadastrados*100:0).toFixed(2)+'%'), 'color:#1A1F6B;font-weight:700'),
+  ].join('') : `<tr><td colspan="${dates.length+1}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
 
   document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
     `<button class="filter-btn${(!activeMesDiar&&m==='Todos')||activeMesDiar===m?' active':''}" onclick="activeMesDiar='${m}';renderDiarizado()">${m}</button>`).join('');
