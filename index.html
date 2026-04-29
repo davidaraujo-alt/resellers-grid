@@ -448,7 +448,7 @@ function getDataDiar(){
     const bv=sortColD==='taxa'?(b.cadastrados?b.convertidos/b.cadastrados*100:0):b[sortColD];
     return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDirD;
   });
-  else rows.sort((a,b)=>b.data.localeCompare(a.data));
+  else rows.sort((a,b)=>a.data.localeCompare(b.data));
   return rows;
 }
 
