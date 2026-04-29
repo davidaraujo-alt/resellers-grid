@@ -224,7 +224,6 @@ canvas{max-height:320px}
     <table>
       <thead><tr>
         <th data-col-d="data">Data</th>
-        <th data-col-d="nivel">Nivel</th>
         <th data-col-d="cadastrados" style="text-align:right">Cadastrados</th>
         <th data-col-d="convertidos" style="text-align:right">Convertidos</th>
         <th data-col-d="taxa" style="text-align:right">Taxa Conv. %</th>
@@ -462,13 +461,21 @@ function getDataDiar(){
   if(activeMesDiar) d=d.filter(r=>r.data.startsWith(MES_PREFIX[activeMesDiar]));
   if(activeNivelDiar!=='Todos') d=d.filter(r=>r.nivel===activeNivelDiar);
   if(searchDiar) d=d.filter(r=>r.data.includes(searchDiar));
-  if(sortColD) d.sort((a,b)=>{
+  // Agrupa por data
+  const byDate={};
+  d.forEach(r=>{
+    if(!byDate[r.data]) byDate[r.data]={data:r.data,cadastrados:0,convertidos:0};
+    byDate[r.data].cadastrados+=r.cadastrados;
+    byDate[r.data].convertidos+=r.convertidos;
+  });
+  let rows=Object.values(byDate);
+  if(sortColD) rows.sort((a,b)=>{
     const av=sortColD==='taxa'?(a.cadastrados?a.convertidos/a.cadastrados*100:0):a[sortColD];
     const bv=sortColD==='taxa'?(b.cadastrados?b.convertidos/b.cadastrados*100:0):b[sortColD];
     return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDirD;
   });
-  else d.sort((a,b)=>b.data.localeCompare(a.data)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
-  return d;
+  else rows.sort((a,b)=>b.data.localeCompare(a.data));
+  return rows;
 }
 
 function renderDiarizado(){
@@ -485,13 +492,12 @@ function renderDiarizado(){
     const taxa=r.cadastrados?(r.convertidos/r.cadastrados*100):0;
     html+=`<tr>
       <td>${r.data}</td>
-      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
       <td style="text-align:right">${fmtN(r.cadastrados)}</td>
       <td style="text-align:right">${fmtN(r.convertidos)}</td>
       <td style="text-align:right">${taxa.toFixed(2)}%</td>
     </tr>`;
   });
-  document.getElementById('tbody-diar').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+  document.getElementById('tbody-diar').innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
 
   document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
     `<button class="filter-btn${(!activeMesDiar&&m==='Todos')||activeMesDiar===m?' active':''}" onclick="activeMesDiar='${m}';renderDiarizado()">${m}</button>`).join('');
