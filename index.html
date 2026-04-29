@@ -100,7 +100,6 @@ canvas{max-height:320px}
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('tabela',this)">&#128202; Tabela</div>
-  <div class="tab" onclick="showTab('modelos',this)">&#128424; TPV</div>
   <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV</div>
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
 </div>
@@ -131,27 +130,6 @@ canvas{max-height:320px}
   </div>
 </div>
 
-<div class="pane" id="pane-modelos">
-  <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Modelo de Device</div>
-  <div class="cards" id="cards-modelos"></div>
-  <div class="controls">
-    <div id="mes-filters-mod" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-  </div>
-  <div class="grid-wrapper">
-    <table>
-      <thead><tr>
-        <th>Mes</th><th>Nivel</th>
-        <th style="text-align:right">Pro Pedidos</th>
-        <th style="text-align:right">Pro Ativos</th>
-        <th style="text-align:right">Smart Pedidos</th>
-        <th style="text-align:right">Smart Ativos</th>
-        <th style="text-align:right">% Pro</th>
-        <th style="text-align:right">% Smart</th>
-      </tr></thead>
-      <tbody id="tbody-modelos"></tbody>
-    </table>
-  </div>
-</div>
 
 <div class="pane" id="pane-chart-tpv">
 
