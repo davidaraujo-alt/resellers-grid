@@ -106,6 +106,8 @@
 
     .tpv-value { color: #1A1F6B; font-weight: 600; }
     .tpv-zero  { color: #ccc; }
+    .pct { font-size: 10px; color: #aaa; font-weight: 500; margin-left: 5px; white-space: nowrap; }
+    .pct-high { color: #1A1F6B; font-weight: 700; }
 
     .bar-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
     .bar-bg   { width: 60px; height: 4px; background: #eee; border-radius: 2px; overflow: hidden; }
@@ -200,6 +202,7 @@ let sortCol=null, sortDir=1, activeMes=null, activeNivel=null, searchTerm='';
 
 const fmt  = n => n==null ? '<span class="tpv-zero">—</span>' : n>=1e6 ? `<span class="tpv-value">R$ ${(n/1e6).toFixed(2).replace('.',',')}M</span>` : `<span class="tpv-value">R$ ${n.toLocaleString('pt-BR')}</span>`;
 const fmtN = n => n.toLocaleString('pt-BR');
+const pct  = (v, total) => { if (!total || v==null) return ''; const p = (v/total*100); const cls = p>=40 ? 'pct-high' : ''; return `<span class="pct ${cls}">${p.toFixed(1)}%</span>`; };
 
 function getData() {
   let d = [...RAW];
@@ -223,7 +226,8 @@ function renderTable() {
   data.forEach((r,i)=>{
     const isLast=i===data.length-1||data[i+1].mes!==r.mes;
     const bp=Math.round((r.tpv_m0/maxTPV)*100);
-    html+=`<tr><td><span class="mes-badge">${r.mes}</span></td><td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td><td>${fmtN(r.resellers)}</td><td>${fmtN(r.pedidos)}</td><td>${fmtN(r.ativos)}</td><td><div class="bar-cell">${fmt(r.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td><td>${fmt(r.tpv_m1)}</td></tr>`;
+    const t=totals[r.mes]||{resellers:0,pedidos:0,ativos:0,tpv_m0:0,tpv_m1:0,haM1:false};
+    html+=`<tr><td><span class="mes-badge">${r.mes}</span></td><td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td><td>${fmtN(r.resellers)}${pct(r.resellers,t.resellers)}</td><td>${fmtN(r.pedidos)}${pct(r.pedidos,t.pedidos)}</td><td>${fmtN(r.ativos)}${pct(r.ativos,t.ativos)}</td><td><div class="bar-cell">${fmt(r.tpv_m0)}${pct(r.tpv_m0,t.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td><td>${fmt(r.tpv_m1)}${r.tpv_m1!=null&&t.haM1?pct(r.tpv_m1,t.tpv_m1):''}</td></tr>`;
     if (isLast&&!activeMes&&!sortCol){const t=totals[r.mes];html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td><td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td><td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td></tr>`;}
   });
   document.getElementById('tbody').innerHTML = html||'<tr><td colspan="7" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
