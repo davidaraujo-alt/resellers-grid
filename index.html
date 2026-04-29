@@ -1,120 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Renda na Mão — Resultado Resellers 2026</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; color: #1a1a2e; }
-
-    /* HEADER */
-    .header { background: #FFE600; padding: 28px 40px 48px; position: relative; }
-    .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .mp-logo { height: 36px; }
-    .programa-badge {
-      display: inline-flex; align-items: center;
-      background: #1A1F6B; color: #fff;
-      border-radius: 20px; padding: 6px 18px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    }
-    .programa-badge span { color: #FFE600; margin-left: 4px; }
-
-    .header-body { display: flex; align-items: flex-end; gap: 28px; }
-
-    .renda-badge {
-      background: #1A1F6B; border-radius: 50% 50% 50% 0;
-      padding: 22px 30px; color: #fff; line-height: 1.1; flex-shrink: 0;
-    }
-    .renda-linha { display: flex; align-items: baseline; gap: 6px; }
-    .renda-badge .word-big  { font-size: 38px; font-weight: 900; letter-spacing: -1px; }
-    .renda-badge .word-na   { font-size: 13px; font-weight: 700; color: #FFE600; }
-
-    .header-sub { padding-bottom: 4px; }
-    .header-sub h2 {
-      font-size: 13px; font-weight: 800; color: #1A1F6B; text-transform: uppercase;
-      letter-spacing: 0.07em; background: rgba(255,255,255,0.65);
-      display: inline-block; padding: 5px 16px; border-radius: 20px; margin-bottom: 8px;
-    }
-    .header-sub p { font-size: 12px; color: #1A1F6B; opacity: 0.65; }
-
-    /* BODY */
-    .body { padding: 32px 32px 40px; }
-
-    .summary-cards {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
-      gap: 14px; margin-bottom: 24px;
-    }
-    .card {
-      background: #fff; border-radius: 12px; padding: 16px 20px;
-      border-left: 4px solid #1A1F6B;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    .card-label { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
-    .card-value { font-size: 22px; font-weight: 800; color: #1A1F6B; }
-    .card-sub   { font-size: 10px; color: #bbb; margin-top: 2px; }
-
-    .controls { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
-
-    .filter-btn {
-      padding: 5px 14px; border-radius: 20px; border: 1.5px solid #ddd;
-      background: #fff; color: #666; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
-    }
-    .filter-btn:hover { border-color: #1A1F6B; color: #1A1F6B; }
-    .filter-btn.active { background: #1A1F6B; border-color: #1A1F6B; color: #FFE600; }
-
-    .search-box {
-      padding: 5px 14px; border-radius: 20px; border: 1.5px solid #ddd;
-      background: #fff; color: #333; font-size: 12px; outline: none; width: 170px; margin-left: auto;
-    }
-    .search-box:focus { border-color: #1A1F6B; }
-
-    .grid-wrapper { border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-
-    thead th {
-      background: #1A1F6B; padding: 13px 18px; text-align: left;
-      font-weight: 700; color: #FFE600; font-size: 11px;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      cursor: pointer; user-select: none; white-space: nowrap;
-    }
-    thead th:hover { background: #22287a; }
-    thead th.sorted-asc::after  { content: ' ↑'; color: #fff; }
-    thead th.sorted-desc::after { content: ' ↓'; color: #fff; }
-    thead th:not(:first-child):not(:nth-child(2)) { text-align: right; }
-
-    tbody tr { border-bottom: 1px solid #f0f0f0; background: #fff; transition: background 0.1s; }
-    tbody tr:hover { background: #fffde6; }
-    tbody tr.group-total { background: #f5f5ff; }
-    tbody tr.group-total td { font-weight: 700; color: #1A1F6B; }
-
-    td { padding: 11px 18px; color: #333; }
-    td:not(:first-child):not(:nth-child(2)) { text-align: right; font-variant-numeric: tabular-nums; }
-
-    .mes-badge {
-      display: inline-block; padding: 3px 12px; border-radius: 10px;
-      font-size: 11px; font-weight: 700; background: #FFE600; color: #1A1F6B;
-    }
-    .nivel-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; }
-    .nivel-dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    .nivel-aprendiz    .nivel-dot { background: #9ca3af; }
-    .nivel-especialista .nivel-dot { background: #3b82f6; }
-    .nivel-empreendedor .nivel-dot { background: #f59e0b; }
-    .nivel-top          .nivel-dot { background: #1A1F6B; }
-
-    .tpv-value { color: #1A1F6B; font-weight: 600; }
-    .tpv-zero  { color: #ccc; }
-    .pct { font-size: 10px; color: #aaa; font-weight: 500; margin-left: 5px; white-space: nowrap; }
-    .pct-high { color: #1A1F6B; font-weight: 700; }
-
-    .bar-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
-    .bar-bg   { width: 60px; height: 4px; background: #eee; border-radius: 2px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 2px; background: #FFE600; }
-
-    .footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Renda na Mao - Resellers 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f4f4f4;color:#1a1a2e}
+.header{background:#FFE600;padding:24px 40px 44px}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mp-logo{height:34px}
+.programa-badge{display:inline-flex;align-items:center;background:#1A1F6B;color:#fff;border-radius:20px;padding:6px 18px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.programa-badge span{color:#FFE600;margin-left:4px}
+.header-body{display:flex;align-items:flex-end;gap:24px}
+.renda-badge{background:#1A1F6B;border-radius:50% 50% 50% 0;padding:18px 26px;color:#fff;line-height:1.1;flex-shrink:0}
+.renda-linha{display:flex;align-items:baseline;gap:5px}
+.word-big{font-size:34px;font-weight:900;letter-spacing:-1px}
+.word-na{font-size:13px;font-weight:700;color:#FFE600}
+.header-sub{padding-bottom:4px}
+.header-sub h2{font-size:12px;font-weight:800;color:#1A1F6B;text-transform:uppercase;letter-spacing:.07em;background:rgba(255,255,255,.65);display:inline-block;padding:5px 14px;border-radius:20px;margin-bottom:6px}
+.header-sub p{font-size:12px;color:#1A1F6B;opacity:.65}
+.tabs{display:flex;background:#1A1F6B;padding:0 32px}
+.tab{padding:12px 22px;font-size:12px;font-weight:700;color:#aac;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s}
+.tab:hover{color:#FFE600}
+.tab.active{color:#FFE600;border-bottom-color:#FFE600}
+.body{padding:28px 32px 40px}
+.pane{display:none}
+.pane.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:22px}
+.card{background:#fff;border-radius:12px;padding:14px 18px;border-left:4px solid #1A1F6B;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-label{font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.card-value{font-size:20px;font-weight:800;color:#1A1F6B}
+.card-sub{font-size:10px;color:#bbb;margin-top:2px}
+.controls{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:5px 14px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#666;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.filter-btn:hover{border-color:#1A1F6B;color:#1A1F6B}
+.filter-btn.active{background:#1A1F6B;border-color:#1A1F6B;color:#FFE600}
+.search-box{padding:5px 14px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#333;font-size:12px;outline:none;width:160px;margin-left:auto}
+.search-box:focus{border-color:#1A1F6B}
+.grid-wrapper{border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:#1A1F6B;padding:12px 16px;text-align:left;font-weight:700;color:#FFE600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;user-select:none;white-space:nowrap}
+thead th:hover{background:#22287a}
+thead th.sorted-asc::after{content:' ↑';color:#fff}
+thead th.sorted-desc::after{content:' ↓';color:#fff}
+thead th:not(:first-child):not(:nth-child(2)){text-align:right}
+tbody tr{border-bottom:1px solid #f0f0f0;background:#fff;transition:background .1s}
+tbody tr:hover{background:#fffde6}
+tbody tr.group-total{background:#f5f5ff}
+tbody tr.group-total td{font-weight:700;color:#1A1F6B}
+td{padding:10px 16px;color:#333}
+td:not(:first-child):not(:nth-child(2)){text-align:right;font-variant-numeric:tabular-nums}
+.mes-badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;background:#FFE600;color:#1A1F6B}
+.nivel-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.nivel-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.nivel-aprendiz .nivel-dot{background:#9ca3af}
+.nivel-especialista .nivel-dot{background:#3b82f6}
+.nivel-empreendedor .nivel-dot{background:#f59e0b}
+.nivel-top .nivel-dot{background:#1A1F6B}
+.tpv-value{color:#1A1F6B;font-weight:600}
+.tpv-zero{color:#ccc}
+.pct{font-size:10px;color:#aaa;font-weight:500;margin-left:4px}
+.pct-high{color:#1A1F6B;font-weight:700}
+.bar-cell{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.bar-bg{width:50px;height:4px;background:#eee;border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;background:#FFE600}
+.chart-wrap{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.07);margin-bottom:20px}
+.chart-title{font-size:13px;font-weight:700;color:#1A1F6B;margin-bottom:4px}
+.chart-sub{font-size:11px;color:#aaa;margin-bottom:14px}
+.chart-controls{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+canvas{max-height:320px}
+.footer{text-align:center;padding:20px;font-size:11px;color:#bbb}
+</style>
 </head>
 <body>
 
@@ -128,132 +86,290 @@
     </svg>
     <div class="programa-badge">Programa de<span>Revenda</span></div>
   </div>
-
   <div class="header-body">
     <div class="renda-badge">
-      <div class="renda-linha">
-        <span class="word-big">RENDA</span>
-      </div>
-      <div class="renda-linha">
-        <span class="word-na">na</span>
-        <span class="word-big">MÃO</span>
-      </div>
+      <div class="renda-linha"><span class="word-big">RENDA</span></div>
+      <div class="renda-linha"><span class="word-na">na</span><span class="word-big">MAO</span></div>
     </div>
     <div class="header-sub">
-      <h2>Resultado por Nível · 2026</h2>
-      <p>Jan – Abr/26 &nbsp;·&nbsp; null tratado como Aprendiz</p>
+      <h2>Resultado por Nivel &middot; 2026</h2>
+      <p>Jan - Abr/26 &middot; null = Aprendiz</p>
     </div>
   </div>
 </div>
 
+<div class="tabs">
+  <div class="tab active" onclick="showTab('tabela',this)">&#128202; Tabela</div>
+  <div class="tab" onclick="showTab('modelos',this)">&#128424; Modelos</div>
+  <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV Diario</div>
+  <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
+</div>
+
 <div class="body">
-  <div class="summary-cards" id="summary-cards"></div>
+
+<div class="pane active" id="pane-tabela">
+  <div class="cards" id="cards-tabela"></div>
   <div class="controls">
     <div id="mes-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
     <div id="nivel-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
-    <input class="search-box" type="text" placeholder="🔍 Buscar..." id="search-input" />
+    <input class="search-box" type="text" placeholder="Buscar..." id="search-input"/>
   </div>
   <div class="grid-wrapper">
     <table>
-      <thead>
-        <tr>
-          <th data-col="mes">Mês</th>
-          <th data-col="nivel">Nível</th>
-          <th data-col="resellers">Resellers c/ Compra</th>
-          <th data-col="pedidos">Devices Pedidos</th>
-          <th data-col="ativos">Devices Ativos</th>
-          <th data-col="tpv_m0">TPV M0</th>
-          <th data-col="tpv_m1">TPV M1</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th data-col="mes">Mes</th>
+        <th data-col="nivel">Nivel</th>
+        <th data-col="resellers">Resellers</th>
+        <th data-col="pedidos">Dev. Pedidos</th>
+        <th data-col="ativos">Dev. Ativos</th>
+        <th data-col="tpv_m0">TPV M0</th>
+        <th data-col="tpv_m1">TPV M1</th>
+        <th data-col="tpv_total">TPV Total</th>
+      </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
 </div>
 
-<div class="footer">Mercado Pago · Programa Renda na Mão · Fonte: BD_CUST_RESELLER_INFO</div>
+<div class="pane" id="pane-modelos">
+  <div class="cards" id="cards-modelos"></div>
+  <div class="controls">
+    <div id="mes-filters-mod" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+  <div class="grid-wrapper">
+    <table>
+      <thead><tr>
+        <th>Mes</th><th>Nivel</th>
+        <th style="text-align:right">Pro Pedidos</th>
+        <th style="text-align:right">Pro Ativos</th>
+        <th style="text-align:right">Smart Pedidos</th>
+        <th style="text-align:right">Smart Ativos</th>
+        <th style="text-align:right">% Pro</th>
+        <th style="text-align:right">% Smart</th>
+      </tr></thead>
+      <tbody id="tbody-modelos"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="pane" id="pane-chart-tpv">
+  <div class="chart-wrap">
+    <div class="chart-title">TPV M0 e M1 Diario por Nivel</div>
+    <div class="chart-sub">Acumulado diario Jan-Abr/26. M1 disponivel a partir de Fev/26. Linha tracejada = M1.</div>
+    <div class="chart-controls" id="nivel-filter-tpv"></div>
+    <canvas id="chartTpv"></canvas>
+  </div>
+</div>
+
+<div class="pane" id="pane-chart-devices">
+  <div class="chart-wrap">
+    <div class="chart-title">Pedidos e Ativacoes por Modelo e Mes</div>
+    <div class="chart-sub">Point Pro vs Point Smart - Jan-Abr/26</div>
+    <div class="chart-controls" id="nivel-filter-dev"></div>
+    <canvas id="chartDevices"></canvas>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">Mix de Modelos - % de Pedidos</div>
+    <div class="chart-sub">Participacao Point Pro vs Smart por mes (empilhado 100%)</div>
+    <canvas id="chartMix"></canvas>
+  </div>
+</div>
+
+</div>
+<div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
 
 <script>
 const RAW = [
-  { mes:"Jan/26", nivel:"Aprendiz",        resellers:914,  pedidos:2884, ativos:2391, tpv_m0:5904529,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Especialista",     resellers:113,  pedidos:1397, ativos:1170, tpv_m0:3045114,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Empreendedor",     resellers:50,   pedidos:938,  ativos:830,  tpv_m0:3139062,  tpv_m1:null },
-  { mes:"Jan/26", nivel:"Top Empreendedor", resellers:38,   pedidos:1739, ativos:1648, tpv_m0:6647500,  tpv_m1:null },
-  { mes:"Fev/26", nivel:"Aprendiz",        resellers:983,  pedidos:2834, ativos:2149, tpv_m0:5455402,  tpv_m1:8589250  },
-  { mes:"Fev/26", nivel:"Especialista",     resellers:117,  pedidos:1338, ativos:1102, tpv_m0:3811769,  tpv_m1:4598512  },
-  { mes:"Fev/26", nivel:"Empreendedor",     resellers:52,   pedidos:1246, ativos:996,  tpv_m0:2698795,  tpv_m1:4720787  },
-  { mes:"Fev/26", nivel:"Top Empreendedor", resellers:38,   pedidos:2111, ativos:1772, tpv_m0:6183822,  tpv_m1:12309138 },
-  { mes:"Mar/26", nivel:"Aprendiz",        resellers:922,  pedidos:2467, ativos:1478, tpv_m0:6653238,  tpv_m1:7695710  },
-  { mes:"Mar/26", nivel:"Especialista",     resellers:83,   pedidos:896,  ativos:523,  tpv_m0:3397338,  tpv_m1:5027261  },
-  { mes:"Mar/26", nivel:"Empreendedor",     resellers:48,   pedidos:1341, ativos:837,  tpv_m0:4084953,  tpv_m1:5424752  },
-  { mes:"Mar/26", nivel:"Top Empreendedor", resellers:39,   pedidos:1966, ativos:1409, tpv_m0:7784389,  tpv_m1:11010999 },
-  { mes:"Abr/26", nivel:"Aprendiz",        resellers:675,  pedidos:1448, ativos:530,  tpv_m0:5294588,  tpv_m1:7556262  },
-  { mes:"Abr/26", nivel:"Especialista",     resellers:77,   pedidos:549,  ativos:148,  tpv_m0:2316205,  tpv_m1:4682157  },
-  { mes:"Abr/26", nivel:"Empreendedor",     resellers:36,   pedidos:547,  ativos:173,  tpv_m0:2400932,  tpv_m1:5836200  },
-  { mes:"Abr/26", nivel:"Top Empreendedor", resellers:41,   pedidos:1843, ativos:664,  tpv_m0:5803605,  tpv_m1:13406624 },
+  {mes:"Jan/26",nivel:"Aprendiz",resellers:914,pedidos:2884,ativos:2391,tpv_m0:5904529,tpv_m1:null,tpv_total:2190087,pedidos_pro:2610,pedidos_smart:268,ativos_pro:2175,ativos_smart:211},
+  {mes:"Jan/26",nivel:"Especialista",resellers:113,pedidos:1397,ativos:1170,tpv_m0:3045114,tpv_m1:null,tpv_total:2268030,pedidos_pro:1245,pedidos_smart:152,ativos_pro:1036,ativos_smart:134},
+  {mes:"Jan/26",nivel:"Empreendedor",resellers:50,pedidos:938,ativos:830,tpv_m0:3139062,tpv_m1:null,tpv_total:2909063,pedidos_pro:777,pedidos_smart:161,ativos_pro:694,ativos_smart:136},
+  {mes:"Jan/26",nivel:"Top Empreendedor",resellers:38,pedidos:1739,ativos:1648,tpv_m0:6647500,tpv_m1:null,tpv_total:5934960,pedidos_pro:1273,pedidos_smart:466,ativos_pro:1205,ativos_smart:443},
+  {mes:"Fev/26",nivel:"Aprendiz",resellers:983,pedidos:2834,ativos:2149,tpv_m0:5455402,tpv_m1:8589250,tpv_total:3865778,pedidos_pro:2576,pedidos_smart:257,ativos_pro:1972,ativos_smart:177},
+  {mes:"Fev/26",nivel:"Especialista",resellers:117,pedidos:1338,ativos:1102,tpv_m0:3811769,tpv_m1:4598512,tpv_total:5983828,pedidos_pro:1216,pedidos_smart:122,ativos_pro:1018,ativos_smart:84},
+  {mes:"Fev/26",nivel:"Empreendedor",resellers:52,pedidos:1246,ativos:996,tpv_m0:2698795,tpv_m1:4720787,tpv_total:7119633,pedidos_pro:1061,pedidos_smart:185,ativos_pro:849,ativos_smart:147},
+  {mes:"Fev/26",nivel:"Top Empreendedor",resellers:38,pedidos:2111,ativos:1772,tpv_m0:6183822,tpv_m1:12309138,tpv_total:17484241,pedidos_pro:1331,pedidos_smart:780,ativos_pro:1123,ativos_smart:649},
+  {mes:"Mar/26",nivel:"Aprendiz",resellers:922,pedidos:2467,ativos:1478,tpv_m0:6653238,tpv_m1:7695710,tpv_total:4619592,pedidos_pro:2163,pedidos_smart:301,ativos_pro:1290,ativos_smart:186},
+  {mes:"Mar/26",nivel:"Especialista",resellers:83,pedidos:896,ativos:523,tpv_m0:3397338,tpv_m1:5027261,tpv_total:7873138,pedidos_pro:802,pedidos_smart:94,ativos_pro:466,ativos_smart:57},
+  {mes:"Mar/26",nivel:"Empreendedor",resellers:48,pedidos:1341,ativos:837,tpv_m0:4084953,tpv_m1:5424752,tpv_total:12847334,pedidos_pro:1113,pedidos_smart:228,ativos_pro:697,ativos_smart:140},
+  {mes:"Mar/26",nivel:"Top Empreendedor",resellers:39,pedidos:1966,ativos:1409,tpv_m0:7784389,tpv_m1:11010999,tpv_total:30224110,pedidos_pro:1510,pedidos_smart:456,ativos_pro:1111,ativos_smart:298},
+  {mes:"Abr/26",nivel:"Aprendiz",resellers:675,pedidos:1448,ativos:530,tpv_m0:5294588,tpv_m1:7556262,tpv_total:3606439,pedidos_pro:1276,pedidos_smart:169,ativos_pro:467,ativos_smart:61},
+  {mes:"Abr/26",nivel:"Especialista",resellers:77,pedidos:549,ativos:148,tpv_m0:2316205,tpv_m1:4682157,tpv_total:8287688,pedidos_pro:443,pedidos_smart:106,ativos_pro:122,ativos_smart:26},
+  {mes:"Abr/26",nivel:"Empreendedor",resellers:36,pedidos:547,ativos:173,tpv_m0:2400932,tpv_m1:5836200,tpv_total:11838473,pedidos_pro:450,pedidos_smart:97,ativos_pro:122,ativos_smart:51},
+  {mes:"Abr/26",nivel:"Top Empreendedor",resellers:41,pedidos:1843,ativos:664,tpv_m0:5803605,tpv_m1:13406624,tpv_total:37531873,pedidos_pro:1409,pedidos_smart:434,ativos_pro:530,ativos_smart:134},
 ];
 
-const MES_ORDER = ["Jan/26","Fev/26","Mar/26","Abr/26"];
-const NIV_ORDER = ["Aprendiz","Especialista","Empreendedor","Top Empreendedor"];
-const NIV_CLASS = {"Aprendiz":"nivel-aprendiz","Especialista":"nivel-especialista","Empreendedor":"nivel-empreendedor","Top Empreendedor":"nivel-top"};
-const maxTPV = Math.max(...RAW.map(r=>r.tpv_m0));
+const DAILY = [{"nivel": "Aprendiz", "data": "2026-01-01", "tpv_m0": 25536, "tpv_m1": 0, "tpv_total": 25536}, {"nivel": "Empreendedor", "data": "2026-01-01", "tpv_m0": 13047, "tpv_m1": 0, "tpv_total": 13047}, {"nivel": "Especialista", "data": "2026-01-01", "tpv_m0": 2600, "tpv_m1": 0, "tpv_total": 2600}, {"nivel": "Top Empreendedor", "data": "2026-01-01", "tpv_m0": 4513, "tpv_m1": 0, "tpv_total": 4513}, {"nivel": "Aprendiz", "data": "2026-01-02", "tpv_m0": 56398, "tpv_m1": 0, "tpv_total": 56398}, {"nivel": "Empreendedor", "data": "2026-01-02", "tpv_m0": 13421, "tpv_m1": 0, "tpv_total": 13421}, {"nivel": "Especialista", "data": "2026-01-02", "tpv_m0": 13425, "tpv_m1": 0, "tpv_total": 13425}, {"nivel": "Top Empreendedor", "data": "2026-01-02", "tpv_m0": 6864, "tpv_m1": 0, "tpv_total": 6864}, {"nivel": "Aprendiz", "data": "2026-01-03", "tpv_m0": 39649, "tpv_m1": 0, "tpv_total": 39649}, {"nivel": "Empreendedor", "data": "2026-01-03", "tpv_m0": 6681, "tpv_m1": 0, "tpv_total": 6681}, {"nivel": "Especialista", "data": "2026-01-03", "tpv_m0": 10160, "tpv_m1": 0, "tpv_total": 10160}, {"nivel": "Top Empreendedor", "data": "2026-01-03", "tpv_m0": 9893, "tpv_m1": 0, "tpv_total": 9893}, {"nivel": "Aprendiz", "data": "2026-01-04", "tpv_m0": 38466, "tpv_m1": 0, "tpv_total": 38466}, {"nivel": "Empreendedor", "data": "2026-01-04", "tpv_m0": 10129, "tpv_m1": 0, "tpv_total": 10129}, {"nivel": "Especialista", "data": "2026-01-04", "tpv_m0": 7921, "tpv_m1": 0, "tpv_total": 7921}, {"nivel": "Top Empreendedor", "data": "2026-01-04", "tpv_m0": 11920, "tpv_m1": 0, "tpv_total": 11920}, {"nivel": "Aprendiz", "data": "2026-01-05", "tpv_m0": 55272, "tpv_m1": 0, "tpv_total": 55272}, {"nivel": "Empreendedor", "data": "2026-01-05", "tpv_m0": 29039, "tpv_m1": 0, "tpv_total": 29039}, {"nivel": "Especialista", "data": "2026-01-05", "tpv_m0": 19754, "tpv_m1": 0, "tpv_total": 19754}, {"nivel": "Top Empreendedor", "data": "2026-01-05", "tpv_m0": 17604, "tpv_m1": 0, "tpv_total": 17604}, {"nivel": "Aprendiz", "data": "2026-01-06", "tpv_m0": 88951, "tpv_m1": 0, "tpv_total": 88951}, {"nivel": "Empreendedor", "data": "2026-01-06", "tpv_m0": 19963, "tpv_m1": 0, "tpv_total": 19963}, {"nivel": "Especialista", "data": "2026-01-06", "tpv_m0": 51882, "tpv_m1": 0, "tpv_total": 51882}, {"nivel": "Top Empreendedor", "data": "2026-01-06", "tpv_m0": 58710, "tpv_m1": 0, "tpv_total": 58710}, {"nivel": "Aprendiz", "data": "2026-01-07", "tpv_m0": 141393, "tpv_m1": 0, "tpv_total": 141393}, {"nivel": "Empreendedor", "data": "2026-01-07", "tpv_m0": 47461, "tpv_m1": 0, "tpv_total": 47461}, {"nivel": "Especialista", "data": "2026-01-07", "tpv_m0": 36649, "tpv_m1": 0, "tpv_total": 36649}, {"nivel": "Top Empreendedor", "data": "2026-01-07", "tpv_m0": 114288, "tpv_m1": 0, "tpv_total": 114288}, {"nivel": "Aprendiz", "data": "2026-01-08", "tpv_m0": 123235, "tpv_m1": 0, "tpv_total": 123235}, {"nivel": "Empreendedor", "data": "2026-01-08", "tpv_m0": 40174, "tpv_m1": 0, "tpv_total": 40174}, {"nivel": "Especialista", "data": "2026-01-08", "tpv_m0": 59065, "tpv_m1": 0, "tpv_total": 59065}, {"nivel": "Top Empreendedor", "data": "2026-01-08", "tpv_m0": 123938, "tpv_m1": 0, "tpv_total": 123938}, {"nivel": "Aprendiz", "data": "2026-01-09", "tpv_m0": 157635, "tpv_m1": 0, "tpv_total": 157635}, {"nivel": "Empreendedor", "data": "2026-01-09", "tpv_m0": 80650, "tpv_m1": 0, "tpv_total": 80650}, {"nivel": "Especialista", "data": "2026-01-09", "tpv_m0": 70964, "tpv_m1": 0, "tpv_total": 70964}, {"nivel": "Top Empreendedor", "data": "2026-01-09", "tpv_m0": 155683, "tpv_m1": 0, "tpv_total": 155683}, {"nivel": "Aprendiz", "data": "2026-01-10", "tpv_m0": 179882, "tpv_m1": 0, "tpv_total": 179882}, {"nivel": "Empreendedor", "data": "2026-01-10", "tpv_m0": 87373, "tpv_m1": 0, "tpv_total": 87373}, {"nivel": "Especialista", "data": "2026-01-10", "tpv_m0": 85833, "tpv_m1": 0, "tpv_total": 85833}, {"nivel": "Top Empreendedor", "data": "2026-01-10", "tpv_m0": 189022, "tpv_m1": 0, "tpv_total": 189022}, {"nivel": "Aprendiz", "data": "2026-01-11", "tpv_m0": 142515, "tpv_m1": 0, "tpv_total": 142515}, {"nivel": "Empreendedor", "data": "2026-01-11", "tpv_m0": 67214, "tpv_m1": 0, "tpv_total": 67214}, {"nivel": "Especialista", "data": "2026-01-11", "tpv_m0": 61427, "tpv_m1": 0, "tpv_total": 61427}, {"nivel": "Top Empreendedor", "data": "2026-01-11", "tpv_m0": 166535, "tpv_m1": 0, "tpv_total": 166535}, {"nivel": "Aprendiz", "data": "2026-01-12", "tpv_m0": 173462, "tpv_m1": 0, "tpv_total": 173462}, {"nivel": "Empreendedor", "data": "2026-01-12", "tpv_m0": 46166, "tpv_m1": 0, "tpv_total": 46166}, {"nivel": "Especialista", "data": "2026-01-12", "tpv_m0": 72217, "tpv_m1": 0, "tpv_total": 72217}, {"nivel": "Top Empreendedor", "data": "2026-01-12", "tpv_m0": 155777, "tpv_m1": 0, "tpv_total": 155777}, {"nivel": "Aprendiz", "data": "2026-01-13", "tpv_m0": 190469, "tpv_m1": 0, "tpv_total": 190469}, {"nivel": "Empreendedor", "data": "2026-01-13", "tpv_m0": 86809, "tpv_m1": 0, "tpv_total": 86809}, {"nivel": "Especialista", "data": "2026-01-13", "tpv_m0": 98389, "tpv_m1": 0, "tpv_total": 98389}, {"nivel": "Top Empreendedor", "data": "2026-01-13", "tpv_m0": 155820, "tpv_m1": 0, "tpv_total": 155820}, {"nivel": "Aprendiz", "data": "2026-01-14", "tpv_m0": 173634, "tpv_m1": 0, "tpv_total": 173634}, {"nivel": "Empreendedor", "data": "2026-01-14", "tpv_m0": 138655, "tpv_m1": 0, "tpv_total": 138655}, {"nivel": "Especialista", "data": "2026-01-14", "tpv_m0": 62328, "tpv_m1": 0, "tpv_total": 62328}, {"nivel": "Top Empreendedor", "data": "2026-01-14", "tpv_m0": 169668, "tpv_m1": 0, "tpv_total": 169668}, {"nivel": "Aprendiz", "data": "2026-01-15", "tpv_m0": 203298, "tpv_m1": 0, "tpv_total": 203298}, {"nivel": "Empreendedor", "data": "2026-01-15", "tpv_m0": 122667, "tpv_m1": 0, "tpv_total": 122667}, {"nivel": "Especialista", "data": "2026-01-15", "tpv_m0": 105664, "tpv_m1": 0, "tpv_total": 105664}, {"nivel": "Top Empreendedor", "data": "2026-01-15", "tpv_m0": 218689, "tpv_m1": 0, "tpv_total": 218689}, {"nivel": "Aprendiz", "data": "2026-01-16", "tpv_m0": 233613, "tpv_m1": 0, "tpv_total": 233613}, {"nivel": "Empreendedor", "data": "2026-01-16", "tpv_m0": 145139, "tpv_m1": 0, "tpv_total": 145139}, {"nivel": "Especialista", "data": "2026-01-16", "tpv_m0": 112341, "tpv_m1": 0, "tpv_total": 112341}, {"nivel": "Top Empreendedor", "data": "2026-01-16", "tpv_m0": 220735, "tpv_m1": 0, "tpv_total": 220735}, {"nivel": "Aprendiz", "data": "2026-01-17", "tpv_m0": 218380, "tpv_m1": 0, "tpv_total": 218380}, {"nivel": "Empreendedor", "data": "2026-01-17", "tpv_m0": 129067, "tpv_m1": 0, "tpv_total": 129067}, {"nivel": "Especialista", "data": "2026-01-17", "tpv_m0": 119012, "tpv_m1": 0, "tpv_total": 119012}, {"nivel": "Top Empreendedor", "data": "2026-01-17", "tpv_m0": 299636, "tpv_m1": 0, "tpv_total": 299636}, {"nivel": "Aprendiz", "data": "2026-01-18", "tpv_m0": 162049, "tpv_m1": 0, "tpv_total": 162049}, {"nivel": "Empreendedor", "data": "2026-01-18", "tpv_m0": 104339, "tpv_m1": 0, "tpv_total": 104339}, {"nivel": "Especialista", "data": "2026-01-18", "tpv_m0": 93385, "tpv_m1": 0, "tpv_total": 93385}, {"nivel": "Top Empreendedor", "data": "2026-01-18", "tpv_m0": 236266, "tpv_m1": 0, "tpv_total": 236266}, {"nivel": "Aprendiz", "data": "2026-01-19", "tpv_m0": 240563, "tpv_m1": 0, "tpv_total": 240563}, {"nivel": "Empreendedor", "data": "2026-01-19", "tpv_m0": 94040, "tpv_m1": 0, "tpv_total": 94040}, {"nivel": "Especialista", "data": "2026-01-19", "tpv_m0": 86902, "tpv_m1": 0, "tpv_total": 86902}, {"nivel": "Top Empreendedor", "data": "2026-01-19", "tpv_m0": 168139, "tpv_m1": 0, "tpv_total": 168139}, {"nivel": "Aprendiz", "data": "2026-01-20", "tpv_m0": 230253, "tpv_m1": 0, "tpv_total": 230253}, {"nivel": "Empreendedor", "data": "2026-01-20", "tpv_m0": 113985, "tpv_m1": 0, "tpv_total": 113985}, {"nivel": "Especialista", "data": "2026-01-20", "tpv_m0": 139738, "tpv_m1": 0, "tpv_total": 139738}, {"nivel": "Top Empreendedor", "data": "2026-01-20", "tpv_m0": 224754, "tpv_m1": 0, "tpv_total": 224754}, {"nivel": "Aprendiz", "data": "2026-01-21", "tpv_m0": 213642, "tpv_m1": 0, "tpv_total": 213642}, {"nivel": "Empreendedor", "data": "2026-01-21", "tpv_m0": 121309, "tpv_m1": 0, "tpv_total": 121309}, {"nivel": "Especialista", "data": "2026-01-21", "tpv_m0": 134503, "tpv_m1": 0, "tpv_total": 134503}, {"nivel": "Top Empreendedor", "data": "2026-01-21", "tpv_m0": 224425, "tpv_m1": 0, "tpv_total": 224425}, {"nivel": "Aprendiz", "data": "2026-01-22", "tpv_m0": 259219, "tpv_m1": 0, "tpv_total": 259219}, {"nivel": "Empreendedor", "data": "2026-01-22", "tpv_m0": 116973, "tpv_m1": 0, "tpv_total": 116973}, {"nivel": "Especialista", "data": "2026-01-22", "tpv_m0": 138835, "tpv_m1": 0, "tpv_total": 138835}, {"nivel": "Top Empreendedor", "data": "2026-01-22", "tpv_m0": 241578, "tpv_m1": 0, "tpv_total": 241578}, {"nivel": "Aprendiz", "data": "2026-01-23", "tpv_m0": 315778, "tpv_m1": 0, "tpv_total": 315778}, {"nivel": "Empreendedor", "data": "2026-01-23", "tpv_m0": 177657, "tpv_m1": 0, "tpv_total": 177657}, {"nivel": "Especialista", "data": "2026-01-23", "tpv_m0": 146137, "tpv_m1": 0, "tpv_total": 146137}, {"nivel": "Top Empreendedor", "data": "2026-01-23", "tpv_m0": 372031, "tpv_m1": 0, "tpv_total": 372031}, {"nivel": "Aprendiz", "data": "2026-01-24", "tpv_m0": 281393, "tpv_m1": 0, "tpv_total": 281393}, {"nivel": "Empreendedor", "data": "2026-01-24", "tpv_m0": 182672, "tpv_m1": 0, "tpv_total": 182672}, {"nivel": "Especialista", "data": "2026-01-24", "tpv_m0": 163741, "tpv_m1": 0, "tpv_total": 163741}, {"nivel": "Top Empreendedor", "data": "2026-01-24", "tpv_m0": 440203, "tpv_m1": 0, "tpv_total": 440203}, {"nivel": "Aprendiz", "data": "2026-01-25", "tpv_m0": 196158, "tpv_m1": 0, "tpv_total": 196158}, {"nivel": "Empreendedor", "data": "2026-01-25", "tpv_m0": 141098, "tpv_m1": 0, "tpv_total": 141098}, {"nivel": "Especialista", "data": "2026-01-25", "tpv_m0": 123146, "tpv_m1": 0, "tpv_total": 123146}, {"nivel": "Top Empreendedor", "data": "2026-01-25", "tpv_m0": 311928, "tpv_m1": 0, "tpv_total": 311928}, {"nivel": "Aprendiz", "data": "2026-01-26", "tpv_m0": 212533, "tpv_m1": 0, "tpv_total": 212533}, {"nivel": "Empreendedor", "data": "2026-01-26", "tpv_m0": 142875, "tpv_m1": 0, "tpv_total": 142875}, {"nivel": "Especialista", "data": "2026-01-26", "tpv_m0": 112738, "tpv_m1": 0, "tpv_total": 112738}, {"nivel": "Top Empreendedor", "data": "2026-01-26", "tpv_m0": 268553, "tpv_m1": 0, "tpv_total": 268553}, {"nivel": "Aprendiz", "data": "2026-01-27", "tpv_m0": 229718, "tpv_m1": 0, "tpv_total": 229718}, {"nivel": "Empreendedor", "data": "2026-01-27", "tpv_m0": 140350, "tpv_m1": 0, "tpv_total": 140350}, {"nivel": "Especialista", "data": "2026-01-27", "tpv_m0": 142196, "tpv_m1": 0, "tpv_total": 142196}, {"nivel": "Top Empreendedor", "data": "2026-01-27", "tpv_m0": 292382, "tpv_m1": 0, "tpv_total": 292382}, {"nivel": "Aprendiz", "data": "2026-01-28", "tpv_m0": 280498, "tpv_m1": 0, "tpv_total": 280498}, {"nivel": "Empreendedor", "data": "2026-01-28", "tpv_m0": 134904, "tpv_m1": 0, "tpv_total": 134904}, {"nivel": "Especialista", "data": "2026-01-28", "tpv_m0": 148297, "tpv_m1": 0, "tpv_total": 148297}, {"nivel": "Top Empreendedor", "data": "2026-01-28", "tpv_m0": 342651, "tpv_m1": 0, "tpv_total": 342651}, {"nivel": "Aprendiz", "data": "2026-01-29", "tpv_m0": 280509, "tpv_m1": 0, "tpv_total": 280509}, {"nivel": "Empreendedor", "data": "2026-01-29", "tpv_m0": 145153, "tpv_m1": 0, "tpv_total": 145153}, {"nivel": "Especialista", "data": "2026-01-29", "tpv_m0": 156311, "tpv_m1": 0, "tpv_total": 156311}, {"nivel": "Top Empreendedor", "data": "2026-01-29", "tpv_m0": 343507, "tpv_m1": 0, "tpv_total": 343507}, {"nivel": "Aprendiz", "data": "2026-01-30", "tpv_m0": 381127, "tpv_m1": 0, "tpv_total": 381127}, {"nivel": "Empreendedor", "data": "2026-01-30", "tpv_m0": 194728, "tpv_m1": 0, "tpv_total": 194728}, {"nivel": "Especialista", "data": "2026-01-30", "tpv_m0": 245987, "tpv_m1": 0, "tpv_total": 245987}, {"nivel": "Top Empreendedor", "data": "2026-01-30", "tpv_m0": 512619, "tpv_m1": 0, "tpv_total": 512619}, {"nivel": "Aprendiz", "data": "2026-01-31", "tpv_m0": 395367, "tpv_m1": 0, "tpv_total": 395367}, {"nivel": "Empreendedor", "data": "2026-01-31", "tpv_m0": 245325, "tpv_m1": 0, "tpv_total": 245325}, {"nivel": "Especialista", "data": "2026-01-31", "tpv_m0": 207504, "tpv_m1": 0, "tpv_total": 207504}, {"nivel": "Top Empreendedor", "data": "2026-01-31", "tpv_m0": 589170, "tpv_m1": 0, "tpv_total": 589170}, {"nivel": "Aprendiz", "data": "2026-02-01", "tpv_m0": 15827, "tpv_m1": 250020, "tpv_total": 265846}, {"nivel": "Empreendedor", "data": "2026-02-01", "tpv_m0": 22807, "tpv_m1": 164856, "tpv_total": 187663}, {"nivel": "Especialista", "data": "2026-02-01", "tpv_m0": 10728, "tpv_m1": 149002, "tpv_total": 159730}, {"nivel": "Top Empreendedor", "data": "2026-02-01", "tpv_m0": 4384, "tpv_m1": 450869, "tpv_total": 455253}, {"nivel": "Aprendiz", "data": "2026-02-02", "tpv_m0": 98476, "tpv_m1": 292021, "tpv_total": 390497}, {"nivel": "Empreendedor", "data": "2026-02-02", "tpv_m0": 4968, "tpv_m1": 131259, "tpv_total": 136227}, {"nivel": "Especialista", "data": "2026-02-02", "tpv_m0": 8172, "tpv_m1": 140693, "tpv_total": 148864}, {"nivel": "Top Empreendedor", "data": "2026-02-02", "tpv_m0": 8817, "tpv_m1": 396723, "tpv_total": 405541}, {"nivel": "Aprendiz", "data": "2026-02-03", "tpv_m0": 54335, "tpv_m1": 286901, "tpv_total": 341236}, {"nivel": "Empreendedor", "data": "2026-02-03", "tpv_m0": 10773, "tpv_m1": 135798, "tpv_total": 146570}, {"nivel": "Especialista", "data": "2026-02-03", "tpv_m0": 22738, "tpv_m1": 120558, "tpv_total": 143295}, {"nivel": "Top Empreendedor", "data": "2026-02-03", "tpv_m0": 34375, "tpv_m1": 357578, "tpv_total": 391953}, {"nivel": "Aprendiz", "data": "2026-02-04", "tpv_m0": 53528, "tpv_m1": 272371, "tpv_total": 325898}, {"nivel": "Empreendedor", "data": "2026-02-04", "tpv_m0": 22296, "tpv_m1": 116935, "tpv_total": 139231}, {"nivel": "Especialista", "data": "2026-02-04", "tpv_m0": 41230, "tpv_m1": 174438, "tpv_total": 215668}, {"nivel": "Top Empreendedor", "data": "2026-02-04", "tpv_m0": 60838, "tpv_m1": 345273, "tpv_total": 406111}, {"nivel": "Aprendiz", "data": "2026-02-05", "tpv_m0": 85956, "tpv_m1": 317927, "tpv_total": 403883}, {"nivel": "Empreendedor", "data": "2026-02-05", "tpv_m0": 30894, "tpv_m1": 150210, "tpv_total": 181105}, {"nivel": "Especialista", "data": "2026-02-05", "tpv_m0": 72696, "tpv_m1": 156474, "tpv_total": 229170}, {"nivel": "Top Empreendedor", "data": "2026-02-05", "tpv_m0": 71263, "tpv_m1": 397456, "tpv_total": 468719}, {"nivel": "Aprendiz", "data": "2026-02-06", "tpv_m0": 171107, "tpv_m1": 439315, "tpv_total": 610422}, {"nivel": "Empreendedor", "data": "2026-02-06", "tpv_m0": 49873, "tpv_m1": 185892, "tpv_total": 235765}, {"nivel": "Especialista", "data": "2026-02-06", "tpv_m0": 130095, "tpv_m1": 188222, "tpv_total": 318317}, {"nivel": "Top Empreendedor", "data": "2026-02-06", "tpv_m0": 137846, "tpv_m1": 533341, "tpv_total": 671187}, {"nivel": "Aprendiz", "data": "2026-02-07", "tpv_m0": 134411, "tpv_m1": 431203, "tpv_total": 565613}, {"nivel": "Empreendedor", "data": "2026-02-07", "tpv_m0": 60542, "tpv_m1": 226903, "tpv_total": 287445}, {"nivel": "Especialista", "data": "2026-02-07", "tpv_m0": 106480, "tpv_m1": 215331, "tpv_total": 321811}, {"nivel": "Top Empreendedor", "data": "2026-02-07", "tpv_m0": 146106, "tpv_m1": 608468, "tpv_total": 754574}, {"nivel": "Aprendiz", "data": "2026-02-08", "tpv_m0": 143307, "tpv_m1": 244788, "tpv_total": 388095}, {"nivel": "Empreendedor", "data": "2026-02-08", "tpv_m0": 31723, "tpv_m1": 177297, "tpv_total": 209019}, {"nivel": "Especialista", "data": "2026-02-08", "tpv_m0": 76762, "tpv_m1": 145555, "tpv_total": 222316}, {"nivel": "Top Empreendedor", "data": "2026-02-08", "tpv_m0": 94846, "tpv_m1": 430794, "tpv_total": 525640}, {"nivel": "Aprendiz", "data": "2026-02-09", "tpv_m0": 116179, "tpv_m1": 322992, "tpv_total": 439172}, {"nivel": "Empreendedor", "data": "2026-02-09", "tpv_m0": 46728, "tpv_m1": 151516, "tpv_total": 198243}, {"nivel": "Especialista", "data": "2026-02-09", "tpv_m0": 106325, "tpv_m1": 174533, "tpv_total": 280858}, {"nivel": "Top Empreendedor", "data": "2026-02-09", "tpv_m0": 105174, "tpv_m1": 392699, "tpv_total": 497874}, {"nivel": "Aprendiz", "data": "2026-02-10", "tpv_m0": 150783, "tpv_m1": 353900, "tpv_total": 504682}, {"nivel": "Empreendedor", "data": "2026-02-10", "tpv_m0": 65051, "tpv_m1": 142447, "tpv_total": 207498}, {"nivel": "Especialista", "data": "2026-02-10", "tpv_m0": 115223, "tpv_m1": 172869, "tpv_total": 288092}, {"nivel": "Top Empreendedor", "data": "2026-02-10", "tpv_m0": 182534, "tpv_m1": 481659, "tpv_total": 664193}, {"nivel": "Aprendiz", "data": "2026-02-11", "tpv_m0": 192545, "tpv_m1": 330584, "tpv_total": 523129}, {"nivel": "Empreendedor", "data": "2026-02-11", "tpv_m0": 63047, "tpv_m1": 151256, "tpv_total": 214303}, {"nivel": "Especialista", "data": "2026-02-11", "tpv_m0": 156852, "tpv_m1": 136606, "tpv_total": 293458}, {"nivel": "Top Empreendedor", "data": "2026-02-11", "tpv_m0": 143078, "tpv_m1": 433422, "tpv_total": 576501}, {"nivel": "Aprendiz", "data": "2026-02-12", "tpv_m0": 200611, "tpv_m1": 318103, "tpv_total": 518715}, {"nivel": "Empreendedor", "data": "2026-02-12", "tpv_m0": 75714, "tpv_m1": 167956, "tpv_total": 243670}, {"nivel": "Especialista", "data": "2026-02-12", "tpv_m0": 181409, "tpv_m1": 153337, "tpv_total": 334746}, {"nivel": "Top Empreendedor", "data": "2026-02-12", "tpv_m0": 193075, "tpv_m1": 430882, "tpv_total": 623956}, {"nivel": "Aprendiz", "data": "2026-02-13", "tpv_m0": 218894, "tpv_m1": 346339, "tpv_total": 565232}, {"nivel": "Empreendedor", "data": "2026-02-13", "tpv_m0": 116208, "tpv_m1": 189889, "tpv_total": 306097}, {"nivel": "Especialista", "data": "2026-02-13", "tpv_m0": 175047, "tpv_m1": 173649, "tpv_total": 348696}, {"nivel": "Top Empreendedor", "data": "2026-02-13", "tpv_m0": 264966, "tpv_m1": 509854, "tpv_total": 774820}, {"nivel": "Aprendiz", "data": "2026-02-14", "tpv_m0": 343609, "tpv_m1": 381595, "tpv_total": 725204}, {"nivel": "Empreendedor", "data": "2026-02-14", "tpv_m0": 164114, "tpv_m1": 223485, "tpv_total": 387599}, {"nivel": "Especialista", "data": "2026-02-14", "tpv_m0": 204972, "tpv_m1": 211570, "tpv_total": 416542}, {"nivel": "Top Empreendedor", "data": "2026-02-14", "tpv_m0": 349660, "tpv_m1": 583533, "tpv_total": 933193}, {"nivel": "Aprendiz", "data": "2026-02-15", "tpv_m0": 287106, "tpv_m1": 318514, "tpv_total": 605621}, {"nivel": "Empreendedor", "data": "2026-02-15", "tpv_m0": 113617, "tpv_m1": 225575, "tpv_total": 339192}, {"nivel": "Especialista", "data": "2026-02-15", "tpv_m0": 184753, "tpv_m1": 149916, "tpv_total": 334669}, {"nivel": "Top Empreendedor", "data": "2026-02-15", "tpv_m0": 310701, "tpv_m1": 559063, "tpv_total": 869764}, {"nivel": "Aprendiz", "data": "2026-02-16", "tpv_m0": 300083, "tpv_m1": 285860, "tpv_total": 585943}, {"nivel": "Empreendedor", "data": "2026-02-16", "tpv_m0": 130370, "tpv_m1": 170094, "tpv_total": 300464}, {"nivel": "Especialista", "data": "2026-02-16", "tpv_m0": 180519, "tpv_m1": 128662, "tpv_total": 309181}, {"nivel": "Top Empreendedor", "data": "2026-02-16", "tpv_m0": 319769, "tpv_m1": 513776, "tpv_total": 833546}, {"nivel": "Aprendiz", "data": "2026-02-17", "tpv_m0": 223380, "tpv_m1": 234801, "tpv_total": 458182}, {"nivel": "Empreendedor", "data": "2026-02-17", "tpv_m0": 110181, "tpv_m1": 190653, "tpv_total": 300834}, {"nivel": "Especialista", "data": "2026-02-17", "tpv_m0": 142222, "tpv_m1": 129141, "tpv_total": 271362}, {"nivel": "Top Empreendedor", "data": "2026-02-17", "tpv_m0": 291017, "tpv_m1": 392000, "tpv_total": 683018}, {"nivel": "Aprendiz", "data": "2026-02-18", "tpv_m0": 176816, "tpv_m1": 251416, "tpv_total": 428232}, {"nivel": "Empreendedor", "data": "2026-02-18", "tpv_m0": 97146, "tpv_m1": 141275, "tpv_total": 238421}, {"nivel": "Especialista", "data": "2026-02-18", "tpv_m0": 145846, "tpv_m1": 169692, "tpv_total": 315538}, {"nivel": "Top Empreendedor", "data": "2026-02-18", "tpv_m0": 219607, "tpv_m1": 386766, "tpv_total": 606374}, {"nivel": "Aprendiz", "data": "2026-02-19", "tpv_m0": 197330, "tpv_m1": 276036, "tpv_total": 473365}, {"nivel": "Empreendedor", "data": "2026-02-19", "tpv_m0": 137673, "tpv_m1": 186484, "tpv_total": 324157}, {"nivel": "Especialista", "data": "2026-02-19", "tpv_m0": 177216, "tpv_m1": 185693, "tpv_total": 362910}, {"nivel": "Top Empreendedor", "data": "2026-02-19", "tpv_m0": 228569, "tpv_m1": 398409, "tpv_total": 626978}, {"nivel": "Aprendiz", "data": "2026-02-20", "tpv_m0": 269113, "tpv_m1": 397949, "tpv_total": 667061}, {"nivel": "Empreendedor", "data": "2026-02-20", "tpv_m0": 169388, "tpv_m1": 213476, "tpv_total": 382864}, {"nivel": "Especialista", "data": "2026-02-20", "tpv_m0": 152942, "tpv_m1": 200834, "tpv_total": 353776}, {"nivel": "Top Empreendedor", "data": "2026-02-20", "tpv_m0": 332995, "tpv_m1": 500318, "tpv_total": 833313}, {"nivel": "Aprendiz", "data": "2026-02-21", "tpv_m0": 283587, "tpv_m1": 314097, "tpv_total": 597684}, {"nivel": "Empreendedor", "data": "2026-02-21", "tpv_m0": 159396, "tpv_m1": 179562, "tpv_total": 338958}, {"nivel": "Especialista", "data": "2026-02-21", "tpv_m0": 215069, "tpv_m1": 204869, "tpv_total": 419938}, {"nivel": "Top Empreendedor", "data": "2026-02-21", "tpv_m0": 386773, "tpv_m1": 527184, "tpv_total": 913957}, {"nivel": "Aprendiz", "data": "2026-02-22", "tpv_m0": 191518, "tpv_m1": 211520, "tpv_total": 403038}, {"nivel": "Empreendedor", "data": "2026-02-22", "tpv_m0": 101231, "tpv_m1": 163899, "tpv_total": 265130}, {"nivel": "Especialista", "data": "2026-02-22", "tpv_m0": 137446, "tpv_m1": 135710, "tpv_total": 273156}, {"nivel": "Top Empreendedor", "data": "2026-02-22", "tpv_m0": 271140, "tpv_m1": 371591, "tpv_total": 642730}, {"nivel": "Aprendiz", "data": "2026-02-23", "tpv_m0": 155995, "tpv_m1": 244780, "tpv_total": 400775}, {"nivel": "Empreendedor", "data": "2026-02-23", "tpv_m0": 103061, "tpv_m1": 115569, "tpv_total": 218630}, {"nivel": "Especialista", "data": "2026-02-23", "tpv_m0": 127863, "tpv_m1": 126282, "tpv_total": 254146}, {"nivel": "Top Empreendedor", "data": "2026-02-23", "tpv_m0": 264461, "tpv_m1": 334759, "tpv_total": 599220}, {"nivel": "Aprendiz", "data": "2026-02-24", "tpv_m0": 238258, "tpv_m1": 400999, "tpv_total": 639257}, {"nivel": "Empreendedor", "data": "2026-02-24", "tpv_m0": 126789, "tpv_m1": 153695, "tpv_total": 280484}, {"nivel": "Especialista", "data": "2026-02-24", "tpv_m0": 124128, "tpv_m1": 115659, "tpv_total": 239786}, {"nivel": "Top Empreendedor", "data": "2026-02-24", "tpv_m0": 310320, "tpv_m1": 311620, "tpv_total": 621940}, {"nivel": "Aprendiz", "data": "2026-02-25", "tpv_m0": 243656, "tpv_m1": 271545, "tpv_total": 515201}, {"nivel": "Empreendedor", "data": "2026-02-25", "tpv_m0": 140045, "tpv_m1": 121147, "tpv_total": 261192}, {"nivel": "Especialista", "data": "2026-02-25", "tpv_m0": 134197, "tpv_m1": 128843, "tpv_total": 263040}, {"nivel": "Top Empreendedor", "data": "2026-02-25", "tpv_m0": 283456, "tpv_m1": 357226, "tpv_total": 640682}, {"nivel": "Aprendiz", "data": "2026-02-26", "tpv_m0": 213932, "tpv_m1": 246653, "tpv_total": 460585}, {"nivel": "Empreendedor", "data": "2026-02-26", "tpv_m0": 164615, "tpv_m1": 156953, "tpv_total": 321568}, {"nivel": "Especialista", "data": "2026-02-26", "tpv_m0": 220818, "tpv_m1": 128311, "tpv_total": 349129}, {"nivel": "Top Empreendedor", "data": "2026-02-26", "tpv_m0": 300400, "tpv_m1": 349594, "tpv_total": 649993}, {"nivel": "Aprendiz", "data": "2026-02-27", "tpv_m0": 385150, "tpv_m1": 317513, "tpv_total": 702663}, {"nivel": "Empreendedor", "data": "2026-02-27", "tpv_m0": 178582, "tpv_m1": 180976, "tpv_total": 359558}, {"nivel": "Especialista", "data": "2026-02-27", "tpv_m0": 230697, "tpv_m1": 178292, "tpv_total": 408989}, {"nivel": "Top Empreendedor", "data": "2026-02-27", "tpv_m0": 397055, "tpv_m1": 434983, "tpv_total": 832037}, {"nivel": "Aprendiz", "data": "2026-02-28", "tpv_m0": 334361, "tpv_m1": 322662, "tpv_total": 657023}, {"nivel": "Empreendedor", "data": "2026-02-28", "tpv_m0": 192055, "tpv_m1": 205731, "tpv_total": 397786}, {"nivel": "Especialista", "data": "2026-02-28", "tpv_m0": 218831, "tpv_m1": 210621, "tpv_total": 429452}, {"nivel": "Top Empreendedor", "data": "2026-02-28", "tpv_m0": 466549, "tpv_m1": 519299, "tpv_total": 985849}, {"nivel": "Aprendiz", "data": "2026-03-01", "tpv_m0": 63669, "tpv_m1": 249990, "tpv_total": 531218}, {"nivel": "Empreendedor", "data": "2026-03-01", "tpv_m0": 563, "tpv_m1": 154986, "tpv_total": 361965}, {"nivel": "Especialista", "data": "2026-03-01", "tpv_m0": 12341, "tpv_m1": 105496, "tpv_total": 237047}, {"nivel": "Top Empreendedor", "data": "2026-03-01", "tpv_m0": 9153, "tpv_m1": 310681, "tpv_total": 673439}, {"nivel": "Aprendiz", "data": "2026-03-02", "tpv_m0": 104331, "tpv_m1": 239675, "tpv_total": 608759}, {"nivel": "Empreendedor", "data": "2026-03-02", "tpv_m0": 4200, "tpv_m1": 154575, "tpv_total": 273925}, {"nivel": "Especialista", "data": "2026-03-02", "tpv_m0": 10659, "tpv_m1": 171970, "tpv_total": 354750}, {"nivel": "Top Empreendedor", "data": "2026-03-02", "tpv_m0": 18542, "tpv_m1": 313756, "tpv_total": 671810}, {"nivel": "Aprendiz", "data": "2026-03-03", "tpv_m0": 74660, "tpv_m1": 280969, "tpv_total": 578714}, {"nivel": "Empreendedor", "data": "2026-03-03", "tpv_m0": 23784, "tpv_m1": 161600, "tpv_total": 356148}, {"nivel": "Especialista", "data": "2026-03-03", "tpv_m0": 34534, "tpv_m1": 209228, "tpv_total": 359188}, {"nivel": "Top Empreendedor", "data": "2026-03-03", "tpv_m0": 77731, "tpv_m1": 349390, "tpv_total": 820505}, {"nivel": "Aprendiz", "data": "2026-03-04", "tpv_m0": 66178, "tpv_m1": 259396, "tpv_total": 589114}, {"nivel": "Empreendedor", "data": "2026-03-04", "tpv_m0": 51224, "tpv_m1": 172186, "tpv_total": 370131}, {"nivel": "Especialista", "data": "2026-03-04", "tpv_m0": 47269, "tpv_m1": 126285, "tpv_total": 335733}, {"nivel": "Top Empreendedor", "data": "2026-03-04", "tpv_m0": 63862, "tpv_m1": 358906, "tpv_total": 805975}, {"nivel": "Aprendiz", "data": "2026-03-05", "tpv_m0": 159466, "tpv_m1": 248454, "tpv_total": 716854}, {"nivel": "Empreendedor", "data": "2026-03-05", "tpv_m0": 49303, "tpv_m1": 163992, "tpv_total": 380512}, {"nivel": "Especialista", "data": "2026-03-05", "tpv_m0": 62334, "tpv_m1": 152255, "tpv_total": 359635}, {"nivel": "Top Empreendedor", "data": "2026-03-05", "tpv_m0": 131813, "tpv_m1": 403826, "tpv_total": 948362}, {"nivel": "Aprendiz", "data": "2026-03-06", "tpv_m0": 163615, "tpv_m1": 360661, "tpv_total": 884989}, {"nivel": "Empreendedor", "data": "2026-03-06", "tpv_m0": 76196, "tpv_m1": 215929, "tpv_total": 493036}, {"nivel": "Especialista", "data": "2026-03-06", "tpv_m0": 78197, "tpv_m1": 227634, "tpv_total": 483219}, {"nivel": "Top Empreendedor", "data": "2026-03-06", "tpv_m0": 147704, "tpv_m1": 447759, "tpv_total": 1099717}, {"nivel": "Aprendiz", "data": "2026-03-07", "tpv_m0": 166067, "tpv_m1": 324720, "tpv_total": 896760}, {"nivel": "Empreendedor", "data": "2026-03-07", "tpv_m0": 87335, "tpv_m1": 251363, "tpv_total": 568435}, {"nivel": "Especialista", "data": "2026-03-07", "tpv_m0": 75227, "tpv_m1": 256946, "tpv_total": 516618}, {"nivel": "Top Empreendedor", "data": "2026-03-07", "tpv_m0": 203479, "tpv_m1": 500223, "tpv_total": 1211693}, {"nivel": "Aprendiz", "data": "2026-03-08", "tpv_m0": 119196, "tpv_m1": 237462, "tpv_total": 615175}, {"nivel": "Empreendedor", "data": "2026-03-08", "tpv_m0": 68351, "tpv_m1": 177942, "tpv_total": 456291}, {"nivel": "Especialista", "data": "2026-03-08", "tpv_m0": 57117, "tpv_m1": 178918, "tpv_total": 360184}, {"nivel": "Top Empreendedor", "data": "2026-03-08", "tpv_m0": 149911, "tpv_m1": 355356, "tpv_total": 916067}, {"nivel": "Aprendiz", "data": "2026-03-09", "tpv_m0": 159614, "tpv_m1": 285406, "tpv_total": 722673}, {"nivel": "Empreendedor", "data": "2026-03-09", "tpv_m0": 85003, "tpv_m1": 137351, "tpv_total": 323760}, {"nivel": "Especialista", "data": "2026-03-09", "tpv_m0": 55887, "tpv_m1": 149789, "tpv_total": 328975}, {"nivel": "Top Empreendedor", "data": "2026-03-09", "tpv_m0": 124283, "tpv_m1": 314417, "tpv_total": 785936}, {"nivel": "Aprendiz", "data": "2026-03-10", "tpv_m0": 151662, "tpv_m1": 284256, "tpv_total": 750841}, {"nivel": "Empreendedor", "data": "2026-03-10", "tpv_m0": 57509, "tpv_m1": 202709, "tpv_total": 395574}, {"nivel": "Especialista", "data": "2026-03-10", "tpv_m0": 92691, "tpv_m1": 167537, "tpv_total": 426823}, {"nivel": "Top Empreendedor", "data": "2026-03-10", "tpv_m0": 147315, "tpv_m1": 380944, "tpv_total": 919658}, {"nivel": "Aprendiz", "data": "2026-03-11", "tpv_m0": 188888, "tpv_m1": 225692, "tpv_total": 736600}, {"nivel": "Empreendedor", "data": "2026-03-11", "tpv_m0": 102791, "tpv_m1": 175160, "tpv_total": 403071}, {"nivel": "Especialista", "data": "2026-03-11", "tpv_m0": 76990, "tpv_m1": 164074, "tpv_total": 365073}, {"nivel": "Top Empreendedor", "data": "2026-03-11", "tpv_m0": 168865, "tpv_m1": 358863, "tpv_total": 869314}, {"nivel": "Aprendiz", "data": "2026-03-12", "tpv_m0": 162024, "tpv_m1": 224057, "tpv_total": 624236}, {"nivel": "Empreendedor", "data": "2026-03-12", "tpv_m0": 117873, "tpv_m1": 153414, "tpv_total": 402845}, {"nivel": "Especialista", "data": "2026-03-12", "tpv_m0": 110072, "tpv_m1": 175890, "tpv_total": 442833}, {"nivel": "Top Empreendedor", "data": "2026-03-12", "tpv_m0": 202928, "tpv_m1": 309396, "tpv_total": 851814}, {"nivel": "Aprendiz", "data": "2026-03-13", "tpv_m0": 260260, "tpv_m1": 317526, "tpv_total": 865391}, {"nivel": "Empreendedor", "data": "2026-03-13", "tpv_m0": 120437, "tpv_m1": 188877, "tpv_total": 486177}, {"nivel": "Especialista", "data": "2026-03-13", "tpv_m0": 121491, "tpv_m1": 186720, "tpv_total": 447434}, {"nivel": "Top Empreendedor", "data": "2026-03-13", "tpv_m0": 222108, "tpv_m1": 501903, "tpv_total": 1164204}, {"nivel": "Aprendiz", "data": "2026-03-14", "tpv_m0": 239085, "tpv_m1": 363097, "tpv_total": 910246}, {"nivel": "Empreendedor", "data": "2026-03-14", "tpv_m0": 167191, "tpv_m1": 227064, "tpv_total": 607974}, {"nivel": "Especialista", "data": "2026-03-14", "tpv_m0": 109865, "tpv_m1": 195427, "tpv_total": 472066}, {"nivel": "Top Empreendedor", "data": "2026-03-14", "tpv_m0": 312644, "tpv_m1": 435298, "tpv_total": 1234736}, {"nivel": "Aprendiz", "data": "2026-03-15", "tpv_m0": 209942, "tpv_m1": 242526, "tpv_total": 645876}, {"nivel": "Empreendedor", "data": "2026-03-15", "tpv_m0": 126518, "tpv_m1": 172817, "tpv_total": 462522}, {"nivel": "Especialista", "data": "2026-03-15", "tpv_m0": 110414, "tpv_m1": 136501, "tpv_total": 359738}, {"nivel": "Top Empreendedor", "data": "2026-03-15", "tpv_m0": 215324, "tpv_m1": 298930, "tpv_total": 877839}, {"nivel": "Aprendiz", "data": "2026-03-16", "tpv_m0": 208930, "tpv_m1": 191410, "tpv_total": 628493}, {"nivel": "Empreendedor", "data": "2026-03-16", "tpv_m0": 90142, "tpv_m1": 133803, "tpv_total": 353333}, {"nivel": "Especialista", "data": "2026-03-16", "tpv_m0": 104796, "tpv_m1": 143029, "tpv_total": 346177}, {"nivel": "Top Empreendedor", "data": "2026-03-16", "tpv_m0": 313997, "tpv_m1": 321448, "tpv_total": 926044}, {"nivel": "Aprendiz", "data": "2026-03-17", "tpv_m0": 224155, "tpv_m1": 208691, "tpv_total": 652598}, {"nivel": "Empreendedor", "data": "2026-03-17", "tpv_m0": 94541, "tpv_m1": 153352, "tpv_total": 410466}, {"nivel": "Especialista", "data": "2026-03-17", "tpv_m0": 117032, "tpv_m1": 182148, "tpv_total": 430545}, {"nivel": "Top Empreendedor", "data": "2026-03-17", "tpv_m0": 296114, "tpv_m1": 351920, "tpv_total": 1015241}, {"nivel": "Aprendiz", "data": "2026-03-18", "tpv_m0": 274788, "tpv_m1": 247215, "tpv_total": 771383}, {"nivel": "Empreendedor", "data": "2026-03-18", "tpv_m0": 119761, "tpv_m1": 162474, "tpv_total": 433844}, {"nivel": "Especialista", "data": "2026-03-18", "tpv_m0": 138710, "tpv_m1": 135584, "tpv_total": 393953}, {"nivel": "Top Empreendedor", "data": "2026-03-18", "tpv_m0": 261481, "tpv_m1": 300125, "tpv_total": 883659}, {"nivel": "Aprendiz", "data": "2026-03-19", "tpv_m0": 226380, "tpv_m1": 217353, "tpv_total": 657567}, {"nivel": "Empreendedor", "data": "2026-03-19", "tpv_m0": 119023, "tpv_m1": 186691, "tpv_total": 451341}, {"nivel": "Especialista", "data": "2026-03-19", "tpv_m0": 109542, "tpv_m1": 133132, "tpv_total": 354483}, {"nivel": "Top Empreendedor", "data": "2026-03-19", "tpv_m0": 249349, "tpv_m1": 329931, "tpv_total": 891646}, {"nivel": "Aprendiz", "data": "2026-03-20", "tpv_m0": 264196, "tpv_m1": 279655, "tpv_total": 914755}, {"nivel": "Empreendedor", "data": "2026-03-20", "tpv_m0": 165138, "tpv_m1": 202929, "tpv_total": 522789}, {"nivel": "Especialista", "data": "2026-03-20", "tpv_m0": 147865, "tpv_m1": 174601, "tpv_total": 444494}, {"nivel": "Top Empreendedor", "data": "2026-03-20", "tpv_m0": 374859, "tpv_m1": 397862, "tpv_total": 1245354}, {"nivel": "Aprendiz", "data": "2026-03-21", "tpv_m0": 311503, "tpv_m1": 312975, "tpv_total": 939854}, {"nivel": "Empreendedor", "data": "2026-03-21", "tpv_m0": 241892, "tpv_m1": 239907, "tpv_total": 687643}, {"nivel": "Especialista", "data": "2026-03-21", "tpv_m0": 162608, "tpv_m1": 194789, "tpv_total": 547244}, {"nivel": "Top Empreendedor", "data": "2026-03-21", "tpv_m0": 446431, "tpv_m1": 431709, "tpv_total": 1372416}, {"nivel": "Aprendiz", "data": "2026-03-22", "tpv_m0": 183664, "tpv_m1": 201564, "tpv_total": 590979}, {"nivel": "Empreendedor", "data": "2026-03-22", "tpv_m0": 204236, "tpv_m1": 155792, "tpv_total": 528904}, {"nivel": "Especialista", "data": "2026-03-22", "tpv_m0": 122824, "tpv_m1": 116540, "tpv_total": 369607}, {"nivel": "Top Empreendedor", "data": "2026-03-22", "tpv_m0": 337470, "tpv_m1": 309340, "tpv_total": 1005043}, {"nivel": "Aprendiz", "data": "2026-03-23", "tpv_m0": 275376, "tpv_m1": 193904, "tpv_total": 693921}, {"nivel": "Empreendedor", "data": "2026-03-23", "tpv_m0": 129737, "tpv_m1": 137254, "tpv_total": 364004}, {"nivel": "Especialista", "data": "2026-03-23", "tpv_m0": 128342, "tpv_m1": 135188, "tpv_total": 355125}, {"nivel": "Top Empreendedor", "data": "2026-03-23", "tpv_m0": 250857, "tpv_m1": 271139, "tpv_total": 846930}, {"nivel": "Aprendiz", "data": "2026-03-24", "tpv_m0": 238995, "tpv_m1": 201105, "tpv_total": 667472}, {"nivel": "Empreendedor", "data": "2026-03-24", "tpv_m0": 159330, "tpv_m1": 141683, "tpv_total": 436129}, {"nivel": "Especialista", "data": "2026-03-24", "tpv_m0": 118292, "tpv_m1": 136175, "tpv_total": 340956}, {"nivel": "Top Empreendedor", "data": "2026-03-24", "tpv_m0": 317877, "tpv_m1": 320885, "tpv_total": 961138}, {"nivel": "Aprendiz", "data": "2026-03-25", "tpv_m0": 221532, "tpv_m1": 177155, "tpv_total": 631190}, {"nivel": "Empreendedor", "data": "2026-03-25", "tpv_m0": 174715, "tpv_m1": 166553, "tpv_total": 462308}, {"nivel": "Especialista", "data": "2026-03-25", "tpv_m0": 143288, "tpv_m1": 138855, "tpv_total": 418432}, {"nivel": "Top Empreendedor", "data": "2026-03-25", "tpv_m0": 301055, "tpv_m1": 266861, "tpv_total": 935348}, {"nivel": "Aprendiz", "data": "2026-03-26", "tpv_m0": 236023, "tpv_m1": 227018, "tpv_total": 652387}, {"nivel": "Empreendedor", "data": "2026-03-26", "tpv_m0": 174194, "tpv_m1": 148898, "tpv_total": 452223}, {"nivel": "Especialista", "data": "2026-03-26", "tpv_m0": 161129, "tpv_m1": 142768, "tpv_total": 407164}, {"nivel": "Top Empreendedor", "data": "2026-03-26", "tpv_m0": 355069, "tpv_m1": 323243, "tpv_total": 1017704}, {"nivel": "Aprendiz", "data": "2026-03-27", "tpv_m0": 409220, "tpv_m1": 254879, "tpv_total": 921849}, {"nivel": "Empreendedor", "data": "2026-03-27", "tpv_m0": 235187, "tpv_m1": 164125, "tpv_total": 563330}, {"nivel": "Especialista", "data": "2026-03-27", "tpv_m0": 180983, "tpv_m1": 180784, "tpv_total": 521111}, {"nivel": "Top Empreendedor", "data": "2026-03-27", "tpv_m0": 419270, "tpv_m1": 375195, "tpv_total": 1189099}, {"nivel": "Aprendiz", "data": "2026-03-28", "tpv_m0": 353626, "tpv_m1": 274393, "tpv_total": 900768}, {"nivel": "Empreendedor", "data": "2026-03-28", "tpv_m0": 318282, "tpv_m1": 228003, "tpv_total": 745042}, {"nivel": "Especialista", "data": "2026-03-28", "tpv_m0": 194928, "tpv_m1": 192595, "tpv_total": 523668}, {"nivel": "Top Empreendedor", "data": "2026-03-28", "tpv_m0": 546007, "tpv_m1": 456563, "tpv_total": 1479407}, {"nivel": "Aprendiz", "data": "2026-03-29", "tpv_m0": 257692, "tpv_m1": 203748, "tpv_total": 664550}, {"nivel": "Empreendedor", "data": "2026-03-29", "tpv_m0": 243829, "tpv_m1": 159518, "tpv_total": 580096}, {"nivel": "Especialista", "data": "2026-03-29", "tpv_m0": 157918, "tpv_m1": 105678, "tpv_total": 355425}, {"nivel": "Top Empreendedor", "data": "2026-03-29", "tpv_m0": 382707, "tpv_m1": 290432, "tpv_total": 1039358}, {"nivel": "Aprendiz", "data": "2026-03-30", "tpv_m0": 310508, "tpv_m1": 159070, "tpv_total": 713858}, {"nivel": "Empreendedor", "data": "2026-03-30", "tpv_m0": 202127, "tpv_m1": 149298, "tpv_total": 455424}, {"nivel": "Especialista", "data": "2026-03-30", "tpv_m0": 140614, "tpv_m1": 153244, "tpv_total": 382569}, {"nivel": "Top Empreendedor", "data": "2026-03-30", "tpv_m0": 310625, "tpv_m1": 302421, "tpv_total": 919167}, {"nivel": "Aprendiz", "data": "2026-03-31", "tpv_m0": 370675, "tpv_m1": 229049, "tpv_total": 821758}, {"nivel": "Empreendedor", "data": "2026-03-31", "tpv_m0": 275077, "tpv_m1": 153314, "tpv_total": 587870}, {"nivel": "Especialista", "data": "2026-03-31", "tpv_m0": 203914, "tpv_m1": 147062, "tpv_total": 457809}, {"nivel": "Top Empreendedor", "data": "2026-03-31", "tpv_m0": 431809, "tpv_m1": 336530, "tpv_total": 1115814}, {"nivel": "Aprendiz", "data": "2026-04-01", "tpv_m0": 41045, "tpv_m1": 344218, "tpv_total": 874836}, {"nivel": "Empreendedor", "data": "2026-04-01", "tpv_m0": 13276, "tpv_m1": 252004, "tpv_total": 591458}, {"nivel": "Especialista", "data": "2026-04-01", "tpv_m0": 8149, "tpv_m1": 180814, "tpv_total": 431941}, {"nivel": "Top Empreendedor", "data": "2026-04-01", "tpv_m0": 20117, "tpv_m1": 528687, "tpv_total": 1225847}, {"nivel": "Aprendiz", "data": "2026-04-02", "tpv_m0": 107572, "tpv_m1": 386720, "tpv_total": 1054051}, {"nivel": "Empreendedor", "data": "2026-04-02", "tpv_m0": 24052, "tpv_m1": 415776, "tpv_total": 832555}, {"nivel": "Especialista", "data": "2026-04-02", "tpv_m0": 14547, "tpv_m1": 241408, "tpv_total": 550995}, {"nivel": "Top Empreendedor", "data": "2026-04-02", "tpv_m0": 50214, "tpv_m1": 695886, "tpv_total": 1612210}, {"nivel": "Aprendiz", "data": "2026-04-03", "tpv_m0": 67202, "tpv_m1": 245735, "tpv_total": 694199}, {"nivel": "Empreendedor", "data": "2026-04-03", "tpv_m0": 20552, "tpv_m1": 226740, "tpv_total": 537043}, {"nivel": "Especialista", "data": "2026-04-03", "tpv_m0": 14700, "tpv_m1": 155079, "tpv_total": 409950}, {"nivel": "Top Empreendedor", "data": "2026-04-03", "tpv_m0": 59506, "tpv_m1": 459754, "tpv_total": 1155122}, {"nivel": "Aprendiz", "data": "2026-04-04", "tpv_m0": 94569, "tpv_m1": 307616, "tpv_total": 962925}, {"nivel": "Empreendedor", "data": "2026-04-04", "tpv_m0": 29004, "tpv_m1": 244997, "tpv_total": 661713}, {"nivel": "Especialista", "data": "2026-04-04", "tpv_m0": 30439, "tpv_m1": 215504, "tpv_total": 558851}, {"nivel": "Top Empreendedor", "data": "2026-04-04", "tpv_m0": 65998, "tpv_m1": 619962, "tpv_total": 1628012}, {"nivel": "Aprendiz", "data": "2026-04-05", "tpv_m0": 52324, "tpv_m1": 249575, "tpv_total": 648230}, {"nivel": "Empreendedor", "data": "2026-04-05", "tpv_m0": 22959, "tpv_m1": 169932, "tpv_total": 474962}, {"nivel": "Especialista", "data": "2026-04-05", "tpv_m0": 34041, "tpv_m1": 137748, "tpv_total": 361282}, {"nivel": "Top Empreendedor", "data": "2026-04-05", "tpv_m0": 48848, "tpv_m1": 395112, "tpv_total": 1019820}, {"nivel": "Aprendiz", "data": "2026-04-06", "tpv_m0": 121202, "tpv_m1": 293904, "tpv_total": 1011500}, {"nivel": "Empreendedor", "data": "2026-04-06", "tpv_m0": 26236, "tpv_m1": 162147, "tpv_total": 449628}, {"nivel": "Especialista", "data": "2026-04-06", "tpv_m0": 31255, "tpv_m1": 157384, "tpv_total": 373426}, {"nivel": "Top Empreendedor", "data": "2026-04-06", "tpv_m0": 77315, "tpv_m1": 443066, "tpv_total": 1128158}, {"nivel": "Aprendiz", "data": "2026-04-07", "tpv_m0": 119786, "tpv_m1": 232024, "tpv_total": 877732}, {"nivel": "Empreendedor", "data": "2026-04-07", "tpv_m0": 39099, "tpv_m1": 161010, "tpv_total": 526004}, {"nivel": "Especialista", "data": "2026-04-07", "tpv_m0": 42192, "tpv_m1": 146894, "tpv_total": 445578}, {"nivel": "Top Empreendedor", "data": "2026-04-07", "tpv_m0": 87914, "tpv_m1": 481725, "tpv_total": 1247132}, {"nivel": "Aprendiz", "data": "2026-04-08", "tpv_m0": 128460, "tpv_m1": 298913, "tpv_total": 921664}, {"nivel": "Empreendedor", "data": "2026-04-08", "tpv_m0": 43546, "tpv_m1": 209426, "tpv_total": 517819}, {"nivel": "Especialista", "data": "2026-04-08", "tpv_m0": 38070, "tpv_m1": 207533, "tpv_total": 512019}, {"nivel": "Top Empreendedor", "data": "2026-04-08", "tpv_m0": 107330, "tpv_m1": 511299, "tpv_total": 1285760}, {"nivel": "Aprendiz", "data": "2026-04-09", "tpv_m0": 197393, "tpv_m1": 258152, "tpv_total": 1031952}, {"nivel": "Empreendedor", "data": "2026-04-09", "tpv_m0": 49949, "tpv_m1": 220809, "tpv_total": 546187}, {"nivel": "Especialista", "data": "2026-04-09", "tpv_m0": 57875, "tpv_m1": 197024, "tpv_total": 525860}, {"nivel": "Top Empreendedor", "data": "2026-04-09", "tpv_m0": 117875, "tpv_m1": 521194, "tpv_total": 1379399}, {"nivel": "Aprendiz", "data": "2026-04-10", "tpv_m0": 216099, "tpv_m1": 341554, "tpv_total": 1336176}, {"nivel": "Empreendedor", "data": "2026-04-10", "tpv_m0": 71788, "tpv_m1": 252995, "tpv_total": 704896}, {"nivel": "Especialista", "data": "2026-04-10", "tpv_m0": 72719, "tpv_m1": 215891, "tpv_total": 627967}, {"nivel": "Top Empreendedor", "data": "2026-04-10", "tpv_m0": 185918, "tpv_m1": 568259, "tpv_total": 1592109}, {"nivel": "Aprendiz", "data": "2026-04-11", "tpv_m0": 227106, "tpv_m1": 400529, "tpv_total": 1315364}, {"nivel": "Empreendedor", "data": "2026-04-11", "tpv_m0": 87456, "tpv_m1": 317135, "tpv_total": 836448}, {"nivel": "Especialista", "data": "2026-04-11", "tpv_m0": 105893, "tpv_m1": 244859, "tpv_total": 709356}, {"nivel": "Top Empreendedor", "data": "2026-04-11", "tpv_m0": 258757, "tpv_m1": 621821, "tpv_total": 1807449}, {"nivel": "Aprendiz", "data": "2026-04-12", "tpv_m0": 154269, "tpv_m1": 242416, "tpv_total": 788588}, {"nivel": "Empreendedor", "data": "2026-04-12", "tpv_m0": 65301, "tpv_m1": 203986, "tpv_total": 631236}, {"nivel": "Especialista", "data": "2026-04-12", "tpv_m0": 73500, "tpv_m1": 174685, "tpv_total": 485291}, {"nivel": "Top Empreendedor", "data": "2026-04-12", "tpv_m0": 177708, "tpv_m1": 470489, "tpv_total": 1282386}, {"nivel": "Aprendiz", "data": "2026-04-13", "tpv_m0": 155841, "tpv_m1": 220517, "tpv_total": 829717}, {"nivel": "Empreendedor", "data": "2026-04-13", "tpv_m0": 58051, "tpv_m1": 172324, "tpv_total": 490798}, {"nivel": "Especialista", "data": "2026-04-13", "tpv_m0": 63348, "tpv_m1": 143073, "tpv_total": 437478}, {"nivel": "Top Empreendedor", "data": "2026-04-13", "tpv_m0": 174910, "tpv_m1": 419301, "tpv_total": 1265559}, {"nivel": "Aprendiz", "data": "2026-04-14", "tpv_m0": 175567, "tpv_m1": 233902, "tpv_total": 892861}, {"nivel": "Empreendedor", "data": "2026-04-14", "tpv_m0": 75317, "tpv_m1": 171663, "tpv_total": 486069}, {"nivel": "Especialista", "data": "2026-04-14", "tpv_m0": 74746, "tpv_m1": 128854, "tpv_total": 453431}, {"nivel": "Top Empreendedor", "data": "2026-04-14", "tpv_m0": 187544, "tpv_m1": 535160, "tpv_total": 1342684}, {"nivel": "Aprendiz", "data": "2026-04-15", "tpv_m0": 273815, "tpv_m1": 290470, "tpv_total": 1046402}, {"nivel": "Empreendedor", "data": "2026-04-15", "tpv_m0": 94810, "tpv_m1": 209093, "tpv_total": 585248}, {"nivel": "Especialista", "data": "2026-04-15", "tpv_m0": 108588, "tpv_m1": 166721, "tpv_total": 551543}, {"nivel": "Top Empreendedor", "data": "2026-04-15", "tpv_m0": 242216, "tpv_m1": 470536, "tpv_total": 1388980}, {"nivel": "Aprendiz", "data": "2026-04-16", "tpv_m0": 221291, "tpv_m1": 219970, "tpv_total": 994453}, {"nivel": "Empreendedor", "data": "2026-04-16", "tpv_m0": 104709, "tpv_m1": 169029, "tpv_total": 592740}, {"nivel": "Especialista", "data": "2026-04-16", "tpv_m0": 105837, "tpv_m1": 175116, "tpv_total": 541398}, {"nivel": "Top Empreendedor", "data": "2026-04-16", "tpv_m0": 260355, "tpv_m1": 462869, "tpv_total": 1407665}, {"nivel": "Aprendiz", "data": "2026-04-17", "tpv_m0": 268758, "tpv_m1": 355540, "tpv_total": 1222109}, {"nivel": "Empreendedor", "data": "2026-04-17", "tpv_m0": 156507, "tpv_m1": 243798, "tpv_total": 742564}, {"nivel": "Especialista", "data": "2026-04-17", "tpv_m0": 144714, "tpv_m1": 210724, "tpv_total": 665856}, {"nivel": "Top Empreendedor", "data": "2026-04-17", "tpv_m0": 263590, "tpv_m1": 537875, "tpv_total": 1635306}, {"nivel": "Aprendiz", "data": "2026-04-18", "tpv_m0": 253637, "tpv_m1": 368751, "tpv_total": 1230402}, {"nivel": "Empreendedor", "data": "2026-04-18", "tpv_m0": 162482, "tpv_m1": 264513, "tpv_total": 865432}, {"nivel": "Especialista", "data": "2026-04-18", "tpv_m0": 189718, "tpv_m1": 191141, "tpv_total": 724464}, {"nivel": "Top Empreendedor", "data": "2026-04-18", "tpv_m0": 363010, "tpv_m1": 616137, "tpv_total": 1913588}, {"nivel": "Aprendiz", "data": "2026-04-19", "tpv_m0": 216456, "tpv_m1": 261717, "tpv_total": 902567}, {"nivel": "Empreendedor", "data": "2026-04-19", "tpv_m0": 126539, "tpv_m1": 218424, "tpv_total": 700919}, {"nivel": "Especialista", "data": "2026-04-19", "tpv_m0": 103318, "tpv_m1": 159304, "tpv_total": 470705}, {"nivel": "Top Empreendedor", "data": "2026-04-19", "tpv_m0": 299363, "tpv_m1": 493540, "tpv_total": 1466662}, {"nivel": "Aprendiz", "data": "2026-04-20", "tpv_m0": 222352, "tpv_m1": 271514, "tpv_total": 1063108}, {"nivel": "Empreendedor", "data": "2026-04-20", "tpv_m0": 133682, "tpv_m1": 195686, "tpv_total": 635753}, {"nivel": "Especialista", "data": "2026-04-20", "tpv_m0": 116008, "tpv_m1": 160907, "tpv_total": 506512}, {"nivel": "Top Empreendedor", "data": "2026-04-20", "tpv_m0": 303845, "tpv_m1": 506083, "tpv_total": 1533529}, {"nivel": "Aprendiz", "data": "2026-04-21", "tpv_m0": 194563, "tpv_m1": 224134, "tpv_total": 771530}, {"nivel": "Empreendedor", "data": "2026-04-21", "tpv_m0": 91579, "tpv_m1": 181229, "tpv_total": 514250}, {"nivel": "Especialista", "data": "2026-04-21", "tpv_m0": 101472, "tpv_m1": 140566, "tpv_total": 474146}, {"nivel": "Top Empreendedor", "data": "2026-04-21", "tpv_m0": 240347, "tpv_m1": 385621, "tpv_total": 1200835}, {"nivel": "Aprendiz", "data": "2026-04-22", "tpv_m0": 248214, "tpv_m1": 228733, "tpv_total": 879253}, {"nivel": "Empreendedor", "data": "2026-04-22", "tpv_m0": 105558, "tpv_m1": 150845, "tpv_total": 527565}, {"nivel": "Especialista", "data": "2026-04-22", "tpv_m0": 103521, "tpv_m1": 145382, "tpv_total": 494307}, {"nivel": "Top Empreendedor", "data": "2026-04-22", "tpv_m0": 261665, "tpv_m1": 404261, "tpv_total": 1355957}, {"nivel": "Aprendiz", "data": "2026-04-23", "tpv_m0": 272543, "tpv_m1": 225608, "tpv_total": 903288}, {"nivel": "Empreendedor", "data": "2026-04-23", "tpv_m0": 100761, "tpv_m1": 156612, "tpv_total": 511670}, {"nivel": "Especialista", "data": "2026-04-23", "tpv_m0": 132460, "tpv_m1": 137022, "tpv_total": 505050}, {"nivel": "Top Empreendedor", "data": "2026-04-23", "tpv_m0": 362503, "tpv_m1": 428770, "tpv_total": 1377560}, {"nivel": "Aprendiz", "data": "2026-04-24", "tpv_m0": 325086, "tpv_m1": 313298, "tpv_total": 1127296}, {"nivel": "Empreendedor", "data": "2026-04-24", "tpv_m0": 147046, "tpv_m1": 206816, "tpv_total": 690505}, {"nivel": "Especialista", "data": "2026-04-24", "tpv_m0": 167325, "tpv_m1": 170197, "tpv_total": 651600}, {"nivel": "Top Empreendedor", "data": "2026-04-24", "tpv_m0": 405310, "tpv_m1": 555286, "tpv_total": 1814350}, {"nivel": "Aprendiz", "data": "2026-04-25", "tpv_m0": 417692, "tpv_m1": 326274, "tpv_total": 1312358}, {"nivel": "Empreendedor", "data": "2026-04-25", "tpv_m0": 180110, "tpv_m1": 283635, "tpv_total": 829291}, {"nivel": "Especialista", "data": "2026-04-25", "tpv_m0": 205347, "tpv_m1": 216716, "tpv_total": 738781}, {"nivel": "Top Empreendedor", "data": "2026-04-25", "tpv_m0": 508345, "tpv_m1": 546484, "tpv_total": 1899478}, {"nivel": "Aprendiz", "data": "2026-04-26", "tpv_m0": 223228, "tpv_m1": 203672, "tpv_total": 772795}, {"nivel": "Empreendedor", "data": "2026-04-26", "tpv_m0": 141603, "tpv_m1": 202259, "tpv_total": 644396}, {"nivel": "Especialista", "data": "2026-04-26", "tpv_m0": 135627, "tpv_m1": 156647, "tpv_total": 499749}, {"nivel": "Top Empreendedor", "data": "2026-04-26", "tpv_m0": 338003, "tpv_m1": 437472, "tpv_total": 1372155}, {"nivel": "Aprendiz", "data": "2026-04-27", "tpv_m0": 316998, "tpv_m1": 213283, "tpv_total": 905716}, {"nivel": "Empreendedor", "data": "2026-04-27", "tpv_m0": 134202, "tpv_m1": 123936, "tpv_total": 517815}, {"nivel": "Especialista", "data": "2026-04-27", "tpv_m0": 147382, "tpv_m1": 104793, "tpv_total": 475375}, {"nivel": "Top Empreendedor", "data": "2026-04-27", "tpv_m0": 304047, "tpv_m1": 336526, "tpv_total": 1160341}];
 
-let sortCol=null, sortDir=1, activeMes=null, activeNivel=null, searchTerm='';
+const MES_ORDER=["Jan/26","Fev/26","Mar/26","Abr/26"];
+const NIV_ORDER=["Aprendiz","Especialista","Empreendedor","Top Empreendedor"];
+const NIV_CLASS={"Aprendiz":"nivel-aprendiz","Especialista":"nivel-especialista","Empreendedor":"nivel-empreendedor","Top Empreendedor":"nivel-top"};
+const NIV_COLOR={"Aprendiz":"#9ca3af","Especialista":"#3b82f6","Empreendedor":"#f59e0b","Top Empreendedor":"#1A1F6B"};
+const maxTPV=Math.max(...RAW.map(r=>r.tpv_m0));
 
-const fmt  = n => n==null ? '<span class="tpv-zero">—</span>' : n>=1e6 ? `<span class="tpv-value">R$ ${(n/1e6).toFixed(2).replace('.',',')}M</span>` : `<span class="tpv-value">R$ ${n.toLocaleString('pt-BR')}</span>`;
-const fmtN = n => n.toLocaleString('pt-BR');
-const pct  = (v, total) => { if (!total || v==null) return ''; const p = (v/total*100); const cls = p>=40 ? 'pct-high' : ''; return `<span class="pct ${cls}">${p.toFixed(1)}%</span>`; };
+const fmt=n=>n==null?'<span class="tpv-zero">-</span>':n>=1e6?`<span class="tpv-value">R$ ${(n/1e6).toFixed(2).replace('.',',')}M</span>`:`<span class="tpv-value">R$ ${n.toLocaleString('pt-BR')}</span>`;
+const fmtN=n=>(n||0).toLocaleString('pt-BR');
+const pct=(v,t)=>{if(!t||v==null)return '';const p=v/t*100;return `<span class="pct${p>=40?' pct-high':''}">${p.toFixed(1)}%</span>`;};
 
-function getData() {
-  let d = [...RAW];
-  if (activeMes)   d = d.filter(r=>r.mes===activeMes);
-  if (activeNivel) d = d.filter(r=>r.nivel===activeNivel);
-  if (searchTerm)  d = d.filter(r=>Object.values(r).join(' ').toLowerCase().includes(searchTerm));
-  if (sortCol) d.sort((a,b)=>{ let av=a[sortCol]??-Infinity, bv=b[sortCol]??-Infinity; return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDir; });
+const totals={};
+RAW.forEach(r=>{
+  if(!totals[r.mes])totals[r.mes]={resellers:0,pedidos:0,ativos:0,tpv_m0:0,tpv_m1:0,haM1:false,tpv_total:0};
+  totals[r.mes].resellers+=r.resellers;totals[r.mes].pedidos+=r.pedidos;totals[r.mes].ativos+=r.ativos;
+  totals[r.mes].tpv_m0+=r.tpv_m0;totals[r.mes].tpv_total+=r.tpv_total;
+  if(r.tpv_m1!=null){totals[r.mes].tpv_m1+=r.tpv_m1;totals[r.mes].haM1=true;}
+});
+
+function showTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pane-'+id).classList.add('active');
+  if(id==='chart-tpv')renderChartTpv();
+  if(id==='chart-devices')renderChartDevices();
+}
+
+let sortCol=null,sortDir=1,activeMes=null,activeNivel=null,searchTerm='';
+
+function getData(){
+  let d=[...RAW];
+  if(activeMes)d=d.filter(r=>r.mes===activeMes);
+  if(activeNivel)d=d.filter(r=>r.nivel===activeNivel);
+  if(searchTerm)d=d.filter(r=>Object.values(r).join(' ').toLowerCase().includes(searchTerm));
+  if(sortCol)d.sort((a,b)=>{let av=a[sortCol]??-Infinity,bv=b[sortCol]??-Infinity;return(typeof av==='string'?av.localeCompare(bv):av-bv)*sortDir;});
   else d.sort((a,b)=>MES_ORDER.indexOf(a.mes)-MES_ORDER.indexOf(b.mes)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
   return d;
 }
 
-function renderTable() {
-  const data = getData();
-  const totals = {};
-  RAW.forEach(r => {
-    if (!totals[r.mes]) totals[r.mes]={resellers:0,pedidos:0,ativos:0,tpv_m0:0,tpv_m1:0,haM1:false};
-    totals[r.mes].resellers+=r.resellers; totals[r.mes].pedidos+=r.pedidos; totals[r.mes].ativos+=r.ativos; totals[r.mes].tpv_m0+=r.tpv_m0;
-    if (r.tpv_m1!=null){totals[r.mes].tpv_m1+=r.tpv_m1;totals[r.mes].haM1=true;}
-  });
+function renderTabela(){
+  const data=getData();
   let html='';
   data.forEach((r,i)=>{
     const isLast=i===data.length-1||data[i+1].mes!==r.mes;
+    const t=totals[r.mes]||{};
     const bp=Math.round((r.tpv_m0/maxTPV)*100);
-    const t=totals[r.mes]||{resellers:0,pedidos:0,ativos:0,tpv_m0:0,tpv_m1:0,haM1:false};
-    html+=`<tr><td><span class="mes-badge">${r.mes}</span></td><td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td><td>${fmtN(r.resellers)}${pct(r.resellers,t.resellers)}</td><td>${fmtN(r.pedidos)}${pct(r.pedidos,t.pedidos)}</td><td>${fmtN(r.ativos)}${pct(r.ativos,t.ativos)}</td><td><div class="bar-cell">${fmt(r.tpv_m0)}${pct(r.tpv_m0,t.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td><td>${fmt(r.tpv_m1)}${r.tpv_m1!=null&&t.haM1?pct(r.tpv_m1,t.tpv_m1):''}</td></tr>`;
-    if (isLast&&!activeMes&&!sortCol){const t=totals[r.mes];html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td><td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td><td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td></tr>`;}
+    html+=`<tr>
+      <td><span class="mes-badge">${r.mes}</span></td>
+      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
+      <td>${fmtN(r.resellers)}${pct(r.resellers,t.resellers)}</td>
+      <td>${fmtN(r.pedidos)}${pct(r.pedidos,t.pedidos)}</td>
+      <td>${fmtN(r.ativos)}${pct(r.ativos,t.ativos)}</td>
+      <td><div class="bar-cell">${fmt(r.tpv_m0)}${pct(r.tpv_m0,t.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td>
+      <td>${fmt(r.tpv_m1)}${r.tpv_m1!=null&&t.haM1?pct(r.tpv_m1,t.tpv_m1):''}</td>
+      <td>${fmt(r.tpv_total)}${pct(r.tpv_total,t.tpv_total)}</td>
+    </tr>`;
+    if(isLast&&!activeMes&&!sortCol){
+      html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td>
+        <td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td>
+        <td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td><td>${fmt(t.tpv_total)}</td></tr>`;
+    }
   });
-  document.getElementById('tbody').innerHTML = html||'<tr><td colspan="7" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+  document.getElementById('tbody').innerHTML=html||'<tr><td colspan="8" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
 }
 
-function renderSummary() {
-  const tp=RAW.reduce((s,r)=>s+r.pedidos,0), ta=RAW.reduce((s,r)=>s+r.ativos,0);
-  const tm=RAW.reduce((s,r)=>s+r.tpv_m0,0), tm1=RAW.filter(r=>r.tpv_m1).reduce((s,r)=>s+r.tpv_m1,0);
-  document.getElementById('summary-cards').innerHTML=`
-    <div class="card"><div class="card-label">Devices Pedidos</div><div class="card-value">${fmtN(tp)}</div><div class="card-sub">Jan–Abr/26</div></div>
-    <div class="card"><div class="card-label">Devices Ativos</div><div class="card-value">${fmtN(ta)}</div><div class="card-sub">Jan–Abr/26</div></div>
-    <div class="card"><div class="card-label">TPV M0 Total</div><div class="card-value">R$ ${(tm/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan–Abr/26</div></div>
-    <div class="card"><div class="card-label">TPV M1 Total</div><div class="card-value">R$ ${(tm1/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Fev–Abr/26</div></div>`;
-}
-
-function renderFilters() {
+function renderFiltersTabela(){
   document.getElementById('mes-filters').innerHTML=['Todos',...MES_ORDER].map(m=>`<button class="filter-btn${(!activeMes&&m==='Todos')||activeMes===m?' active':''}" data-mes="${m}">${m}</button>`).join('');
   document.getElementById('nivel-filters').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${(!activeNivel&&n==='Todos')||activeNivel===n?' active':''}" data-nivel="${n}">${n}</button>`).join('');
 }
 
-document.getElementById('mes-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMes=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderFilters();renderTable();});
-document.getElementById('nivel-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeNivel=e.target.dataset.nivel==='Todos'?null:e.target.dataset.nivel;renderFilters();renderTable();});
-document.getElementById('search-input').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase().trim();renderTable();});
-document.querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;sortDir=sortCol===th.dataset.col?sortDir*-1:1;sortCol=th.dataset.col;document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');renderTable();});
+function renderCardTabela(){
+  const tp=RAW.reduce((s,r)=>s+r.pedidos,0),ta=RAW.reduce((s,r)=>s+r.ativos,0);
+  const tm=RAW.reduce((s,r)=>s+r.tpv_m0,0),tm1=RAW.filter(r=>r.tpv_m1).reduce((s,r)=>s+r.tpv_m1,0);
+  const tt=RAW.reduce((s,r)=>s+r.tpv_total,0);
+  document.getElementById('cards-tabela').innerHTML=`
+    <div class="card"><div class="card-label">Devices Pedidos</div><div class="card-value">${fmtN(tp)}</div><div class="card-sub">Jan-Abr/26</div></div>
+    <div class="card"><div class="card-label">Devices Ativos</div><div class="card-value">${fmtN(ta)}</div><div class="card-sub">Jan-Abr/26</div></div>
+    <div class="card"><div class="card-label">TPV M0</div><div class="card-value">R$ ${(tm/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan-Abr/26</div></div>
+    <div class="card"><div class="card-label">TPV M1</div><div class="card-value">R$ ${(tm1/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Fev-Abr/26</div></div>
+    <div class="card"><div class="card-label">TPV Total Portfolio</div><div class="card-value">R$ ${(tt/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan-Abr/26</div></div>`;
+}
 
-renderSummary(); renderFilters(); renderTable();
+document.getElementById('mes-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMes=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderFiltersTabela();renderTabela();});
+document.getElementById('nivel-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeNivel=e.target.dataset.nivel==='Todos'?null:e.target.dataset.nivel;renderFiltersTabela();renderTabela();});
+document.getElementById('search-input').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase().trim();renderTabela();});
+document.querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;sortDir=sortCol===th.dataset.col?sortDir*-1:1;sortCol=th.dataset.col;document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');renderTabela();});
+
+let activeMesMod=null;
+function renderModelos(){
+  let data=[...RAW];
+  if(activeMesMod)data=data.filter(r=>r.mes===activeMesMod);
+  data.sort((a,b)=>MES_ORDER.indexOf(a.mes)-MES_ORDER.indexOf(b.mes)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
+  const mt={};
+  data.forEach(r=>{if(!mt[r.mes])mt[r.mes]={pro:0,smart:0};mt[r.mes].pro+=r.pedidos_pro;mt[r.mes].smart+=r.pedidos_smart;});
+  const totalPro=RAW.reduce((s,r)=>s+r.pedidos_pro,0),totalSmart=RAW.reduce((s,r)=>s+r.pedidos_smart,0);
+  let html='';
+  data.forEach((r,i)=>{
+    const tot=(r.pedidos_pro+r.pedidos_smart)||1;
+    const isLast=i===data.length-1||data[i+1]?.mes!==r.mes;
+    html+=`<tr>
+      <td><span class="mes-badge">${r.mes}</span></td>
+      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
+      <td style="text-align:right">${fmtN(r.pedidos_pro)}${pct(r.pedidos_pro,mt[r.mes]?.pro)}</td>
+      <td style="text-align:right">${fmtN(r.ativos_pro)}</td>
+      <td style="text-align:right">${fmtN(r.pedidos_smart)}${pct(r.pedidos_smart,mt[r.mes]?.smart)}</td>
+      <td style="text-align:right">${fmtN(r.ativos_smart)}</td>
+      <td style="text-align:right"><b>${(r.pedidos_pro/tot*100).toFixed(1)}%</b></td>
+      <td style="text-align:right"><b>${(r.pedidos_smart/tot*100).toFixed(1)}%</b></td>
+    </tr>`;
+    if(isLast&&!activeMesMod){const t=mt[r.mes]||{pro:0,smart:0};const tot2=(t.pro+t.smart)||1;
+      html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td><td style="text-align:right">${fmtN(t.pro)}</td><td></td><td style="text-align:right">${fmtN(t.smart)}</td><td></td><td style="text-align:right"><b>${(t.pro/tot2*100).toFixed(1)}%</b></td><td style="text-align:right"><b>${(t.smart/tot2*100).toFixed(1)}%</b></td></tr>`;}
+  });
+  document.getElementById('tbody-modelos').innerHTML=html;
+  document.getElementById('cards-modelos').innerHTML=`
+    <div class="card"><div class="card-label">Point Pro Pedidos</div><div class="card-value">${fmtN(totalPro)}</div><div class="card-sub">Jan-Abr/26</div></div>
+    <div class="card"><div class="card-label">Point Smart Pedidos</div><div class="card-value">${fmtN(totalSmart)}</div><div class="card-sub">Jan-Abr/26</div></div>
+    <div class="card"><div class="card-label">Mix Pro</div><div class="card-value">${(totalPro/(totalPro+totalSmart)*100).toFixed(1)}%</div><div class="card-sub">do total</div></div>
+    <div class="card"><div class="card-label">Mix Smart</div><div class="card-value">${(totalSmart/(totalPro+totalSmart)*100).toFixed(1)}%</div><div class="card-sub">do total</div></div>`;
+  document.getElementById('mes-filters-mod').innerHTML=['Todos',...MES_ORDER].map(m=>`<button class="filter-btn${(!activeMesMod&&m==='Todos')||activeMesMod===m?' active':''}" data-mes="${m}">${m}</button>`).join('');
+}
+document.getElementById('mes-filters-mod').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMesMod=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderModelos();});
+
+let chartTpv=null,activeNivelTpv='Todos';
+function renderChartTpv(){
+  const niv=activeNivelTpv==='Todos'?NIV_ORDER:[activeNivelTpv];
+  const dates=[...new Set(DAILY.map(d=>d.data))].sort();
+  const datasets=[];
+  niv.forEach(n=>{
+    const map=Object.fromEntries(DAILY.filter(d=>d.nivel===n).map(d=>[d.data,d]));
+    datasets.push({label:n+' M0',data:dates.map(d=>map[d]?.tpv_m0||0),borderColor:NIV_COLOR[n],backgroundColor:NIV_COLOR[n]+'22',borderWidth:2,pointRadius:0,fill:false,tension:.3});
+    datasets.push({label:n+' M1',data:dates.map(d=>map[d]?.tpv_m1||0),borderColor:NIV_COLOR[n],borderDash:[5,3],borderWidth:1.5,pointRadius:0,fill:false,tension:.3});
+  });
+  if(chartTpv)chartTpv.destroy();
+  chartTpv=new Chart(document.getElementById('chartTpv').getContext('2d'),{
+    type:'line',data:{labels:dates,datasets},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: R$ ${(i.raw/1000).toFixed(1)}K`}}},
+    scales:{x:{ticks:{maxRotation:45,font:{size:10},maxTicksLimit:20},grid:{display:false}},y:{ticks:{callback:v=>'R$ '+(v/1000).toFixed(0)+'K',font:{size:10}},grid:{color:'#f0f0f0'}}},interaction:{mode:'index',intersect:false}}
+  });
+  document.getElementById('nivel-filter-tpv').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelTpv===n?' active':''}" onclick="activeNivelTpv='${n}';renderChartTpv()">${n}</button>`).join('');
+}
+
+let chartDev=null,chartMix=null,activeNivelDev='Todos';
+function renderChartDevices(){
+  let data=[...RAW];
+  if(activeNivelDev!=='Todos')data=data.filter(r=>r.nivel===activeNivelDev);
+  const proData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.pedidos_pro,0));
+  const smartData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.pedidos_smart,0));
+  const ativProData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.ativos_pro,0));
+  const ativSmartData=MES_ORDER.map(m=>data.filter(r=>r.mes===m).reduce((s,r)=>s+r.ativos_smart,0));
+  if(chartDev)chartDev.destroy();
+  chartDev=new Chart(document.getElementById('chartDevices').getContext('2d'),{
+    type:'bar',data:{labels:MES_ORDER,datasets:[
+      {label:'Pro - Pedidos',data:proData,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'Smart - Pedidos',data:smartData,backgroundColor:'#FFE600',borderRadius:4},
+      {label:'Pro - Ativos',data:ativProData,backgroundColor:'#1A1F6B44',borderRadius:4},
+      {label:'Smart - Ativos',data:ativSmartData,backgroundColor:'#FFE60044',borderRadius:4},
+    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}}},scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+  if(chartMix)chartMix.destroy();
+  const mixData=MES_ORDER.map((m,i)=>{const t=proData[i]+smartData[i];return t?Math.round(proData[i]/t*100):0;});
+  chartMix=new Chart(document.getElementById('chartMix').getContext('2d'),{
+    type:'bar',data:{labels:MES_ORDER,datasets:[
+      {label:'% Pro',data:mixData,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'% Smart',data:mixData.map(v=>100-v),backgroundColor:'#FFE600',borderRadius:4},
+    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11}}}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,max:100,ticks:{callback:v=>v+'%',font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+  document.getElementById('nivel-filter-dev').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelDev===n?' active':''}" onclick="activeNivelDev='${n}';renderChartDevices()">${n}</button>`).join('');
+}
+
+renderCardTabela();renderFiltersTabela();renderTabela();renderModelos();
 </script>
 </body>
 </html>
