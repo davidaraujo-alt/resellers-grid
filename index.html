@@ -154,14 +154,6 @@ canvas{max-height:320px}
 
 <div class="pane" id="pane-chart-tpv">
 
-  <!-- Grafico 1: Mensal overview -->
-  <div class="chart-wrap">
-    <div class="chart-title">TPV Total do Canal por Mes</div>
-    <div class="chart-sub">Visao geral Jan-Abr/26 - M0 + M1 + Total portfolio empilhado por nivel</div>
-    <div class="chart-controls" id="nivel-filter-tpv-bar"></div>
-    <canvas id="chartTpvBar"></canvas>
-  </div>
-
   <!-- Filtros compartilhados para os graficos diarios -->
   <div style="background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
     <div style="font-size:11px;font-weight:700;color:#1A1F6B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Filtros para graficos diarios</div>
@@ -396,28 +388,7 @@ const fmtK=v=>v>=1e6?'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M':'R$ '+(v/1000
 let activeMesTpvDaily='Fev/26',activeNivelTpvBar='Todos',activeNivelTpvDaily='Todos';
 
 function renderChartTpv(){
-  // ── Grafico 1: mensal bar ──
-  const niv=activeNivelTpvBar==='Todos'?NIV_ORDER:[activeNivelTpvBar];
-  const barDatasets=[];
-  niv.forEach(n=>{
-    barDatasets.push({
-      label:n+' M0',
-      data:MES_ORDER.map(m=>RAW.filter(r=>r.mes===m&&r.nivel===n).reduce((s,r)=>s+r.tpv_m0,0)),
-      backgroundColor:NIV_COLOR[n],borderRadius:3,stack:n
-    });
-    barDatasets.push({
-      label:n+' Total',
-      data:MES_ORDER.map(m=>RAW.filter(r=>r.mes===m&&r.nivel===n).reduce((s,r)=>s+r.tpv_total,0)),
-      backgroundColor:NIV_COLOR[n]+'55',borderRadius:3,stack:n
-    });
-  });
-  makeBarsChart('chartTpvBar',MES_ORDER,barDatasets,fmtK);
-
-  // filtro nivel barra
-  document.getElementById('nivel-filter-tpv-bar').innerHTML=['Todos',...NIV_ORDER].map(n=>
-    `<button class="filter-btn${activeNivelTpvBar===n?' active':''}" onclick="activeNivelTpvBar='${n}';renderChartTpv()">${n}</button>`).join('');
-
-  // ── Graficos 2-4: diarios ──
+  // ── Graficos diarios ──
   const prefix=MES_TO_YYYYMM[activeMesTpvDaily];
   const diasMes=DAILY.filter(d=>d.data.startsWith(prefix));
   const dates=[...new Set(diasMes.map(d=>d.data))].sort();
