@@ -1,5 +1,12 @@
 import csv, json
 
+leads = []
+with open(r'C:\Users\daviaraujo\resellers-grid\daily_leads.csv') as f:
+    for row in csv.DictReader(f):
+        if row.get('data','').startswith('2026'):
+            leads.append({'data':row['data'],'nivel':row['nivel'],'cadastrados':int(row['cadastrados']),'convertidos':int(row['convertidos'])})
+leads_json = json.dumps(leads)
+
 daily = []
 with open(r'C:\Users\daviaraujo\resellers-grid\daily_tpv.csv') as f:
     for row in csv.DictReader(f):
@@ -116,6 +123,7 @@ canvas{max-height:320px}
   <div class="tab active" onclick="showTab('tabela',this)">&#128202; Tabela</div>
   <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV</div>
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
+  <div class="tab" onclick="showTab('diarizado',this)">&#128197; Diarizado</div>
 </div>
 
 <div class="body">
@@ -193,6 +201,39 @@ canvas{max-height:320px}
   </div>
 </div>
 
+<!-- ── TAB DIARIZADO ── -->
+<div class="pane" id="pane-diarizado">
+  <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Diarizado</div>
+  <div class="cards" id="cards-diarizado"></div>
+  <div style="background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Mes</div>
+        <div id="mes-filter-diar" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Nivel</div>
+        <div id="nivel-filter-diar" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div style="margin-left:auto;align-self:flex-end">
+        <input class="search-box" type="text" placeholder="Buscar data..." id="search-diar" style="margin-left:0"/>
+      </div>
+    </div>
+  </div>
+  <div class="grid-wrapper">
+    <table>
+      <thead><tr>
+        <th data-col-d="data">Data</th>
+        <th data-col-d="nivel">Nivel</th>
+        <th data-col-d="cadastrados" style="text-align:right">Cadastrados</th>
+        <th data-col-d="convertidos" style="text-align:right">Convertidos</th>
+        <th data-col-d="taxa" style="text-align:right">Taxa Conv. %</th>
+      </tr></thead>
+      <tbody id="tbody-diar"></tbody>
+    </table>
+  </div>
+</div>
+
 </div>
 <div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
 
@@ -243,6 +284,7 @@ function showTab(id,el){
   document.getElementById('pane-'+id).classList.add('active');
   if(id==='chart-tpv')renderChartTpv();
   if(id==='chart-devices')renderChartDevices();
+  if(id==='diarizado')renderDiarizado();
 }
 
 let sortCol=null,sortDir=1,activeMes=null,activeNivel=null,searchTerm='';
@@ -408,6 +450,63 @@ function renderChartDevices(){
 
   document.getElementById('nivel-filter-dev').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelDev===n?' active':''}" onclick="activeNivelDev='${n}';renderChartDevices()">${n}</button>`).join('');
 }
+
+// ── DIARIZADO ──
+const LEADS = """ + leads_json + """;
+const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+
+let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1;
+
+function getDataDiar(){
+  let d=[...LEADS];
+  if(activeMesDiar) d=d.filter(r=>r.data.startsWith(MES_PREFIX[activeMesDiar]));
+  if(activeNivelDiar!=='Todos') d=d.filter(r=>r.nivel===activeNivelDiar);
+  if(searchDiar) d=d.filter(r=>r.data.includes(searchDiar));
+  if(sortColD) d.sort((a,b)=>{
+    const av=sortColD==='taxa'?(a.cadastrados?a.convertidos/a.cadastrados*100:0):a[sortColD];
+    const bv=sortColD==='taxa'?(b.cadastrados?b.convertidos/b.cadastrados*100:0):b[sortColD];
+    return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDirD;
+  });
+  else d.sort((a,b)=>b.data.localeCompare(a.data)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
+  return d;
+}
+
+function renderDiarizado(){
+  const data=getDataDiar();
+  const totCad=data.reduce((s,r)=>s+r.cadastrados,0);
+  const totConv=data.reduce((s,r)=>s+r.convertidos,0);
+  document.getElementById('cards-diarizado').innerHTML=`
+    <div class="card"><div class="card-label">Cadastrados</div><div class="card-value">${fmtN(totCad)}</div><div class="card-sub">no filtro selecionado</div></div>
+    <div class="card"><div class="card-label">Convertidos</div><div class="card-value">${fmtN(totConv)}</div><div class="card-sub">fizeram 1a venda</div></div>
+    <div class="card"><div class="card-label">Taxa Conversao</div><div class="card-value">${totCad?(totConv/totCad*100).toFixed(2)+'%':'—'}</div><div class="card-sub">convertidos / cadastrados</div></div>`;
+
+  let html='';
+  data.forEach(r=>{
+    const taxa=r.cadastrados?(r.convertidos/r.cadastrados*100):0;
+    html+=`<tr>
+      <td>${r.data}</td>
+      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
+      <td style="text-align:right">${fmtN(r.cadastrados)}</td>
+      <td style="text-align:right">${fmtN(r.convertidos)}</td>
+      <td style="text-align:right">${taxa.toFixed(2)}%</td>
+    </tr>`;
+  });
+  document.getElementById('tbody-diar').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+
+  document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
+    `<button class="filter-btn${(!activeMesDiar&&m==='Todos')||activeMesDiar===m?' active':''}" onclick="activeMesDiar='${m}';renderDiarizado()">${m}</button>`).join('');
+  document.getElementById('nivel-filter-diar').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${activeNivelDiar===n?' active':''}" onclick="activeNivelDiar='${n}';renderDiarizado()">${n}</button>`).join('');
+}
+
+document.getElementById('search-diar').addEventListener('input',e=>{searchDiar=e.target.value.trim();renderDiarizado();});
+document.querySelectorAll('[data-col-d]').forEach(th=>th.addEventListener('click',()=>{
+  const col=th.dataset.colD;
+  sortDirD=sortColD===col?sortDirD*-1:1;sortColD=col;
+  document.querySelectorAll('[data-col-d]').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));
+  th.classList.add(sortDirD===1?'sorted-asc':'sorted-desc');
+  renderDiarizado();
+}));
 
 renderCardTabela();renderFiltersTabela();renderTabela();
 </script>

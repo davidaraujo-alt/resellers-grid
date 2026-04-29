@@ -102,6 +102,7 @@ canvas{max-height:320px}
   <div class="tab active" onclick="showTab('tabela',this)">&#128202; Tabela</div>
   <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV</div>
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
+  <div class="tab" onclick="showTab('diarizado',this)">&#128197; Diarizado</div>
 </div>
 
 <div class="body">
@@ -179,6 +180,39 @@ canvas{max-height:320px}
   </div>
 </div>
 
+<!-- ── TAB DIARIZADO ── -->
+<div class="pane" id="pane-diarizado">
+  <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Diarizado</div>
+  <div class="cards" id="cards-diarizado"></div>
+  <div style="background:#fff;border-radius:12px;padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Mes</div>
+        <div id="mes-filter-diar" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Nivel</div>
+        <div id="nivel-filter-diar" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div style="margin-left:auto;align-self:flex-end">
+        <input class="search-box" type="text" placeholder="Buscar data..." id="search-diar" style="margin-left:0"/>
+      </div>
+    </div>
+  </div>
+  <div class="grid-wrapper">
+    <table>
+      <thead><tr>
+        <th data-col-d="data">Data</th>
+        <th data-col-d="nivel">Nivel</th>
+        <th data-col-d="cadastrados" style="text-align:right">Cadastrados</th>
+        <th data-col-d="convertidos" style="text-align:right">Convertidos</th>
+        <th data-col-d="taxa" style="text-align:right">Taxa Conv. %</th>
+      </tr></thead>
+      <tbody id="tbody-diar"></tbody>
+    </table>
+  </div>
+</div>
+
 </div>
 <div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
 
@@ -229,6 +263,7 @@ function showTab(id,el){
   document.getElementById('pane-'+id).classList.add('active');
   if(id==='chart-tpv')renderChartTpv();
   if(id==='chart-devices')renderChartDevices();
+  if(id==='diarizado')renderDiarizado();
 }
 
 let sortCol=null,sortDir=1,activeMes=null,activeNivel=null,searchTerm='';
@@ -394,6 +429,63 @@ function renderChartDevices(){
 
   document.getElementById('nivel-filter-dev').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelDev===n?' active':''}" onclick="activeNivelDev='${n}';renderChartDevices()">${n}</button>`).join('');
 }
+
+// ── DIARIZADO ──
+const LEADS = [{"data": "2026-01-01", "nivel": "Aprendiz", "cadastrados": 803, "convertidos": 2}, {"data": "2026-01-02", "nivel": "Aprendiz", "cadastrados": 789, "convertidos": 7}, {"data": "2026-01-03", "nivel": "Aprendiz", "cadastrados": 724, "convertidos": 5}, {"data": "2026-01-04", "nivel": "Aprendiz", "cadastrados": 703, "convertidos": 2}, {"data": "2026-01-05", "nivel": "Aprendiz", "cadastrados": 658, "convertidos": 6}, {"data": "2026-01-06", "nivel": "Aprendiz", "cadastrados": 570, "convertidos": 1}, {"data": "2026-01-07", "nivel": "Aprendiz", "cadastrados": 623, "convertidos": 4}, {"data": "2026-01-08", "nivel": "Aprendiz", "cadastrados": 572, "convertidos": 3}, {"data": "2026-01-09", "nivel": "Aprendiz", "cadastrados": 520, "convertidos": 6}, {"data": "2026-01-10", "nivel": "Aprendiz", "cadastrados": 422, "convertidos": 3}, {"data": "2026-01-11", "nivel": "Aprendiz", "cadastrados": 465, "convertidos": 3}, {"data": "2026-01-12", "nivel": "Aprendiz", "cadastrados": 490, "convertidos": 9}, {"data": "2026-01-13", "nivel": "Aprendiz", "cadastrados": 526, "convertidos": 5}, {"data": "2026-01-14", "nivel": "Aprendiz", "cadastrados": 513, "convertidos": 4}, {"data": "2026-01-15", "nivel": "Aprendiz", "cadastrados": 440, "convertidos": 5}, {"data": "2026-01-16", "nivel": "Aprendiz", "cadastrados": 446, "convertidos": 3}, {"data": "2026-01-17", "nivel": "Aprendiz", "cadastrados": 433, "convertidos": 4}, {"data": "2026-01-18", "nivel": "Aprendiz", "cadastrados": 467, "convertidos": 5}, {"data": "2026-01-19", "nivel": "Aprendiz", "cadastrados": 499, "convertidos": 5}, {"data": "2026-01-20", "nivel": "Aprendiz", "cadastrados": 358, "convertidos": 5}, {"data": "2026-01-20", "nivel": "Especialista", "cadastrados": 2, "convertidos": 2}, {"data": "2026-01-21", "nivel": "Aprendiz", "cadastrados": 382, "convertidos": 3}, {"data": "2026-01-22", "nivel": "Aprendiz", "cadastrados": 438, "convertidos": 3}, {"data": "2026-01-23", "nivel": "Aprendiz", "cadastrados": 439, "convertidos": 2}, {"data": "2026-01-24", "nivel": "Aprendiz", "cadastrados": 348, "convertidos": 3}, {"data": "2026-01-25", "nivel": "Aprendiz", "cadastrados": 383, "convertidos": 4}, {"data": "2026-01-26", "nivel": "Aprendiz", "cadastrados": 363, "convertidos": 4}, {"data": "2026-01-27", "nivel": "Aprendiz", "cadastrados": 374, "convertidos": 9}, {"data": "2026-01-28", "nivel": "Aprendiz", "cadastrados": 363, "convertidos": 9}, {"data": "2026-01-29", "nivel": "Aprendiz", "cadastrados": 394, "convertidos": 5}, {"data": "2026-01-30", "nivel": "Aprendiz", "cadastrados": 346, "convertidos": 3}, {"data": "2026-01-31", "nivel": "Aprendiz", "cadastrados": 820, "convertidos": 8}, {"data": "2026-02-01", "nivel": "Aprendiz", "cadastrados": 1099, "convertidos": 8}, {"data": "2026-02-02", "nivel": "Aprendiz", "cadastrados": 830, "convertidos": 7}, {"data": "2026-02-03", "nivel": "Aprendiz", "cadastrados": 749, "convertidos": 9}, {"data": "2026-02-04", "nivel": "Aprendiz", "cadastrados": 669, "convertidos": 6}, {"data": "2026-02-05", "nivel": "Aprendiz", "cadastrados": 675, "convertidos": 5}, {"data": "2026-02-06", "nivel": "Aprendiz", "cadastrados": 524, "convertidos": 8}, {"data": "2026-02-07", "nivel": "Aprendiz", "cadastrados": 499, "convertidos": 1}, {"data": "2026-02-08", "nivel": "Aprendiz", "cadastrados": 471, "convertidos": 1}, {"data": "2026-02-09", "nivel": "Aprendiz", "cadastrados": 493, "convertidos": 3}, {"data": "2026-02-10", "nivel": "Aprendiz", "cadastrados": 491, "convertidos": 4}, {"data": "2026-02-11", "nivel": "Aprendiz", "cadastrados": 455, "convertidos": 3}, {"data": "2026-02-12", "nivel": "Aprendiz", "cadastrados": 452, "convertidos": 2}, {"data": "2026-02-13", "nivel": "Aprendiz", "cadastrados": 463, "convertidos": 3}, {"data": "2026-02-14", "nivel": "Aprendiz", "cadastrados": 350, "convertidos": 3}, {"data": "2026-02-15", "nivel": "Aprendiz", "cadastrados": 365, "convertidos": 0}, {"data": "2026-02-16", "nivel": "Aprendiz", "cadastrados": 373, "convertidos": 3}, {"data": "2026-02-17", "nivel": "Aprendiz", "cadastrados": 421, "convertidos": 9}, {"data": "2026-02-18", "nivel": "Aprendiz", "cadastrados": 459, "convertidos": 2}, {"data": "2026-02-19", "nivel": "Aprendiz", "cadastrados": 1356, "convertidos": 15}, {"data": "2026-02-20", "nivel": "Aprendiz", "cadastrados": 1225, "convertidos": 12}, {"data": "2026-02-21", "nivel": "Aprendiz", "cadastrados": 962, "convertidos": 6}, {"data": "2026-02-22", "nivel": "Aprendiz", "cadastrados": 955, "convertidos": 7}, {"data": "2026-02-23", "nivel": "Aprendiz", "cadastrados": 1786, "convertidos": 11}, {"data": "2026-02-24", "nivel": "Aprendiz", "cadastrados": 1062, "convertidos": 9}, {"data": "2026-02-25", "nivel": "Aprendiz", "cadastrados": 804, "convertidos": 13}, {"data": "2026-02-26", "nivel": "Aprendiz", "cadastrados": 1567, "convertidos": 14}, {"data": "2026-02-27", "nivel": "Aprendiz", "cadastrados": 769, "convertidos": 11}, {"data": "2026-02-28", "nivel": "Aprendiz", "cadastrados": 553, "convertidos": 7}, {"data": "2026-03-01", "nivel": "Aprendiz", "cadastrados": 561, "convertidos": 10}, {"data": "2026-03-02", "nivel": "Aprendiz", "cadastrados": 538, "convertidos": 8}, {"data": "2026-03-03", "nivel": "Aprendiz", "cadastrados": 1371, "convertidos": 10}, {"data": "2026-03-04", "nivel": "Aprendiz", "cadastrados": 980, "convertidos": 5}, {"data": "2026-03-05", "nivel": "Aprendiz", "cadastrados": 713, "convertidos": 11}, {"data": "2026-03-06", "nivel": "Aprendiz", "cadastrados": 792, "convertidos": 10}, {"data": "2026-03-07", "nivel": "Aprendiz", "cadastrados": 677, "convertidos": 9}, {"data": "2026-03-08", "nivel": "Aprendiz", "cadastrados": 516, "convertidos": 3}, {"data": "2026-03-09", "nivel": "Aprendiz", "cadastrados": 542, "convertidos": 4}, {"data": "2026-03-10", "nivel": "Aprendiz", "cadastrados": 457, "convertidos": 6}, {"data": "2026-03-11", "nivel": "Aprendiz", "cadastrados": 671, "convertidos": 6}, {"data": "2026-03-12", "nivel": "Aprendiz", "cadastrados": 569, "convertidos": 7}, {"data": "2026-03-13", "nivel": "Aprendiz", "cadastrados": 603, "convertidos": 6}, {"data": "2026-03-14", "nivel": "Aprendiz", "cadastrados": 450, "convertidos": 2}, {"data": "2026-03-15", "nivel": "Aprendiz", "cadastrados": 379, "convertidos": 2}, {"data": "2026-03-16", "nivel": "Aprendiz", "cadastrados": 489, "convertidos": 6}, {"data": "2026-03-17", "nivel": "Aprendiz", "cadastrados": 525, "convertidos": 5}, {"data": "2026-03-18", "nivel": "Aprendiz", "cadastrados": 482, "convertidos": 2}, {"data": "2026-03-19", "nivel": "Aprendiz", "cadastrados": 468, "convertidos": 6}, {"data": "2026-03-20", "nivel": "Aprendiz", "cadastrados": 396, "convertidos": 5}, {"data": "2026-03-21", "nivel": "Aprendiz", "cadastrados": 371, "convertidos": 4}, {"data": "2026-03-22", "nivel": "Aprendiz", "cadastrados": 351, "convertidos": 3}, {"data": "2026-03-23", "nivel": "Aprendiz", "cadastrados": 443, "convertidos": 12}, {"data": "2026-03-24", "nivel": "Aprendiz", "cadastrados": 409, "convertidos": 5}, {"data": "2026-03-25", "nivel": "Aprendiz", "cadastrados": 397, "convertidos": 8}, {"data": "2026-03-26", "nivel": "Aprendiz", "cadastrados": 399, "convertidos": 10}, {"data": "2026-03-27", "nivel": "Aprendiz", "cadastrados": 595, "convertidos": 4}, {"data": "2026-03-28", "nivel": "Aprendiz", "cadastrados": 368, "convertidos": 8}, {"data": "2026-03-29", "nivel": "Aprendiz", "cadastrados": 328, "convertidos": 4}, {"data": "2026-03-30", "nivel": "Aprendiz", "cadastrados": 365, "convertidos": 7}, {"data": "2026-03-31", "nivel": "Aprendiz", "cadastrados": 1009, "convertidos": 13}, {"data": "2026-04-01", "nivel": "Aprendiz", "cadastrados": 838, "convertidos": 16}, {"data": "2026-04-02", "nivel": "Aprendiz", "cadastrados": 532, "convertidos": 6}, {"data": "2026-04-03", "nivel": "Aprendiz", "cadastrados": 570, "convertidos": 6}, {"data": "2026-04-04", "nivel": "Aprendiz", "cadastrados": 532, "convertidos": 2}, {"data": "2026-04-05", "nivel": "Aprendiz", "cadastrados": 405, "convertidos": 1}, {"data": "2026-04-06", "nivel": "Aprendiz", "cadastrados": 518, "convertidos": 5}, {"data": "2026-04-07", "nivel": "Aprendiz", "cadastrados": 705, "convertidos": 6}, {"data": "2026-04-08", "nivel": "Aprendiz", "cadastrados": 436, "convertidos": 6}, {"data": "2026-04-09", "nivel": "Aprendiz", "cadastrados": 454, "convertidos": 5}, {"data": "2026-04-10", "nivel": "Aprendiz", "cadastrados": 263, "convertidos": 5}, {"data": "2026-04-11", "nivel": "Aprendiz", "cadastrados": 371, "convertidos": 4}, {"data": "2026-04-12", "nivel": "Aprendiz", "cadastrados": 286, "convertidos": 4}, {"data": "2026-04-13", "nivel": "Aprendiz", "cadastrados": 291, "convertidos": 4}, {"data": "2026-04-14", "nivel": "Aprendiz", "cadastrados": 257, "convertidos": 1}, {"data": "2026-04-15", "nivel": "Aprendiz", "cadastrados": 461, "convertidos": 4}, {"data": "2026-04-16", "nivel": "Aprendiz", "cadastrados": 345, "convertidos": 3}, {"data": "2026-04-17", "nivel": "Aprendiz", "cadastrados": 272, "convertidos": 0}, {"data": "2026-04-18", "nivel": "Aprendiz", "cadastrados": 246, "convertidos": 3}, {"data": "2026-04-19", "nivel": "Aprendiz", "cadastrados": 264, "convertidos": 0}, {"data": "2026-04-20", "nivel": "Aprendiz", "cadastrados": 287, "convertidos": 0}, {"data": "2026-04-21", "nivel": "Aprendiz", "cadastrados": 289, "convertidos": 3}, {"data": "2026-04-22", "nivel": "Aprendiz", "cadastrados": 330, "convertidos": 2}, {"data": "2026-04-23", "nivel": "Aprendiz", "cadastrados": 275, "convertidos": 5}, {"data": "2026-04-24", "nivel": "Aprendiz", "cadastrados": 297, "convertidos": 4}, {"data": "2026-04-25", "nivel": "Aprendiz", "cadastrados": 263, "convertidos": 2}, {"data": "2026-04-26", "nivel": "Aprendiz", "cadastrados": 210, "convertidos": 2}, {"data": "2026-04-27", "nivel": "Aprendiz", "cadastrados": 259, "convertidos": 1}, {"data": "2026-04-28", "nivel": "Aprendiz", "cadastrados": 249, "convertidos": 0}];
+const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+
+let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1;
+
+function getDataDiar(){
+  let d=[...LEADS];
+  if(activeMesDiar) d=d.filter(r=>r.data.startsWith(MES_PREFIX[activeMesDiar]));
+  if(activeNivelDiar!=='Todos') d=d.filter(r=>r.nivel===activeNivelDiar);
+  if(searchDiar) d=d.filter(r=>r.data.includes(searchDiar));
+  if(sortColD) d.sort((a,b)=>{
+    const av=sortColD==='taxa'?(a.cadastrados?a.convertidos/a.cadastrados*100:0):a[sortColD];
+    const bv=sortColD==='taxa'?(b.cadastrados?b.convertidos/b.cadastrados*100:0):b[sortColD];
+    return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDirD;
+  });
+  else d.sort((a,b)=>b.data.localeCompare(a.data)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
+  return d;
+}
+
+function renderDiarizado(){
+  const data=getDataDiar();
+  const totCad=data.reduce((s,r)=>s+r.cadastrados,0);
+  const totConv=data.reduce((s,r)=>s+r.convertidos,0);
+  document.getElementById('cards-diarizado').innerHTML=`
+    <div class="card"><div class="card-label">Cadastrados</div><div class="card-value">${fmtN(totCad)}</div><div class="card-sub">no filtro selecionado</div></div>
+    <div class="card"><div class="card-label">Convertidos</div><div class="card-value">${fmtN(totConv)}</div><div class="card-sub">fizeram 1a venda</div></div>
+    <div class="card"><div class="card-label">Taxa Conversao</div><div class="card-value">${totCad?(totConv/totCad*100).toFixed(2)+'%':'—'}</div><div class="card-sub">convertidos / cadastrados</div></div>`;
+
+  let html='';
+  data.forEach(r=>{
+    const taxa=r.cadastrados?(r.convertidos/r.cadastrados*100):0;
+    html+=`<tr>
+      <td>${r.data}</td>
+      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
+      <td style="text-align:right">${fmtN(r.cadastrados)}</td>
+      <td style="text-align:right">${fmtN(r.convertidos)}</td>
+      <td style="text-align:right">${taxa.toFixed(2)}%</td>
+    </tr>`;
+  });
+  document.getElementById('tbody-diar').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+
+  document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
+    `<button class="filter-btn${(!activeMesDiar&&m==='Todos')||activeMesDiar===m?' active':''}" onclick="activeMesDiar='${m}';renderDiarizado()">${m}</button>`).join('');
+  document.getElementById('nivel-filter-diar').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${activeNivelDiar===n?' active':''}" onclick="activeNivelDiar='${n}';renderDiarizado()">${n}</button>`).join('');
+}
+
+document.getElementById('search-diar').addEventListener('input',e=>{searchDiar=e.target.value.trim();renderDiarizado();});
+document.querySelectorAll('[data-col-d]').forEach(th=>th.addEventListener('click',()=>{
+  const col=th.dataset.colD;
+  sortDirD=sortColD===col?sortDirD*-1:1;sortColD=col;
+  document.querySelectorAll('[data-col-d]').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));
+  th.classList.add(sortDirD===1?'sorted-asc':'sorted-desc');
+  renderDiarizado();
+}));
 
 renderCardTabela();renderFiltersTabela();renderTabela();
 </script>
