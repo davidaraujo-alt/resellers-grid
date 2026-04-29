@@ -291,40 +291,6 @@ document.getElementById('nivel-filters').addEventListener('click',e=>{if(!e.targ
 document.getElementById('search-input').addEventListener('input',e=>{searchTerm=e.target.value.toLowerCase().trim();renderTabela();});
 document.querySelector('thead').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;sortDir=sortCol===th.dataset.col?sortDir*-1:1;sortCol=th.dataset.col;document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');renderTabela();});
 
-let activeMesMod=null;
-function renderModelos(){
-  let data=[...RAW];
-  if(activeMesMod)data=data.filter(r=>r.mes===activeMesMod);
-  data.sort((a,b)=>MES_ORDER.indexOf(a.mes)-MES_ORDER.indexOf(b.mes)||NIV_ORDER.indexOf(a.nivel)-NIV_ORDER.indexOf(b.nivel));
-  const mt={};
-  data.forEach(r=>{if(!mt[r.mes])mt[r.mes]={pro:0,smart:0};mt[r.mes].pro+=r.pedidos_pro;mt[r.mes].smart+=r.pedidos_smart;});
-  const totalPro=RAW.reduce((s,r)=>s+r.pedidos_pro,0),totalSmart=RAW.reduce((s,r)=>s+r.pedidos_smart,0);
-  let html='';
-  data.forEach((r,i)=>{
-    const tot=(r.pedidos_pro+r.pedidos_smart)||1;
-    const isLast=i===data.length-1||data[i+1]?.mes!==r.mes;
-    html+=`<tr>
-      <td><span class="mes-badge">${r.mes}</span></td>
-      <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
-      <td style="text-align:right">${fmtN(r.pedidos_pro)}${pct(r.pedidos_pro,mt[r.mes]?.pro)}</td>
-      <td style="text-align:right">${fmtN(r.ativos_pro)}</td>
-      <td style="text-align:right">${fmtN(r.pedidos_smart)}${pct(r.pedidos_smart,mt[r.mes]?.smart)}</td>
-      <td style="text-align:right">${fmtN(r.ativos_smart)}</td>
-      <td style="text-align:right"><b>${(r.pedidos_pro/tot*100).toFixed(1)}%</b></td>
-      <td style="text-align:right"><b>${(r.pedidos_smart/tot*100).toFixed(1)}%</b></td>
-    </tr>`;
-    if(isLast&&!activeMesMod){const t=mt[r.mes]||{pro:0,smart:0};const tot2=(t.pro+t.smart)||1;
-      html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td><td style="text-align:right">${fmtN(t.pro)}</td><td></td><td style="text-align:right">${fmtN(t.smart)}</td><td></td><td style="text-align:right"><b>${(t.pro/tot2*100).toFixed(1)}%</b></td><td style="text-align:right"><b>${(t.smart/tot2*100).toFixed(1)}%</b></td></tr>`;}
-  });
-  document.getElementById('tbody-modelos').innerHTML=html;
-  document.getElementById('cards-modelos').innerHTML=`
-    <div class="card"><div class="card-label">Point Pro Pedidos</div><div class="card-value">${fmtN(totalPro)}</div><div class="card-sub">Jan-Abr/26</div></div>
-    <div class="card"><div class="card-label">Point Smart Pedidos</div><div class="card-value">${fmtN(totalSmart)}</div><div class="card-sub">Jan-Abr/26</div></div>
-    <div class="card"><div class="card-label">Mix Pro</div><div class="card-value">${(totalPro/(totalPro+totalSmart)*100).toFixed(1)}%</div><div class="card-sub">do total</div></div>
-    <div class="card"><div class="card-label">Mix Smart</div><div class="card-value">${(totalSmart/(totalPro+totalSmart)*100).toFixed(1)}%</div><div class="card-sub">do total</div></div>`;
-  document.getElementById('mes-filters-mod').innerHTML=['Todos',...MES_ORDER].map(m=>`<button class="filter-btn${(!activeMesMod&&m==='Todos')||activeMesMod===m?' active':''}" data-mes="${m}">${m}</button>`).join('');
-}
-document.getElementById('mes-filters-mod').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMesMod=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderModelos();});
 
 // ── HELPERS ──
 const MES_TO_YYYYMM={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
@@ -429,7 +395,7 @@ function renderChartDevices(){
   document.getElementById('nivel-filter-dev').innerHTML=['Todos',...NIV_ORDER].map(n=>`<button class="filter-btn${activeNivelDev===n?' active':''}" onclick="activeNivelDev='${n}';renderChartDevices()">${n}</button>`).join('');
 }
 
-renderCardTabela();renderFiltersTabela();renderTabela();renderModelos();
+renderCardTabela();renderFiltersTabela();renderTabela();
 </script>
 </body>
 </html>
