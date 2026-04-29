@@ -468,13 +468,30 @@ function renderDiarizado(){
     `<th style="background:#1A1F6B;color:#FFE600;padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap">Metrica</th>`+
     dates.map(d=>`<th style="background:#1A1F6B;color:#FFE600;padding:10px 12px;text-align:right;font-size:11px;white-space:nowrap">${shortDate(d)}</th>`).join('');
 
-  const row=(label,vals,style='')=>
-    `<tr>${'<td style="padding:10px 14px;font-weight:600;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px">'+label+'</td>'}${vals.map(v=>`<td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${style}">${v}</td>`).join('')}</tr>`;
+  // Escala de cor por terciis (ruim=vermelho, medio=amarelo, bom=verde)
+  function colorScale(nums){
+    const sorted=[...nums].sort((a,b)=>a-b);
+    const p33=sorted[Math.floor(sorted.length*0.33)];
+    const p66=sorted[Math.floor(sorted.length*0.66)];
+    return nums.map(v=>v<=p33?'background:#ffe5e5':v<=p66?'background:#fffde7':'background:#e6f9ec');
+  }
+
+  function colorRow(label, nums, fmt){
+    const colors=colorScale(nums);
+    return `<tr>
+      <td style="padding:10px 14px;font-weight:600;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
+      ${nums.map((v,i)=>`<td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmt(v)}</td>`).join('')}
+    </tr>`;
+  }
+
+  const cadNums   = data.map(r=>r.cadastrados);
+  const convNums  = data.map(r=>r.convertidos);
+  const taxaNums  = data.map(r=>r.cadastrados?r.convertidos/r.cadastrados*100:0);
 
   document.getElementById('tbody-diar').innerHTML = data.length ? [
-    row('Cadastrados', data.map(r=>fmtN(r.cadastrados))),
-    row('Convertidos',  data.map(r=>fmtN(r.convertidos))),
-    row('Taxa Conv. %', data.map(r=>(r.cadastrados?r.convertidos/r.cadastrados*100:0).toFixed(2)+'%'), 'color:#1A1F6B;font-weight:700'),
+    colorRow('Cadastrados', cadNums,  v=>fmtN(v)),
+    colorRow('Convertidos',  convNums, v=>fmtN(v)),
+    colorRow('Taxa Conv. %', taxaNums, v=>v.toFixed(2)+'%'),
   ].join('') : `<tr><td colspan="${dates.length+1}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
 
   document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
