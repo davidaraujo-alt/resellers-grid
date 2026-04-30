@@ -972,9 +972,9 @@ function renderFunilTab(){
 
   document.getElementById('funil-visual').innerHTML =
     `<div style="width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center">` +
-    funnelStage(100, '#1A1F6B', '#fff',  'Devices Pedidos', fmtN(pedidos),  funilMesTab==='Todos'?'Jan–Abr/26':funilMesTab, `${pctAtiv}% foram ativados ▼`) +
-    funnelStage(78,  '#FFE600', '#1A1F6B','Devices Ativos',  fmtN(ativos),   `${pctAtiv}% dos pedidos`, `TPV dos sellers M0 ▼`) +
-    funnelStage(58,  '#009EE3', '#fff',  'TPV M0',           tpvFmt(tpvM0),  'sellers captados no mês', '') +
+    funnelStage(100, '#1A1F6B', '#ffffff', 'Devices Pedidos', fmtN(pedidos),  funilMesTab==='Todos'?'Jan–Abr/26':funilMesTab, `${pctAtiv}% foram ativados ▼`) +
+    funnelStage(78,  '#FFE600', '#1A1F6B', 'Devices Ativos',  fmtN(ativos),  `${pctAtiv}% dos pedidos`, `TPV dos sellers M0 ▼`) +
+    funnelStage(58,  '#009EE3', '#ffffff', 'TPV M0',          tpvFmt(tpvM0), 'sellers captados no mês', '') +
     `</div>`;
 
   document.getElementById('funil-mes-filter').innerHTML =
