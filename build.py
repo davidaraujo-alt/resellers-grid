@@ -574,19 +574,24 @@ function renderDiarizado(){
       scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
   });
 
-  // Gráfico 2 — 1ª Compra por mês + Aprendiz
-  const aprendizMes=[226,281,315,209]; // Aprendiz com 1ª compra por mês (Jan–Abr/26)
+  // Gráfico 2 — Aprendiz com compra no mês vs 1ª compra
+  const aprendizComCompra=mesesDiar.map(m=>RAW.find(r=>r.mes===m&&r.nivel==='Aprendiz')?.resellers||0);
+  const aprendizPrimeira=[226,281,315,209];
   const ex2=Chart.getChart('chartDiarPrimeira');if(ex2)ex2.destroy();
   new Chart(document.getElementById('chartDiarPrimeira').getContext('2d'),{
     type:'bar',
     data:{labels:mesesDiar,datasets:[
-      {label:'Total 1ª Compra',data:primMes,backgroundColor:'#009EE3',borderRadius:4,order:2},
-      {label:'Aprendiz',data:aprendizMes,type:'line',borderColor:'#FFE600',backgroundColor:'#FFE60033',borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#FFE600',fill:true,tension:.3,order:1},
+      {label:'Aprendiz c/ Compra no Mês',data:aprendizComCompra,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'Aprendiz c/ 1ª Compra',data:aprendizPrimeira,backgroundColor:'#009EE3',borderRadius:4},
     ]},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
       tooltip:{mode:'index',intersect:false,callbacks:{
         label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
-        footer:items=>{const t=items.find(i=>i.dataset.label==='Total 1ª Compra');const a=items.find(i=>i.dataset.label==='Aprendiz');return t&&a?`Peso Aprendiz: ${(a.raw/t.raw*100).toFixed(1)}%`:'';}
+        footer:items=>{
+          const total=items.find(i=>i.dataset.label.includes('Mês'));
+          const nova=items.find(i=>i.dataset.label.includes('1ª'));
+          return total&&nova&&total.raw?`Novos no mês: ${(nova.raw/total.raw*100).toFixed(1)}%`:'';
+        }
       }}},
       scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
   });
