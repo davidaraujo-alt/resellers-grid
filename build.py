@@ -233,22 +233,22 @@ canvas{max-height:320px}
 
 <script>
 const RAW = [
-  {mes:"Jan/26",nivel:"Aprendiz",resellers:914,pedidos:2884,ativos:2391,tpv_m0:5904529,tpv_m1:null,tpv_total:2190087,pedidos_pro:2610,pedidos_smart:268,ativos_pro:2175,ativos_smart:211},
-  {mes:"Jan/26",nivel:"Especialista",resellers:113,pedidos:1397,ativos:1170,tpv_m0:3045114,tpv_m1:null,tpv_total:2268030,pedidos_pro:1245,pedidos_smart:152,ativos_pro:1036,ativos_smart:134},
-  {mes:"Jan/26",nivel:"Empreendedor",resellers:50,pedidos:938,ativos:830,tpv_m0:3139062,tpv_m1:null,tpv_total:2909063,pedidos_pro:777,pedidos_smart:161,ativos_pro:694,ativos_smart:136},
-  {mes:"Jan/26",nivel:"Top Empreendedor",resellers:38,pedidos:1739,ativos:1648,tpv_m0:6647500,tpv_m1:null,tpv_total:5934960,pedidos_pro:1273,pedidos_smart:466,ativos_pro:1205,ativos_smart:443},
-  {mes:"Fev/26",nivel:"Aprendiz",resellers:983,pedidos:2834,ativos:2149,tpv_m0:5455402,tpv_m1:8589250,tpv_total:3865778,pedidos_pro:2576,pedidos_smart:257,ativos_pro:1972,ativos_smart:177},
-  {mes:"Fev/26",nivel:"Especialista",resellers:117,pedidos:1338,ativos:1102,tpv_m0:3811769,tpv_m1:4598512,tpv_total:5983828,pedidos_pro:1216,pedidos_smart:122,ativos_pro:1018,ativos_smart:84},
-  {mes:"Fev/26",nivel:"Empreendedor",resellers:52,pedidos:1246,ativos:996,tpv_m0:2698795,tpv_m1:4720787,tpv_total:7119633,pedidos_pro:1061,pedidos_smart:185,ativos_pro:849,ativos_smart:147},
-  {mes:"Fev/26",nivel:"Top Empreendedor",resellers:38,pedidos:2111,ativos:1772,tpv_m0:6183822,tpv_m1:12309138,tpv_total:17484241,pedidos_pro:1331,pedidos_smart:780,ativos_pro:1123,ativos_smart:649},
-  {mes:"Mar/26",nivel:"Aprendiz",resellers:922,pedidos:2467,ativos:1478,tpv_m0:6653238,tpv_m1:7695710,tpv_total:4619592,pedidos_pro:2163,pedidos_smart:301,ativos_pro:1290,ativos_smart:186},
-  {mes:"Mar/26",nivel:"Especialista",resellers:83,pedidos:896,ativos:523,tpv_m0:3397338,tpv_m1:5027261,tpv_total:7873138,pedidos_pro:802,pedidos_smart:94,ativos_pro:466,ativos_smart:57},
-  {mes:"Mar/26",nivel:"Empreendedor",resellers:48,pedidos:1341,ativos:837,tpv_m0:4084953,tpv_m1:5424752,tpv_total:12847334,pedidos_pro:1113,pedidos_smart:228,ativos_pro:697,ativos_smart:140},
-  {mes:"Mar/26",nivel:"Top Empreendedor",resellers:39,pedidos:1966,ativos:1409,tpv_m0:7784389,tpv_m1:11010999,tpv_total:30224110,pedidos_pro:1510,pedidos_smart:456,ativos_pro:1111,ativos_smart:298},
-  {mes:"Abr/26",nivel:"Aprendiz",resellers:675,pedidos:1448,ativos:530,tpv_m0:5294588,tpv_m1:7556262,tpv_total:3606439,pedidos_pro:1276,pedidos_smart:169,ativos_pro:467,ativos_smart:61},
-  {mes:"Abr/26",nivel:"Especialista",resellers:77,pedidos:549,ativos:148,tpv_m0:2316205,tpv_m1:4682157,tpv_total:8287688,pedidos_pro:443,pedidos_smart:106,ativos_pro:122,ativos_smart:26},
-  {mes:"Abr/26",nivel:"Empreendedor",resellers:36,pedidos:547,ativos:173,tpv_m0:2400932,tpv_m1:5836200,tpv_total:11838473,pedidos_pro:450,pedidos_smart:97,ativos_pro:122,ativos_smart:51},
-  {mes:"Abr/26",nivel:"Top Empreendedor",resellers:41,pedidos:1843,ativos:664,tpv_m0:5803605,tpv_m1:13406624,tpv_total:37531873,pedidos_pro:1409,pedidos_smart:434,ativos_pro:530,ativos_smart:134},
+  {mes:"Jan/26",nivel:"Aprendiz",        resellers:914, pedidos:2884, ativos:2392, tpv_m0:2211690, tpv_m1:null,      tpv_total:2211690,  pedidos_pro:2610, pedidos_smart:268, ativos_pro:2176, ativos_smart:211},
+  {mes:"Jan/26",nivel:"Especialista",     resellers:113, pedidos:1397, ativos:1173, tpv_m0:2255581, tpv_m1:null,      tpv_total:2255581,  pedidos_pro:1245, pedidos_smart:152, ativos_pro:1038, ativos_smart:135},
+  {mes:"Jan/26",nivel:"Empreendedor",     resellers:50,  pedidos:938,  ativos:830,  tpv_m0:2910252, tpv_m1:null,      tpv_total:2910252,  pedidos_pro:777,  pedidos_smart:161, ativos_pro:694,  ativos_smart:136},
+  {mes:"Jan/26",nivel:"Top Empreendedor", resellers:38,  pedidos:1739, ativos:1650, tpv_m0:5931725, tpv_m1:null,      tpv_total:5931725,  pedidos_pro:1273, pedidos_smart:466, ativos_pro:1207, ativos_smart:443},
+  {mes:"Fev/26",nivel:"Aprendiz",        resellers:983, pedidos:2834, ativos:2151, tpv_m0:1962846, tpv_m1:1940610,  tpv_total:3903456,  pedidos_pro:2576, pedidos_smart:257, ativos_pro:1974, ativos_smart:177},
+  {mes:"Fev/26",nivel:"Especialista",     resellers:117, pedidos:1338, ativos:1111, tpv_m0:2751770, tpv_m1:3159259,  tpv_total:5911029,  pedidos_pro:1216, pedidos_smart:122, ativos_pro:1026, ativos_smart:85},
+  {mes:"Fev/26",nivel:"Empreendedor",     resellers:52,  pedidos:1246, ativos:1003, tpv_m0:2537155, tpv_m1:4573078,  tpv_total:7110233,  pedidos_pro:1061, pedidos_smart:185, ativos_pro:856,  ativos_smart:147},
+  {mes:"Fev/26",nivel:"Top Empreendedor", resellers:38,  pedidos:2111, ativos:1784, tpv_m0:5790677, tpv_m1:11683107, tpv_total:17473784, pedidos_pro:1331, pedidos_smart:780, ativos_pro:1129, ativos_smart:655},
+  {mes:"Mar/26",nivel:"Aprendiz",        resellers:922, pedidos:2467, ativos:1493, tpv_m0:2268275, tpv_m1:812114,   tpv_total:4671474,  pedidos_pro:2163, pedidos_smart:301, ativos_pro:1305, ativos_smart:186},
+  {mes:"Mar/26",nivel:"Especialista",     resellers:83,  pedidos:896,  ativos:531,  tpv_m0:2332724, tpv_m1:3047702,  tpv_total:7647216,  pedidos_pro:802,  pedidos_smart:94,  ativos_pro:472,  ativos_smart:59},
+  {mes:"Mar/26",nivel:"Empreendedor",     resellers:48,  pedidos:1341, ativos:840,  tpv_m0:3745008, tpv_m1:4849151,  tpv_total:12815918, pedidos_pro:1113, pedidos_smart:228, ativos_pro:698,  ativos_smart:142},
+  {mes:"Mar/26",nivel:"Top Empreendedor", resellers:39,  pedidos:1966, ativos:1421, tpv_m0:7637929, tpv_m1:10886088, tpv_total:30250150, pedidos_pro:1510, pedidos_smart:456, ativos_pro:1119, ativos_smart:302},
+  {mes:"Abr/26",nivel:"Aprendiz",        resellers:700, pedidos:1506, ativos:561,  tpv_m0:2005313, tpv_m1:846887,   tpv_total:4005551,  pedidos_pro:1324, pedidos_smart:179, ativos_pro:493,  ativos_smart:66},
+  {mes:"Abr/26",nivel:"Especialista",     resellers:77,  pedidos:555,  ativos:159,  tpv_m0:1698542, tpv_m1:2843066,  tpv_total:8610129,  pedidos_pro:449,  pedidos_smart:106, ativos_pro:130,  ativos_smart:29},
+  {mes:"Abr/26",nivel:"Empreendedor",     resellers:37,  pedidos:579,  ativos:186,  tpv_m0:1916173, tpv_m1:4615107,  tpv_total:12503276, pedidos_pro:471,  pedidos_smart:108, ativos_pro:132,  ativos_smart:54},
+  {mes:"Abr/26",nivel:"Top Empreendedor", resellers:41,  pedidos:1916, ativos:721,  tpv_m0:6039045, tpv_m1:13532350, tpv_total:39005237, pedidos_pro:1468, pedidos_smart:448, ativos_pro:575,  ativos_smart:146},
 ];
 
 const DAILY = """ + daily_json + """;

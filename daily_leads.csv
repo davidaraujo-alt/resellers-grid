@@ -16,7 +16,7 @@ data,nivel,cadastrados,convertidos
 2026-01-15,Aprendiz,440,5
 2026-01-16,Aprendiz,446,3
 2026-01-17,Aprendiz,433,4
-2026-01-18,Aprendiz,467,5
+2026-01-18,Aprendiz,466,4
 2026-01-19,Aprendiz,499,5
 2026-01-20,Aprendiz,358,5
 2026-01-20,Especialista,2,2
@@ -72,7 +72,7 @@ data,nivel,cadastrados,convertidos
 2026-03-11,Aprendiz,671,6
 2026-03-12,Aprendiz,569,7
 2026-03-13,Aprendiz,603,6
-2026-03-14,Aprendiz,450,2
+2026-03-14,Aprendiz,450,3
 2026-03-15,Aprendiz,379,2
 2026-03-16,Aprendiz,489,6
 2026-03-17,Aprendiz,525,5
@@ -117,4 +117,5 @@ data,nivel,cadastrados,convertidos
 2026-04-25,Aprendiz,263,2
 2026-04-26,Aprendiz,210,2
 2026-04-27,Aprendiz,259,1
-2026-04-28,Aprendiz,249,0
+2026-04-28,Aprendiz,249,1
+2026-04-29,Aprendiz,259,0
