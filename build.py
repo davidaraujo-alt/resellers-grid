@@ -107,7 +107,7 @@ canvas{max-height:320px}
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
   <div class="tab" onclick="showTab('diarizado',this)">&#128197; Diarizado</div>
   <div class="tab" onclick="showTab('niveis',this)">&#11014; Subidas de Nível</div>
-  <div class="tab" onclick="showTab('aprendiz',this)">&#127891; Aprendiz</div>
+  <div class="tab" onclick="showTab('aprendiz',this)">&#127891; Aprendiz &amp; Especialista</div>
 </div>
 
 <div class="body">
