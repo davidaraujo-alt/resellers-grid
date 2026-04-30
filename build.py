@@ -783,10 +783,10 @@ function renderAprendiz(){
   chartAprendiz=new Chart(document.getElementById('chartAprendiz').getContext('2d'),{
     type:'bar',
     data:{labels:APR_DEVICES.map(r=>r.mes),datasets:[
-      {label:'1 Device', data:APR_DEVICES.map(r=>r.d1),backgroundColor:'#e0e7ff',borderRadius:0},
-      {label:'2 Devices',data:APR_DEVICES.map(r=>r.d2),backgroundColor:'#6366f1',borderRadius:0},
-      {label:'3 Devices',data:APR_DEVICES.map(r=>r.d3),backgroundColor:'#1A1F6B',borderRadius:0},
-      {label:'4+ Devices',data:APR_DEVICES.map(r=>r.d4),backgroundColor:'#FFE600',borderRadius:4},
+      {label:'1 Device', data:APR_DEVICES.map(r=>r.d1),backgroundColor:'#fed7aa',borderRadius:0},
+      {label:'2 Devices',data:APR_DEVICES.map(r=>r.d2),backgroundColor:'#fb923c',borderRadius:0},
+      {label:'3 Devices',data:APR_DEVICES.map(r=>r.d3),backgroundColor:'#ea580c',borderRadius:0},
+      {label:'4+ Devices',data:APR_DEVICES.map(r=>r.d4),backgroundColor:'#9a3412',borderRadius:4},
     ]},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
       tooltip:{mode:'index',intersect:false,callbacks:{
