@@ -531,8 +531,8 @@ function renderDiarizado(){
 
   document.getElementById('tbody-diar').innerHTML = data.length ? [
     colorRow('Cadastrados',   cadNums,      v=>fmtN(v),          fmtN(totCadAll)),
-    colorRow('1ª Compra',     primeiroNums, v=>fmtN(v),          fmtN(totPrimeiro)),
     colorRow('Convertidos',   convNums,     v=>fmtN(v),          fmtN(totConvAll)),
+    colorRow('1ª Compra',     primeiroNums, v=>fmtN(v),          fmtN(totPrimeiro)),
     colorRow('Taxa Conv. %',  taxaNums,     v=>v.toFixed(2)+'%', (totCadAll?totConvAll/totCadAll*100:0).toFixed(2)+'%'),
   ].join('') : `<tr><td colspan="${dates.length+2}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
 
