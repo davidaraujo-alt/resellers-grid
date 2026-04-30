@@ -216,6 +216,27 @@ canvas{max-height:320px}
     </table>
   </div>
 
+  <!-- TPV Diário transposto -->
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 14px;border-left:5px solid #009EE3;padding-left:14px">TPV Diário</div>
+  <div style="background:#fff;border-radius:12px;padding:12px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:10px;color:#999;margin-bottom:6px">MÊS</div>
+        <div id="mes-filter-tpv-dia" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#999;margin-bottom:6px">NÍVEL</div>
+        <div id="nivel-filter-tpv-dia" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+  </div>
+  <div style="overflow-x:auto;margin-bottom:28px">
+    <table style="min-width:600px">
+      <thead><tr id="thead-tpv-dia-row"></tr></thead>
+      <tbody id="tbody-tpv-dia"></tbody>
+    </table>
+  </div>
+
   <!-- Gráficos mensais -->
   <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;border-left:5px solid #FFE600;padding-left:14px">Visão Mensal</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
@@ -542,7 +563,7 @@ const LEADS = """ + leads_json + """;
 const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
 const PRIMEIRA_COMPRA={"2026-01-02":14,"2026-01-03":3,"2026-01-04":6,"2026-01-05":11,"2026-01-06":11,"2026-01-07":8,"2026-01-08":8,"2026-01-09":5,"2026-01-10":5,"2026-01-11":5,"2026-01-12":10,"2026-01-13":8,"2026-01-14":6,"2026-01-15":12,"2026-01-16":7,"2026-01-17":4,"2026-01-18":4,"2026-01-19":8,"2026-01-20":7,"2026-01-21":6,"2026-01-22":7,"2026-01-23":9,"2026-01-24":3,"2026-01-25":4,"2026-01-26":11,"2026-01-27":8,"2026-01-28":12,"2026-01-29":7,"2026-01-30":7,"2026-01-31":10,"2026-02-01":3,"2026-02-02":9,"2026-02-03":19,"2026-02-04":17,"2026-02-05":15,"2026-02-06":17,"2026-02-07":13,"2026-02-08":1,"2026-02-09":12,"2026-02-10":14,"2026-02-11":11,"2026-02-12":8,"2026-02-13":6,"2026-02-14":6,"2026-02-15":4,"2026-02-16":3,"2026-02-17":2,"2026-02-18":12,"2026-02-19":14,"2026-02-20":18,"2026-02-21":7,"2026-02-22":3,"2026-02-23":11,"2026-02-24":16,"2026-02-25":13,"2026-02-26":14,"2026-02-27":8,"2026-02-28":5,"2026-03-01":7,"2026-03-02":13,"2026-03-03":12,"2026-03-04":6,"2026-03-05":10,"2026-03-06":8,"2026-03-07":16,"2026-03-08":5,"2026-03-09":10,"2026-03-10":14,"2026-03-11":11,"2026-03-12":12,"2026-03-13":12,"2026-03-14":8,"2026-03-15":4,"2026-03-16":15,"2026-03-17":10,"2026-03-18":6,"2026-03-19":12,"2026-03-20":8,"2026-03-21":8,"2026-03-22":3,"2026-03-23":17,"2026-03-24":10,"2026-03-25":15,"2026-03-26":12,"2026-03-27":12,"2026-03-28":13,"2026-03-29":2,"2026-03-30":9,"2026-03-31":15,"2026-04-01":20,"2026-04-02":7,"2026-04-03":8,"2026-04-04":3,"2026-04-05":4,"2026-04-06":9,"2026-04-07":14,"2026-04-08":9,"2026-04-09":8,"2026-04-10":6,"2026-04-11":3,"2026-04-12":5,"2026-04-13":12,"2026-04-14":7,"2026-04-15":10,"2026-04-16":6,"2026-04-17":9,"2026-04-18":8,"2026-04-19":5,"2026-04-20":7,"2026-04-21":3,"2026-04-22":6,"2026-04-23":8,"2026-04-24":9,"2026-04-25":5,"2026-04-26":4,"2026-04-27":11,"2026-04-28":3};
 
-let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1,funilActiveNivel='Todos';
+let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1,funilActiveNivel='Todos',tpvDiaMes='Fev/26',tpvDiaNivel='Todos';
 
 function getDataDiar(){
   let d=[...LEADS];
@@ -658,6 +679,42 @@ function renderDiarizado(){
 
   document.getElementById('nivel-filter-funil').innerHTML=['Todos',...NIV_ORDER].map(n=>
     `<button class="filter-btn${funilNivel===n?' active':''}" onclick="funilActiveNivel='${n}';renderDiarizado()">${n}</button>`).join('');
+
+  // ── TPV Diário transposto ──
+  const prefDiario=MES_PREFIX[tpvDiaMes]||'2026-02';
+  const tpvDiaNiv=tpvDiaNivel;
+  const diasTpv=[...new Set(DAILY.filter(d=>d.data.startsWith(prefDiario)).map(d=>d.data))].sort();
+  const shortD=d=>d.slice(8)+'/'+d.slice(5,7);
+  const thTD='background:#009EE3;color:#fff;padding:10px 12px;font-size:11px;text-transform:uppercase;white-space:nowrap;text-align:right';
+  document.getElementById('thead-tpv-dia-row').innerHTML=
+    `<th style="${thTD};text-align:left">Métrica</th>`+
+    diasTpv.map(d=>`<th style="${thTD}">${shortD(d)}</th>`).join('')+
+    `<th style="${thTD};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
+
+  function tpvDiaRow(label,field){
+    const vals=diasTpv.map(d=>{
+      const rows=DAILY.filter(r=>r.data===d&&(tpvDiaNiv==='Todos'||r.nivel===tpvDiaNiv));
+      return rows.reduce((s,r)=>s+(r[field]||0),0);
+    });
+    const colors=colorScale(vals);
+    const tot=vals.reduce((s,v)=>s+v,0);
+    return `<tr>
+      <td style="padding:10px 12px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
+      ${vals.map((v,i)=>`<td style="padding:10px 12px;text-align:right;font-size:11px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmt(v)}</td>`).join('')}
+      <td style="padding:10px 12px;text-align:right;font-size:11px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${fmt(tot)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('tbody-tpv-dia').innerHTML=[
+    tpvDiaRow('TPV M0',    'tpv_m0'),
+    tpvDiaRow('TPV M1',    'tpv_m1'),
+    tpvDiaRow('TPV Total', 'tpv_total'),
+  ].join('');
+
+  document.getElementById('mes-filter-tpv-dia').innerHTML=MES_ORDER.map(m=>
+    `<button class="filter-btn${tpvDiaMes===m?' active':''}" onclick="tpvDiaMes='${m}';renderDiarizado()">${m}</button>`).join('');
+  document.getElementById('nivel-filter-tpv-dia').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${tpvDiaNivel===n?' active':''}" onclick="tpvDiaNivel='${n}';renderDiarizado()">${n}</button>`).join('');
 
   // Gráfico 1 — Cadastrados vs Convertidos por mês
   const mesesDiar=["Jan/26","Fev/26","Mar/26","Abr/26"];
