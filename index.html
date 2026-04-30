@@ -96,7 +96,7 @@ canvas{max-height:320px}
   <!-- Funil visual -->
   <div style="margin-bottom:24px">
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="funil-mes-filter"></div>
-    <div id="funil-visual" style="display:flex;gap:0;align-items:stretch;justify-content:center;flex-wrap:wrap;gap:2px"></div>
+    <div id="funil-visual"></div>
   </div>
 
   <div class="cards" id="cards-tabela"></div>
@@ -954,27 +954,29 @@ function renderFunilTab(){
   const tpvM0    = rows.reduce((s,r) => s + r.tpv_m0, 0);
   const pctAtiv  = pedidos ? (ativos/pedidos*100).toFixed(1) : 0;
 
-  const stageStyle = (w, bg) =>
-    `display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;` +
-    `background:${bg};border-radius:12px;min-width:${w}px;flex:1;box-shadow:0 2px 8px rgba(0,0,0,.07);`;
+  const tpvFmt = v => v>=1e6 ? 'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M' : 'R$ '+fmtN(v);
+  const pctAtiv = pedidos ? (ativos/pedidos*100).toFixed(1) : 0;
 
-  const arrow = (label) =>
-    `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;color:#999;font-size:11px;font-weight:700;white-space:nowrap">` +
-    `<div style="font-size:18px;color:#ddd">→</div><div>${label}</div></div>`;
-
-  const stage = (title, value, sub, bg, textColor='#1A1F6B') =>
-    `<div style="${stageStyle(180, bg)}">` +
-    `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${textColor}88;margin-bottom:6px">${title}</div>` +
-    `<div style="font-size:26px;font-weight:900;color:${textColor};line-height:1">${value}</div>` +
-    `${sub ? `<div style="font-size:11px;color:${textColor}99;margin-top:4px">${sub}</div>` : ''}` +
-    `</div>`;
+  const funnelStage = (pct, bg, textColor, label, value, sub, connector) => {
+    const margin = (100 - pct) / 2;
+    return `
+      <div style="width:100%;display:flex;flex-direction:column;align-items:center">
+        <div style="width:${pct}%;background:${bg};padding:18px 20px;text-align:center;
+          clip-path:polygon(5% 0%,95% 0%,100% 100%,0% 100%);margin:0 auto">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${textColor}99;margin-bottom:4px">${label}</div>
+          <div style="font-size:22px;font-weight:900;color:${textColor};line-height:1.1">${value}</div>
+          ${sub?`<div style="font-size:11px;color:${textColor}88;margin-top:3px">${sub}</div>`:''}
+        </div>
+        ${connector?`<div style="font-size:11px;color:#999;font-weight:700;padding:6px 0;letter-spacing:.04em">${connector}</div>`:''}
+      </div>`;
+  };
 
   document.getElementById('funil-visual').innerHTML =
-    stage('Devices Pedidos', fmtN(pedidos), funilMesTab === 'Todos' ? 'Jan–Abr/26' : funilMesTab, '#1A1F6B', '#fff') +
-    arrow(pctAtiv + '% ativados') +
-    stage('Devices Ativos', fmtN(ativos), `${pctAtiv}% dos pedidos`, '#FFE600', '#1A1F6B') +
-    arrow('TPV') +
-    stage('TPV M0', tpvM0>=1e6 ? 'R$ '+(tpvM0/1e6).toFixed(2).replace('.',',')+'M' : 'R$ '+fmtN(tpvM0), 'sellers captados no mês', '#f0f9ff', '#1A1F6B');
+    `<div style="width:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;align-items:center">` +
+    funnelStage(100, '#1A1F6B', '#fff',  'Devices Pedidos', fmtN(pedidos),  funilMesTab==='Todos'?'Jan–Abr/26':funilMesTab, `${pctAtiv}% foram ativados ▼`) +
+    funnelStage(78,  '#FFE600', '#1A1F6B','Devices Ativos',  fmtN(ativos),   `${pctAtiv}% dos pedidos`, `TPV dos sellers M0 ▼`) +
+    funnelStage(58,  '#009EE3', '#fff',  'TPV M0',           tpvFmt(tpvM0),  'sellers captados no mês', '') +
+    `</div>`;
 
   document.getElementById('funil-mes-filter').innerHTML =
     ['Todos', ...MES_ORDER].map(m =>
