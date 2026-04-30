@@ -182,6 +182,20 @@ canvas{max-height:320px}
       </div>
     </div>
   </div>
+  <!-- Gráficos mensais -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div class="chart-wrap" style="margin-bottom:0">
+      <div class="chart-title">Cadastrados vs Convertidos — por Mês</div>
+      <div class="chart-sub">Cadastros e conversões mensais acumuladas</div>
+      <canvas id="chartDiarMensal"></canvas>
+    </div>
+    <div class="chart-wrap" style="margin-bottom:0">
+      <div class="chart-title">1ª Compra por Mês</div>
+      <div class="chart-sub">Parceiros que fizeram a 1ª compra no mês (independente do cadastro)</div>
+      <canvas id="chartDiarPrimeira"></canvas>
+    </div>
+  </div>
+
   <div style="overflow-x:auto">
     <table id="table-diar" style="min-width:600px">
       <thead><tr id="thead-diar-row"></tr></thead>
@@ -521,6 +535,33 @@ function renderDiarizado(){
     colorRow('Convertidos',   convNums,     v=>fmtN(v),          fmtN(totConvAll)),
     colorRow('Taxa Conv. %',  taxaNums,     v=>v.toFixed(2)+'%', (totCadAll?totConvAll/totCadAll*100:0).toFixed(2)+'%'),
   ].join('') : `<tr><td colspan="${dates.length+2}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
+
+  // Gráfico 1 — Cadastrados vs Convertidos por mês
+  const mesesDiar=["Jan/26","Fev/26","Mar/26","Abr/26"];
+  const prefDiar={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+  const cadMes=mesesDiar.map(m=>LEADS.filter(r=>r.data.startsWith(prefDiar[m])).reduce((s,r)=>s+r.cadastrados,0));
+  const convMes=mesesDiar.map(m=>LEADS.filter(r=>r.data.startsWith(prefDiar[m])).reduce((s,r)=>s+r.convertidos,0));
+  const primMes=mesesDiar.map(m=>Object.entries(PRIMEIRA_COMPRA).filter(([d])=>d.startsWith(prefDiar[m])).reduce((s,[,v])=>s+v,0));
+
+  const ex1=Chart.getChart('chartDiarMensal');if(ex1)ex1.destroy();
+  new Chart(document.getElementById('chartDiarMensal').getContext('2d'),{
+    type:'bar',data:{labels:mesesDiar,datasets:[
+      {label:'Cadastrados',data:cadMes,backgroundColor:'#1A1F6B',borderRadius:4},
+      {label:'Convertidos',data:convMes,backgroundColor:'#FFE600',borderRadius:4},
+    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,footer:items=>'TOTAL: '+fmtN(items.reduce((s,i)=>s+(i.raw||0),0))}}},
+      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+
+  // Gráfico 2 — 1ª Compra por mês
+  const ex2=Chart.getChart('chartDiarPrimeira');if(ex2)ex2.destroy();
+  new Chart(document.getElementById('chartDiarPrimeira').getContext('2d'),{
+    type:'bar',data:{labels:mesesDiar,datasets:[
+      {label:'1ª Compra',data:primMes,backgroundColor:'#009EE3',borderRadius:4},
+    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{callbacks:{label:i=>`1ª Compra: ${fmtN(i.raw)}`}}},
+      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
 
   document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
     `<button class="filter-btn${(!activeMesDiar&&m==='Todos')||activeMesDiar===m?' active':''}" onclick="activeMesDiar='${m}';renderDiarizado()">${m}</button>`).join('');
