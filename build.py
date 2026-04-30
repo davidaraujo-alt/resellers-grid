@@ -578,22 +578,23 @@ function renderDiarizado(){
   const aprendizComCompra=mesesDiar.map(m=>RAW.find(r=>r.mes===m&&r.nivel==='Aprendiz')?.resellers||0);
   const aprendizPrimeira=[226,281,315,209];
   const ex2=Chart.getChart('chartDiarPrimeira');if(ex2)ex2.destroy();
+  const pctNovos=aprendizComCompra.map((v,i)=>v?+(aprendizPrimeira[i]/v*100).toFixed(1):0);
   new Chart(document.getElementById('chartDiarPrimeira').getContext('2d'),{
     type:'bar',
     data:{labels:mesesDiar,datasets:[
-      {label:'Aprendiz c/ Compra no Mês',data:aprendizComCompra,backgroundColor:'#1A1F6B',borderRadius:4},
-      {label:'Aprendiz c/ 1ª Compra',data:aprendizPrimeira,backgroundColor:'#009EE3',borderRadius:4},
+      {label:'Aprendiz c/ Compra no Mês',data:aprendizComCompra,backgroundColor:'#1A1F6B',borderRadius:4,yAxisID:'y'},
+      {label:'Aprendiz c/ 1ª Compra',data:aprendizPrimeira,backgroundColor:'#009EE3',borderRadius:4,yAxisID:'y'},
+      {label:'% Novos no Mês',data:pctNovos,type:'line',borderColor:'#f59e0b',backgroundColor:'transparent',borderWidth:2.5,pointRadius:6,pointBackgroundColor:'#f59e0b',pointBorderColor:'#fff',pointBorderWidth:2,fill:false,tension:.3,yAxisID:'y2',order:0},
     ]},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
       tooltip:{mode:'index',intersect:false,callbacks:{
-        label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
-        footer:items=>{
-          const total=items.find(i=>i.dataset.label.includes('Mês'));
-          const nova=items.find(i=>i.dataset.label.includes('1ª'));
-          return total&&nova&&total.raw?`Novos no mês: ${(nova.raw/total.raw*100).toFixed(1)}%`:'';
-        }
+        label:i=>i.dataset.yAxisID==='y2'?`% Novos: ${i.raw}%`:`${i.dataset.label}: ${fmtN(i.raw)}`,
       }}},
-      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+      scales:{
+        x:{grid:{display:false}},
+        y:{ticks:{font:{size:10}},grid:{color:'#f0f0f0'},position:'left'},
+        y2:{ticks:{callback:v=>v+'%',font:{size:10}},grid:{display:false},position:'right',min:0,max:100}
+      }}
   });
 
   document.getElementById('mes-filter-diar').innerHTML=['Todos',...MES_ORDER].map(m=>
