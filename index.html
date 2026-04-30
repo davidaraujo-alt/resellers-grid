@@ -183,7 +183,20 @@ canvas{max-height:320px}
       </div>
     </div>
   </div>
+  <!-- Funil mensal transposto -->
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;border-left:5px solid #FFE600;padding-left:14px">Funil Mensal</div>
+  <div class="controls" style="margin-bottom:12px">
+    <div id="nivel-filter-funil" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+  </div>
+  <div style="overflow-x:auto;margin-bottom:28px">
+    <table id="table-funil" style="min-width:500px">
+      <thead><tr id="thead-funil-row"></tr></thead>
+      <tbody id="tbody-funil"></tbody>
+    </table>
+  </div>
+
   <!-- Gráficos mensais -->
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;border-left:5px solid #FFE600;padding-left:14px">Visão Mensal</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div class="chart-wrap" style="margin-bottom:0">
       <div class="chart-title">Cadastrados vs Convertidos — por Mês</div>
@@ -508,7 +521,8 @@ const LEADS = [{"data": "2026-01-01", "nivel": "Aprendiz", "cadastrados": 803, "
 const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
 const PRIMEIRA_COMPRA={"2026-01-02":14,"2026-01-03":3,"2026-01-04":6,"2026-01-05":11,"2026-01-06":11,"2026-01-07":8,"2026-01-08":8,"2026-01-09":5,"2026-01-10":5,"2026-01-11":5,"2026-01-12":10,"2026-01-13":8,"2026-01-14":6,"2026-01-15":12,"2026-01-16":7,"2026-01-17":4,"2026-01-18":4,"2026-01-19":8,"2026-01-20":7,"2026-01-21":6,"2026-01-22":7,"2026-01-23":9,"2026-01-24":3,"2026-01-25":4,"2026-01-26":11,"2026-01-27":8,"2026-01-28":12,"2026-01-29":7,"2026-01-30":7,"2026-01-31":10,"2026-02-01":3,"2026-02-02":9,"2026-02-03":19,"2026-02-04":17,"2026-02-05":15,"2026-02-06":17,"2026-02-07":13,"2026-02-08":1,"2026-02-09":12,"2026-02-10":14,"2026-02-11":11,"2026-02-12":8,"2026-02-13":6,"2026-02-14":6,"2026-02-15":4,"2026-02-16":3,"2026-02-17":2,"2026-02-18":12,"2026-02-19":14,"2026-02-20":18,"2026-02-21":7,"2026-02-22":3,"2026-02-23":11,"2026-02-24":16,"2026-02-25":13,"2026-02-26":14,"2026-02-27":8,"2026-02-28":5,"2026-03-01":7,"2026-03-02":13,"2026-03-03":12,"2026-03-04":6,"2026-03-05":10,"2026-03-06":8,"2026-03-07":16,"2026-03-08":5,"2026-03-09":10,"2026-03-10":14,"2026-03-11":11,"2026-03-12":12,"2026-03-13":12,"2026-03-14":8,"2026-03-15":4,"2026-03-16":15,"2026-03-17":10,"2026-03-18":6,"2026-03-19":12,"2026-03-20":8,"2026-03-21":8,"2026-03-22":3,"2026-03-23":17,"2026-03-24":10,"2026-03-25":15,"2026-03-26":12,"2026-03-27":12,"2026-03-28":13,"2026-03-29":2,"2026-03-30":9,"2026-03-31":15,"2026-04-01":20,"2026-04-02":7,"2026-04-03":8,"2026-04-04":3,"2026-04-05":4,"2026-04-06":9,"2026-04-07":14,"2026-04-08":9,"2026-04-09":8,"2026-04-10":6,"2026-04-11":3,"2026-04-12":5,"2026-04-13":12,"2026-04-14":7,"2026-04-15":10,"2026-04-16":6,"2026-04-17":9,"2026-04-18":8,"2026-04-19":5,"2026-04-20":7,"2026-04-21":3,"2026-04-22":6,"2026-04-23":8,"2026-04-24":9,"2026-04-25":5,"2026-04-26":4,"2026-04-27":11,"2026-04-28":3};
 
-let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1;
+let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1,funilActiveNivel='Todos';
+const fmt=n=>n==null?'—':n>=1e6?'R$ '+(n/1e6).toFixed(2).replace('.',',')+'M':'R$ '+n.toLocaleString('pt-BR');
 
 function getDataDiar(){
   let d=[...LEADS];
@@ -583,6 +597,47 @@ function renderDiarizado(){
     colorRow('1ª Compra',     primeiroNums, v=>fmtN(v),          fmtN(totPrimeiro)),
     colorRow('Taxa Conv. %',  taxaNums,     v=>v.toFixed(2)+'%', (totCadAll?totConvAll/totCadAll*100:0).toFixed(2)+'%'),
   ].join('') : `<tr><td colspan="${dates.length+2}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
+
+  // ── Funil mensal transposto ──
+  const funilNivel=funilActiveNivel||'Todos';
+  const funilData=MES_ORDER.map(m=>{
+    const rows=RAW.filter(r=>r.mes===m&&(funilNivel==='Todos'||r.nivel===funilNivel));
+    return {
+      mes:m,
+      pedidos:   rows.reduce((s,r)=>s+r.pedidos,0),
+      ativos:    rows.reduce((s,r)=>s+r.ativos,0),
+      tpv_m0:   rows.reduce((s,r)=>s+r.tpv_m0,0),
+      tpv_m1:   rows.reduce((s,r)=>s+(r.tpv_m1||0),0),
+      tpv_total:rows.reduce((s,r)=>s+r.tpv_total,0),
+    };
+  });
+
+  const thFS='background:#1A1F6B;color:#FFE600;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;text-align:right';
+  document.getElementById('thead-funil-row').innerHTML=
+    `<th style="${thFS};text-align:left">Métrica</th>`+
+    MES_ORDER.map(m=>`<th style="${thFS}">${m}</th>`).join('')+
+    `<th style="${thFS};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
+
+  function funilRow(label,nums,fmt,totFmt){
+    const colors=colorScale(nums);
+    const tot=nums.reduce((s,v)=>s+v,0);
+    return `<tr>
+      <td style="padding:10px 14px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
+      ${nums.map((v,i)=>`<td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmt(v)}</td>`).join('')}
+      <td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${totFmt?totFmt(tot):fmt(tot)}</td>
+    </tr>`;
+  }
+
+  document.getElementById('tbody-funil').innerHTML=[
+    funilRow('Pedidos de Device', funilData.map(r=>r.pedidos),   v=>fmtN(v)),
+    funilRow('Devices Ativos',    funilData.map(r=>r.ativos),    v=>fmtN(v)),
+    funilRow('TPV M0',            funilData.map(r=>r.tpv_m0),    v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_m0,0))),
+    funilRow('TPV M1',            funilData.map(r=>r.tpv_m1),    v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_m1,0))),
+    funilRow('TPV Total',         funilData.map(r=>r.tpv_total), v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_total,0))),
+  ].join('');
+
+  document.getElementById('nivel-filter-funil').innerHTML=['Todos',...NIV_ORDER].map(n=>
+    `<button class="filter-btn${funilNivel===n?' active':''}" onclick="funilActiveNivel='${n}';renderDiarizado()">${n}</button>`).join('');
 
   // Gráfico 1 — Cadastrados vs Convertidos por mês
   const mesesDiar=["Jan/26","Fev/26","Mar/26","Abr/26"];
