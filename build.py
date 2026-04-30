@@ -107,6 +107,7 @@ canvas{max-height:320px}
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
   <div class="tab" onclick="showTab('diarizado',this)">&#128197; Diarizado</div>
   <div class="tab" onclick="showTab('niveis',this)">&#11014; Subidas de Nível</div>
+  <div class="tab" onclick="showTab('aprendiz',this)">&#127891; Aprendiz</div>
 </div>
 
 <div class="body">
@@ -258,6 +259,30 @@ canvas{max-height:320px}
   </div>
 </div>
 
+<!-- ── TAB APRENDIZ ── -->
+<div class="pane" id="pane-aprendiz">
+  <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Aprendiz — Distribuição de Devices</div>
+  <div class="cards" id="cards-aprendiz"></div>
+  <div class="grid-wrapper" style="margin-bottom:24px">
+    <table>
+      <thead><tr>
+        <th>Mês</th>
+        <th style="text-align:right">1 Device</th>
+        <th style="text-align:right">2 Devices</th>
+        <th style="text-align:right">3 Devices</th>
+        <th style="text-align:right">4+ Devices</th>
+        <th style="text-align:right">Total</th>
+      </tr></thead>
+      <tbody id="tbody-aprendiz"></tbody>
+    </table>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">Distribuição de Devices por Mês — Aprendiz</div>
+    <div class="chart-sub">Quantidade de resellers Aprendiz por faixa de devices (acumulado no mês)</div>
+    <canvas id="chartAprendiz"></canvas>
+  </div>
+</div>
+
 </div>
 <div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
 
@@ -310,6 +335,7 @@ function showTab(id,el){
   if(id==='chart-devices')renderChartDevices();
   if(id==='diarizado')renderDiarizado();
   if(id==='niveis')renderNiveis();
+  if(id==='aprendiz')renderAprendiz();
 }
 
 let sortCol=null,sortDir=1,activeMes=null,activeNivel=null,searchTerm='';
@@ -689,6 +715,62 @@ function renderNiveis(){
     options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
       tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${i.raw}`,footer:items=>'TOTAL: '+items.reduce((s,i)=>s+(i.raw||0),0)}}},
       scales:{x:{grid:{display:false}},y:{ticks:{font:{size:11},stepSize:1},grid:{color:'#f0f0f0'}}}}
+  });
+}
+
+// ── APRENDIZ DEVICES ──
+const APR_DEVICES = [
+  {mes:"Jan/26", d1:133, d2:549, d3:3,  d4:229},
+  {mes:"Fev/26", d1:166, d2:595, d3:0,  d4:222},
+  {mes:"Mar/26", d1:159, d2:588, d3:5,  d4:170},
+  {mes:"Abr/26", d1:228, d2:381, d3:0,  d4:91 },
+];
+const DEV_COLORS = ["#e0e7ff","#6366f1","#1A1F6B","#FFE600"];
+
+let chartAprendiz=null;
+function renderAprendiz(){
+  const pctFmt=(v,t)=>t?` (${(v/t*100).toFixed(1)}%)`:'';
+  const tdA='padding:11px 16px;text-align:right;font-size:13px;border-bottom:1px solid #f0f0f0';
+
+  let html='';
+  APR_DEVICES.forEach(r=>{
+    const total=r.d1+r.d2+r.d3+r.d4;
+    html+=`<tr>
+      <td><span class="mes-badge">${r.mes}</span></td>
+      <td style="${tdA}">${fmtN(r.d1)}<span class="pct">${pctFmt(r.d1,total)}</span></td>
+      <td style="${tdA}">${fmtN(r.d2)}<span class="pct">${pctFmt(r.d2,total)}</span></td>
+      <td style="${tdA}">${r.d3||'—'}${r.d3?`<span class="pct">${pctFmt(r.d3,total)}</span>`:''}</td>
+      <td style="${tdA}">${fmtN(r.d4)}<span class="pct">${pctFmt(r.d4,total)}</span></td>
+      <td style="${tdA};font-weight:700;color:#1A1F6B">${fmtN(total)}</td>
+    </tr>`;
+  });
+  document.getElementById('tbody-aprendiz').innerHTML=html;
+
+  // Cards
+  const totGeral=APR_DEVICES.reduce((s,r)=>s+r.d1+r.d2+r.d3+r.d4,0);
+  document.getElementById('cards-aprendiz').innerHTML=`
+    <div class="card"><div class="card-label">Total Aprendiz c/ Compra</div><div class="card-value">${fmtN(totGeral)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card" style="border-left-color:#e0e7ff"><div class="card-label">1 Device</div><div class="card-value">${fmtN(APR_DEVICES.reduce((s,r)=>s+r.d1,0))}</div><div class="card-sub">${(APR_DEVICES.reduce((s,r)=>s+r.d1,0)/totGeral*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#6366f1"><div class="card-label">2 Devices</div><div class="card-value">${fmtN(APR_DEVICES.reduce((s,r)=>s+r.d2,0))}</div><div class="card-sub">${(APR_DEVICES.reduce((s,r)=>s+r.d2,0)/totGeral*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#1A1F6B"><div class="card-label">3 Devices</div><div class="card-value">${fmtN(APR_DEVICES.reduce((s,r)=>s+r.d3,0))}</div><div class="card-sub">${(APR_DEVICES.reduce((s,r)=>s+r.d3,0)/totGeral*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#FFE600"><div class="card-label">4+ Devices</div><div class="card-value">${fmtN(APR_DEVICES.reduce((s,r)=>s+r.d4,0))}</div><div class="card-sub">${(APR_DEVICES.reduce((s,r)=>s+r.d4,0)/totGeral*100).toFixed(1)}% do total</div></div>`;
+
+  // Gráfico empilhado
+  if(chartAprendiz)chartAprendiz.destroy();
+  chartAprendiz=new Chart(document.getElementById('chartAprendiz').getContext('2d'),{
+    type:'bar',
+    data:{labels:APR_DEVICES.map(r=>r.mes),datasets:[
+      {label:'1 Device', data:APR_DEVICES.map(r=>r.d1),backgroundColor:'#e0e7ff',borderRadius:0},
+      {label:'2 Devices',data:APR_DEVICES.map(r=>r.d2),backgroundColor:'#6366f1',borderRadius:0},
+      {label:'3 Devices',data:APR_DEVICES.map(r=>r.d3),backgroundColor:'#1A1F6B',borderRadius:0},
+      {label:'4+ Devices',data:APR_DEVICES.map(r=>r.d4),backgroundColor:'#FFE600',borderRadius:4},
+    ]},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{mode:'index',intersect:false,callbacks:{
+        label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
+        footer:items=>'TOTAL: '+fmtN(items.reduce((s,i)=>s+(i.raw||0),0))
+      }}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
   });
 }
 
