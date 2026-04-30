@@ -215,12 +215,28 @@ canvas{max-height:320px}
 <div class="pane" id="pane-niveis">
   <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Subidas de Nível — 2026</div>
   <div class="cards" id="cards-niveis"></div>
-  <div style="overflow-x:auto;margin-bottom:24px">
-    <table id="table-niveis" style="min-width:500px">
-      <thead><tr id="thead-niveis"></tr></thead>
+
+  <!-- Filtros -->
+  <div class="controls" style="margin-bottom:16px">
+    <div id="mes-filter-niveis" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <div id="trans-filter-niveis" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    <input class="search-box" type="text" placeholder="Buscar reseller..." id="search-niveis"/>
+  </div>
+
+  <!-- Tabela detalhada -->
+  <div class="grid-wrapper" style="margin-bottom:24px">
+    <table>
+      <thead><tr>
+        <th data-col-n="dt">Data</th>
+        <th data-col-n="reseller">Reseller ID</th>
+        <th data-col-n="transicao">Transição</th>
+        <th data-col-n="nivel_atual">Nível Atual</th>
+      </tr></thead>
       <tbody id="tbody-niveis"></tbody>
     </table>
   </div>
+
+  <!-- Gráfico -->
   <div class="chart-wrap">
     <div class="chart-title">Subidas por Transição e Mês</div>
     <div class="chart-sub">Quantidade de resellers que subiram de nível — Jan–Abr/26</div>
@@ -530,6 +546,14 @@ function renderDiarizado(){
 }
 
 document.getElementById('search-diar').addEventListener('input',e=>{searchDiar=e.target.value.trim();renderDiarizado();});
+document.getElementById('search-niveis').addEventListener('input',e=>{searchNiv=e.target.value.trim();renderNiveis();});
+document.querySelectorAll('[data-col-n]').forEach(th=>th.addEventListener('click',()=>{
+  const col=th.dataset.colN;
+  sortDirN=sortColN===col?sortDirN*-1:-1;sortColN=col;
+  document.querySelectorAll('[data-col-n]').forEach(t=>t.classList.remove('sorted-asc','sorted-desc'));
+  th.classList.add(sortDirN===1?'sorted-asc':'sorted-desc');
+  renderNiveis();
+}));
 document.querySelectorAll('[data-col-d]').forEach(th=>th.addEventListener('click',()=>{
   const col=th.dataset.colD;
   sortDirD=sortColD===col?sortDirD*-1:1;sortColD=col;
@@ -539,87 +563,73 @@ document.querySelectorAll('[data-col-d]').forEach(th=>th.addEventListener('click
 }));
 
 // ── SUBIDAS DE NÍVEL ──
-const SUBIDAS_RAW = [
-  {mes:"2026-01",transicao:"Aprendiz → Especialista",      subidas:9},
-  {mes:"2026-01",transicao:"Especialista → Empreendedor",   subidas:6},
-  {mes:"2026-01",transicao:"Empreendedor → Top Empreendedor",subidas:2},
-  {mes:"2026-02",transicao:"Aprendiz → Especialista",      subidas:12},
-  {mes:"2026-02",transicao:"Especialista → Empreendedor",   subidas:3},
-  {mes:"2026-02",transicao:"Empreendedor → Top Empreendedor",subidas:1},
-  {mes:"2026-03",transicao:"Aprendiz → Especialista",      subidas:4},
-  {mes:"2026-03",transicao:"Especialista → Empreendedor",   subidas:5},
-  {mes:"2026-03",transicao:"Empreendedor → Top Empreendedor",subidas:2},
-  {mes:"2026-04",transicao:"Aprendiz → Especialista",      subidas:11},
-  {mes:"2026-04",transicao:"Especialista → Empreendedor",   subidas:5},
-  {mes:"2026-04",transicao:"Empreendedor → Top Empreendedor",subidas:4},
-];
+const SUBIDAS_DETAIL = [{"reseller": "2087174154", "nivel_atual": "Top Empreendedor", "dt": "2026-04-27", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "1532390983", "nivel_atual": "Empreendedor", "dt": "2026-04-26", "transicao": "Especialista -> Empreendedor"}, {"reseller": "186371630", "nivel_atual": "Especialista", "dt": "2026-04-26", "transicao": "Aprendiz -> Especialista"}, {"reseller": "203850521", "nivel_atual": "Especialista", "dt": "2026-04-26", "transicao": "Aprendiz -> Especialista"}, {"reseller": "730679045", "nivel_atual": "Especialista", "dt": "2026-04-25", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2619742737", "nivel_atual": "Especialista", "dt": "2026-04-24", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2385034802", "nivel_atual": "Top Empreendedor", "dt": "2026-04-23", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "258795582", "nivel_atual": "-", "dt": "2026-04-23", "transicao": "Aprendiz -> Especialista"}, {"reseller": "72563541", "nivel_atual": "-", "dt": "2026-04-22", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1226761249", "nivel_atual": "Empreendedor", "dt": "2026-04-21", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2176828104", "nivel_atual": "Top Empreendedor", "dt": "2026-04-21", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "153688180", "nivel_atual": "Empreendedor", "dt": "2026-04-21", "transicao": "Especialista -> Empreendedor"}, {"reseller": "1615066500", "nivel_atual": "Top Empreendedor", "dt": "2026-04-15", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "246343377", "nivel_atual": "Especialista", "dt": "2026-04-14", "transicao": "Aprendiz -> Especialista"}, {"reseller": "241572613", "nivel_atual": "Empreendedor", "dt": "2026-04-14", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2445794092", "nivel_atual": "Empreendedor", "dt": "2026-04-12", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2191289064", "nivel_atual": "Especialista", "dt": "2026-04-09", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1009968348", "nivel_atual": "Especialista", "dt": "2026-04-07", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1173220866", "nivel_atual": "-", "dt": "2026-04-06", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1339892065", "nivel_atual": "Especialista", "dt": "2026-04-02", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1388425394", "nivel_atual": "Empreendedor", "dt": "2026-03-31", "transicao": "Especialista -> Empreendedor"}, {"reseller": "20970977", "nivel_atual": "Especialista", "dt": "2026-03-31", "transicao": "Aprendiz -> Especialista"}, {"reseller": "149177824", "nivel_atual": "Empreendedor", "dt": "2026-03-29", "transicao": "Especialista -> Empreendedor"}, {"reseller": "42318297", "nivel_atual": "Top Empreendedor", "dt": "2026-03-24", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "241222977", "nivel_atual": "Top Empreendedor", "dt": "2026-03-17", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "2087174154", "nivel_atual": "Top Empreendedor", "dt": "2026-03-16", "transicao": "Especialista -> Empreendedor"}, {"reseller": "656772499", "nivel_atual": "Especialista", "dt": "2026-03-16", "transicao": "Aprendiz -> Especialista"}, {"reseller": "3140181270", "nivel_atual": "-", "dt": "2026-03-10", "transicao": "Especialista -> Empreendedor"}, {"reseller": "134179496", "nivel_atual": "Especialista", "dt": "2026-03-06", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2445794092", "nivel_atual": "Empreendedor", "dt": "2026-03-05", "transicao": "Aprendiz -> Especialista"}, {"reseller": "42318297", "nivel_atual": "Top Empreendedor", "dt": "2026-03-01", "transicao": "Especialista -> Empreendedor"}, {"reseller": "1430493190", "nivel_atual": "Empreendedor", "dt": "2026-02-27", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "1226761249", "nivel_atual": "Empreendedor", "dt": "2026-02-26", "transicao": "Aprendiz -> Especialista"}, {"reseller": "242763116", "nivel_atual": "Empreendedor", "dt": "2026-02-25", "transicao": "Especialista -> Empreendedor"}, {"reseller": "1288797521", "nivel_atual": "Aprendiz", "dt": "2026-02-23", "transicao": "Aprendiz -> Especialista"}, {"reseller": "497552313", "nivel_atual": "Especialista", "dt": "2026-02-21", "transicao": "Aprendiz -> Especialista"}, {"reseller": "3118113625", "nivel_atual": "Especialista", "dt": "2026-02-19", "transicao": "Aprendiz -> Especialista"}, {"reseller": "3140181270", "nivel_atual": "-", "dt": "2026-02-17", "transicao": "Aprendiz -> Especialista"}, {"reseller": "3057984821", "nivel_atual": "Empreendedor", "dt": "2026-02-17", "transicao": "Especialista -> Empreendedor"}, {"reseller": "342576897", "nivel_atual": "Empreendedor", "dt": "2026-02-16", "transicao": "Especialista -> Empreendedor"}, {"reseller": "299222705", "nivel_atual": "Aprendiz", "dt": "2026-02-15", "transicao": "Aprendiz -> Especialista"}, {"reseller": "190822347", "nivel_atual": "Especialista", "dt": "2026-02-11", "transicao": "Aprendiz -> Especialista"}, {"reseller": "624974985", "nivel_atual": "Especialista", "dt": "2026-02-10", "transicao": "Aprendiz -> Especialista"}, {"reseller": "42318297", "nivel_atual": "Top Empreendedor", "dt": "2026-02-07", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1615066500", "nivel_atual": "Top Empreendedor", "dt": "2026-02-01", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2176828104", "nivel_atual": "Top Empreendedor", "dt": "2026-02-01", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2685466379", "nivel_atual": "-", "dt": "2026-02-01", "transicao": "Aprendiz -> Especialista"}, {"reseller": "2272438961", "nivel_atual": "Especialista", "dt": "2026-01-31", "transicao": "Aprendiz -> Especialista"}, {"reseller": "381728218", "nivel_atual": "Top Empreendedor", "dt": "2026-01-31", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "387319387", "nivel_atual": "Top Empreendedor", "dt": "2026-01-30", "transicao": "Empreendedor -> Top Empreendedor"}, {"reseller": "1532390983", "nivel_atual": "Empreendedor", "dt": "2026-01-30", "transicao": "Aprendiz -> Especialista"}, {"reseller": "149177824", "nivel_atual": "Empreendedor", "dt": "2026-01-25", "transicao": "Aprendiz -> Especialista"}, {"reseller": "438097380", "nivel_atual": "Empreendedor", "dt": "2026-01-22", "transicao": "Especialista -> Empreendedor"}, {"reseller": "3146784575", "nivel_atual": "Aprendiz", "dt": "2026-01-21", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1742983151", "nivel_atual": "Aprendiz", "dt": "2026-01-21", "transicao": "Aprendiz -> Especialista"}, {"reseller": "140888320", "nivel_atual": "Aprendiz", "dt": "2026-01-21", "transicao": "Aprendiz -> Especialista"}, {"reseller": "1615066500", "nivel_atual": "Top Empreendedor", "dt": "2026-01-21", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2176828104", "nivel_atual": "Top Empreendedor", "dt": "2026-01-21", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2685466379", "nivel_atual": "-", "dt": "2026-01-21", "transicao": "Especialista -> Empreendedor"}, {"reseller": "2599471034", "nivel_atual": "Especialista", "dt": "2026-01-19", "transicao": "Aprendiz -> Especialista"}, {"reseller": "3057984821", "nivel_atual": "Empreendedor", "dt": "2026-01-18", "transicao": "Aprendiz -> Especialista"}, {"reseller": "300594879", "nivel_atual": "Empreendedor", "dt": "2026-01-16", "transicao": "Especialista -> Empreendedor"}, {"reseller": "628247144", "nivel_atual": "Empreendedor", "dt": "2026-01-14", "transicao": "Especialista -> Empreendedor"}, {"reseller": "502170173", "nivel_atual": "Especialista", "dt": "2026-01-12", "transicao": "Aprendiz -> Especialista"}];
 
-const TRANS_ORDER = ["Aprendiz → Especialista","Especialista → Empreendedor","Empreendedor → Top Empreendedor"];
-const TRANS_COLOR = {"Aprendiz → Especialista":"#3b82f6","Especialista → Empreendedor":"#f59e0b","Empreendedor → Top Empreendedor":"#1A1F6B"};
+const TRANS_ORDER = ["Aprendiz -> Especialista","Especialista -> Empreendedor","Empreendedor -> Top Empreendedor"];
+const TRANS_COLOR = {"Aprendiz -> Especialista":"#3b82f6","Especialista -> Empreendedor":"#f59e0b","Empreendedor -> Top Empreendedor":"#1A1F6B"};
+const TRANS_LABEL = {"Aprendiz -> Especialista":"Aprendiz → Esp.","Especialista -> Empreendedor":"Esp. → Empreendedor","Empreendedor -> Top Empreendedor":"Empreendedor → Top"};
 const MESES_NIVEIS = ["2026-01","2026-02","2026-03","2026-04"];
 const MES_LABEL_N  = {"2026-01":"Jan/26","2026-02":"Fev/26","2026-03":"Mar/26","2026-04":"Abr/26"};
+const NIV_COLOR_MAP = {"Aprendiz":"#9ca3af","Especialista":"#3b82f6","Empreendedor":"#f59e0b","Top Empreendedor":"#1A1F6B","—":"#ddd"};
 
-let chartNiveis = null;
+let activeMesNiv=null, activeTransNiv=null, searchNiv='', sortColN='dt', sortDirN=-1, chartNiveis=null;
 
+function getDataNiv(){
+  let d=[...SUBIDAS_DETAIL];
+  if(activeMesNiv) d=d.filter(r=>r.dt.startsWith(activeMesNiv));
+  if(activeTransNiv) d=d.filter(r=>r.transicao===activeTransNiv);
+  if(searchNiv) d=d.filter(r=>r.reseller.includes(searchNiv)||r.transicao.toLowerCase().includes(searchNiv.toLowerCase())||r.nivel_atual.toLowerCase().includes(searchNiv.toLowerCase()));
+  d.sort((a,b)=>{
+    const av=a[sortColN]||'', bv=b[sortColN]||'';
+    return (typeof av==='string'?av.localeCompare(bv):av-bv)*sortDirN;
+  });
+  return d;
+}
+
+let chartNiveis2=null;
 function renderNiveis(){
-  // Cards totais
-  const totByTrans = {};
-  TRANS_ORDER.forEach(t=>totByTrans[t]=SUBIDAS_RAW.filter(r=>r.transicao===t).reduce((s,r)=>s+r.subidas,0));
-  const totalGeral = Object.values(totByTrans).reduce((s,v)=>s+v,0);
+  const data=getDataNiv();
+  const total=SUBIDAS_DETAIL.length;
+  const totByTrans={};
+  TRANS_ORDER.forEach(t=>totByTrans[t]=SUBIDAS_DETAIL.filter(r=>r.transicao===t).length);
+
   document.getElementById('cards-niveis').innerHTML=`
-    <div class="card"><div class="card-label">Total Subidas</div><div class="card-value">${fmtN(totalGeral)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card"><div class="card-label">Total Subidas</div><div class="card-value">${total}</div><div class="card-sub">Jan–Abr/26</div></div>
     ${TRANS_ORDER.map(t=>`<div class="card" style="border-left-color:${TRANS_COLOR[t]}">
-      <div class="card-label" style="font-size:9px">${t}</div>
-      <div class="card-value" style="color:${TRANS_COLOR[t]}">${fmtN(totByTrans[t])}</div>
-      <div class="card-sub">Jan–Abr/26</div>
-    </div>`).join('')}`;
+      <div class="card-label" style="font-size:9px">${t.replace(' -> ',' → ')}</div>
+      <div class="card-value" style="color:${TRANS_COLOR[t]}">${totByTrans[t]}</div>
+      <div class="card-sub">Jan–Abr/26</div></div>`).join('')}`;
 
-  // Tabela pivotada: transição nas linhas, meses nas colunas
-  const thS='background:#1A1F6B;color:#FFE600;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;text-align:right';
-  document.getElementById('thead-niveis').innerHTML=
-    `<th style="${thS};text-align:left">Transição</th>`+
-    MESES_NIVEIS.map(m=>`<th style="${thS}">${MES_LABEL_N[m]}</th>`).join('')+
-    `<th style="${thS};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
-
-  const tdS='padding:10px 14px;text-align:right;font-size:13px;border-bottom:1px solid #f0f0f0;font-weight:700';
+  // Tabela filtrada
   let html='';
-  TRANS_ORDER.forEach(t=>{
-    const vals=MESES_NIVEIS.map(m=>{const r=SUBIDAS_RAW.find(d=>d.mes===m&&d.transicao===t);return r?r.subidas:0;});
-    const total=vals.reduce((s,v)=>s+v,0);
-    const colors=colorScale(vals);
+  data.forEach(r=>{
+    const cor=TRANS_COLOR[r.transicao]||'#999';
+    const nc=NIV_COLOR_MAP[r.nivel_atual]||'#999';
     html+=`<tr>
-      <td style="padding:10px 14px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:13px;border-bottom:1px solid #f0f0f0;border-left:4px solid ${TRANS_COLOR[t]}">${t}</td>
-      ${vals.map((v,i)=>`<td style="${tdS};${colors[i]}">${v}</td>`).join('')}
-      <td style="${tdS};background:#fffde7;color:#1A1F6B">${total}</td>
+      <td>${r.dt}</td>
+      <td style="font-family:monospace;font-size:12px;color:#555">${r.reseller}</td>
+      <td><span style="display:inline-block;padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;background:${cor}22;color:${cor};border:1px solid ${cor}44">${r.transicao.replace(' -> ',' → ')}</span></td>
+      <td><span class="nivel-badge"><span class="nivel-dot" style="background:${nc}"></span>${r.nivel_atual}</span></td>
     </tr>`;
   });
-  // Linha total por mês
-  const totByMes=MESES_NIVEIS.map(m=>SUBIDAS_RAW.filter(r=>r.mes===m).reduce((s,r)=>s+r.subidas,0));
-  html+=`<tr style="background:#f5f5ff">
-    <td style="padding:10px 14px;font-weight:800;color:#1A1F6B;font-size:12px;border-bottom:1px solid #ddd">TOTAL</td>
-    ${totByMes.map(v=>`<td style="${tdS};font-size:14px;color:#1A1F6B;border-bottom:1px solid #ddd">${v}</td>`).join('')}
-    <td style="${tdS};background:#FFE600;font-size:14px;color:#1A1F6B;border-bottom:1px solid #ddd">${totalGeral}</td>
-  </tr>`;
-  document.getElementById('tbody-niveis').innerHTML=html;
+  document.getElementById('tbody-niveis').innerHTML=html||'<tr><td colspan="4" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
 
-  // Gráfico de barras agrupadas
-  if(chartNiveis)chartNiveis.destroy();
-  chartNiveis=new Chart(document.getElementById('chartNiveis').getContext('2d'),{
+  // Filtros
+  document.getElementById('mes-filter-niveis').innerHTML=['Todos',...MESES_NIVEIS].map(m=>
+    `<button class="filter-btn${(!activeMesNiv&&m==='Todos')||activeMesNiv===m?' active':''}" onclick="activeMesNiv='${m==='Todos'?'':m}';renderNiveis()">${m==='Todos'?'Todos':MES_LABEL_N[m]}</button>`).join('');
+  document.getElementById('trans-filter-niveis').innerHTML=['Todos',...TRANS_ORDER].map(t=>
+    `<button class="filter-btn${(!activeTransNiv&&t==='Todos')||activeTransNiv===t?' active':''}" onclick="activeTransNiv='${t==='Todos'?'':t}';renderNiveis()">${t==='Todos'?'Todos':TRANS_LABEL[t]}</button>`).join('');
+
+  // Gráfico
+  if(chartNiveis2)chartNiveis2.destroy();
+  chartNiveis2=new Chart(document.getElementById('chartNiveis').getContext('2d'),{
     type:'bar',
-    data:{
-      labels:MESES_NIVEIS.map(m=>MES_LABEL_N[m]),
-      datasets:TRANS_ORDER.map(t=>({
-        label:t,
-        data:MESES_NIVEIS.map(m=>{const r=SUBIDAS_RAW.find(d=>d.mes===m&&d.transicao===t);return r?r.subidas:0;}),
-        backgroundColor:TRANS_COLOR[t],borderRadius:4
-      }))
-    },
-    options:{responsive:true,
-      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
-        tooltip:{mode:'index',intersect:false,callbacks:{
-          label:i=>`${i.dataset.label}: ${i.raw}`,
-          footer:items=>'TOTAL: '+items.reduce((s,i)=>s+(i.raw||0),0)
-        }}},
+    data:{labels:MESES_NIVEIS.map(m=>MES_LABEL_N[m]),
+      datasets:TRANS_ORDER.map(t=>({label:t.replace(' -> ',' → '),
+        data:MESES_NIVEIS.map(m=>SUBIDAS_DETAIL.filter(r=>r.transicao===t&&r.dt.startsWith(m)).length),
+        backgroundColor:TRANS_COLOR[t],borderRadius:4}))},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{mode:'index',intersect:false,callbacks:{label:i=>`${i.dataset.label}: ${i.raw}`,footer:items=>'TOTAL: '+items.reduce((s,i)=>s+(i.raw||0),0)}}},
       scales:{x:{grid:{display:false}},y:{ticks:{font:{size:11},stepSize:1},grid:{color:'#f0f0f0'}}}}
   });
 }
