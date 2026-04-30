@@ -976,7 +976,6 @@ function renderFunilTab(){
   const pctAtiv  = pedidos ? (ativos/pedidos*100).toFixed(1) : 0;
 
   const tpvFmt = v => v>=1e6 ? 'R$ '+(v/1e6).toFixed(2).replace('.',',')+'M' : 'R$ '+fmtN(v);
-  const pctAtiv = pedidos ? (ativos/pedidos*100).toFixed(1) : 0;
 
   const funnelStage = (pct, bg, textColor, label, value, sub, connector) => {
     const margin = (100 - pct) / 2;
