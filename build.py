@@ -106,6 +106,7 @@ canvas{max-height:320px}
   <div class="tab" onclick="showTab('chart-tpv',this)">&#128200; TPV</div>
   <div class="tab" onclick="showTab('chart-devices',this)">&#128230; Devices / Mes</div>
   <div class="tab" onclick="showTab('diarizado',this)">&#128197; Diarizado</div>
+  <div class="tab" onclick="showTab('niveis',this)">&#11014; Subidas de Nível</div>
 </div>
 
 <div class="body">
@@ -210,6 +211,23 @@ canvas{max-height:320px}
   </div>
 </div>
 
+<!-- ── TAB SUBIDAS DE NÍVEL ── -->
+<div class="pane" id="pane-niveis">
+  <div style="font-size:18px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;border-left:5px solid #FFE600;padding-left:14px">Subidas de Nível — 2026</div>
+  <div class="cards" id="cards-niveis"></div>
+  <div style="overflow-x:auto;margin-bottom:24px">
+    <table id="table-niveis" style="min-width:500px">
+      <thead><tr id="thead-niveis"></tr></thead>
+      <tbody id="tbody-niveis"></tbody>
+    </table>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">Subidas por Transição e Mês</div>
+    <div class="chart-sub">Quantidade de resellers que subiram de nível — Jan–Abr/26</div>
+    <canvas id="chartNiveis"></canvas>
+  </div>
+</div>
+
 </div>
 <div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
 
@@ -261,6 +279,7 @@ function showTab(id,el){
   if(id==='chart-tpv')renderChartTpv();
   if(id==='chart-devices')renderChartDevices();
   if(id==='diarizado')renderDiarizado();
+  if(id==='niveis')renderNiveis();
 }
 
 let sortCol=null,sortDir=1,activeMes=null,activeNivel=null,searchTerm='';
@@ -518,6 +537,92 @@ document.querySelectorAll('[data-col-d]').forEach(th=>th.addEventListener('click
   th.classList.add(sortDirD===1?'sorted-asc':'sorted-desc');
   renderDiarizado();
 }));
+
+// ── SUBIDAS DE NÍVEL ──
+const SUBIDAS_RAW = [
+  {mes:"2026-01",transicao:"Aprendiz → Especialista",      subidas:9},
+  {mes:"2026-01",transicao:"Especialista → Empreendedor",   subidas:6},
+  {mes:"2026-01",transicao:"Empreendedor → Top Empreendedor",subidas:2},
+  {mes:"2026-02",transicao:"Aprendiz → Especialista",      subidas:12},
+  {mes:"2026-02",transicao:"Especialista → Empreendedor",   subidas:3},
+  {mes:"2026-02",transicao:"Empreendedor → Top Empreendedor",subidas:1},
+  {mes:"2026-03",transicao:"Aprendiz → Especialista",      subidas:4},
+  {mes:"2026-03",transicao:"Especialista → Empreendedor",   subidas:5},
+  {mes:"2026-03",transicao:"Empreendedor → Top Empreendedor",subidas:2},
+  {mes:"2026-04",transicao:"Aprendiz → Especialista",      subidas:11},
+  {mes:"2026-04",transicao:"Especialista → Empreendedor",   subidas:5},
+  {mes:"2026-04",transicao:"Empreendedor → Top Empreendedor",subidas:4},
+];
+
+const TRANS_ORDER = ["Aprendiz → Especialista","Especialista → Empreendedor","Empreendedor → Top Empreendedor"];
+const TRANS_COLOR = {"Aprendiz → Especialista":"#3b82f6","Especialista → Empreendedor":"#f59e0b","Empreendedor → Top Empreendedor":"#1A1F6B"};
+const MESES_NIVEIS = ["2026-01","2026-02","2026-03","2026-04"];
+const MES_LABEL_N  = {"2026-01":"Jan/26","2026-02":"Fev/26","2026-03":"Mar/26","2026-04":"Abr/26"};
+
+let chartNiveis = null;
+
+function renderNiveis(){
+  // Cards totais
+  const totByTrans = {};
+  TRANS_ORDER.forEach(t=>totByTrans[t]=SUBIDAS_RAW.filter(r=>r.transicao===t).reduce((s,r)=>s+r.subidas,0));
+  const totalGeral = Object.values(totByTrans).reduce((s,v)=>s+v,0);
+  document.getElementById('cards-niveis').innerHTML=`
+    <div class="card"><div class="card-label">Total Subidas</div><div class="card-value">${fmtN(totalGeral)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    ${TRANS_ORDER.map(t=>`<div class="card" style="border-left-color:${TRANS_COLOR[t]}">
+      <div class="card-label" style="font-size:9px">${t}</div>
+      <div class="card-value" style="color:${TRANS_COLOR[t]}">${fmtN(totByTrans[t])}</div>
+      <div class="card-sub">Jan–Abr/26</div>
+    </div>`).join('')}`;
+
+  // Tabela pivotada: transição nas linhas, meses nas colunas
+  const thS='background:#1A1F6B;color:#FFE600;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;text-align:right';
+  document.getElementById('thead-niveis').innerHTML=
+    `<th style="${thS};text-align:left">Transição</th>`+
+    MESES_NIVEIS.map(m=>`<th style="${thS}">${MES_LABEL_N[m]}</th>`).join('')+
+    `<th style="${thS};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
+
+  const tdS='padding:10px 14px;text-align:right;font-size:13px;border-bottom:1px solid #f0f0f0;font-weight:700';
+  let html='';
+  TRANS_ORDER.forEach(t=>{
+    const vals=MESES_NIVEIS.map(m=>{const r=SUBIDAS_RAW.find(d=>d.mes===m&&d.transicao===t);return r?r.subidas:0;});
+    const total=vals.reduce((s,v)=>s+v,0);
+    const colors=colorScale(vals);
+    html+=`<tr>
+      <td style="padding:10px 14px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:13px;border-bottom:1px solid #f0f0f0;border-left:4px solid ${TRANS_COLOR[t]}">${t}</td>
+      ${vals.map((v,i)=>`<td style="${tdS};${colors[i]}">${v}</td>`).join('')}
+      <td style="${tdS};background:#fffde7;color:#1A1F6B">${total}</td>
+    </tr>`;
+  });
+  // Linha total por mês
+  const totByMes=MESES_NIVEIS.map(m=>SUBIDAS_RAW.filter(r=>r.mes===m).reduce((s,r)=>s+r.subidas,0));
+  html+=`<tr style="background:#f5f5ff">
+    <td style="padding:10px 14px;font-weight:800;color:#1A1F6B;font-size:12px;border-bottom:1px solid #ddd">TOTAL</td>
+    ${totByMes.map(v=>`<td style="${tdS};font-size:14px;color:#1A1F6B;border-bottom:1px solid #ddd">${v}</td>`).join('')}
+    <td style="${tdS};background:#FFE600;font-size:14px;color:#1A1F6B;border-bottom:1px solid #ddd">${totalGeral}</td>
+  </tr>`;
+  document.getElementById('tbody-niveis').innerHTML=html;
+
+  // Gráfico de barras agrupadas
+  if(chartNiveis)chartNiveis.destroy();
+  chartNiveis=new Chart(document.getElementById('chartNiveis').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:MESES_NIVEIS.map(m=>MES_LABEL_N[m]),
+      datasets:TRANS_ORDER.map(t=>({
+        label:t,
+        data:MESES_NIVEIS.map(m=>{const r=SUBIDAS_RAW.find(d=>d.mes===m&&d.transicao===t);return r?r.subidas:0;}),
+        backgroundColor:TRANS_COLOR[t],borderRadius:4
+      }))
+    },
+    options:{responsive:true,
+      plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+        tooltip:{mode:'index',intersect:false,callbacks:{
+          label:i=>`${i.dataset.label}: ${i.raw}`,
+          footer:items=>'TOTAL: '+items.reduce((s,i)=>s+(i.raw||0),0)
+        }}},
+      scales:{x:{grid:{display:false}},y:{ticks:{font:{size:11},stepSize:1},grid:{color:'#f0f0f0'}}}}
+  });
+}
 
 renderCardTabela();renderFiltersTabela();renderTabela();
 </script>
