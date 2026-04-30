@@ -60,6 +60,9 @@ body{font-family:'Segoe UI',sans-serif;background:#f4f4f4;color:#1a1a2e}
 .filter-btn.active{background:#1A1F6B;border-color:#1A1F6B;color:#FFE600}
 .search-box{padding:5px 14px;border-radius:20px;border:1.5px solid #ddd;background:#fff;color:#333;font-size:12px;outline:none;width:160px;margin-left:auto}
 .search-box:focus{border-color:#1A1F6B}
+th span[title]{border-bottom:1px dotted #FFE600;padding:0 2px;font-size:10px}
+.btn-export{padding:5px 14px;border-radius:20px;border:1.5px solid #1A1F6B;background:#fff;color:#1A1F6B;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto}
+.btn-export:hover{background:#1A1F6B;color:#FFE600}
 .grid-wrapper{border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead th{background:#1A1F6B;padding:12px 16px;text-align:left;font-weight:700;color:#FFE600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;user-select:none;white-space:nowrap}
@@ -125,18 +128,22 @@ canvas{max-height:320px}
     <div id="mes-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
     <div id="nivel-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
     <input class="search-box" type="text" placeholder="Buscar..." id="search-input"/>
+    <button class="btn-export" onclick="exportCSV()">&#8595; CSV</button>
   </div>
   <div class="grid-wrapper">
     <table>
       <thead><tr>
-        <th data-col="mes">Mes</th>
-        <th data-col="nivel">Nivel</th>
-        <th data-col="resellers">Resellers</th>
-        <th data-col="pedidos">Dev. Pedidos</th>
-        <th data-col="ativos">Dev. Ativos</th>
-        <th data-col="tpv_m0">TPV M0</th>
-        <th data-col="tpv_m1">TPV M1</th>
-        <th data-col="tpv_total">TPV Total</th>
+        <th data-col="mes">Mês</th>
+        <th data-col="nivel">Nível</th>
+        <th data-col="resellers">Resellers <span title="Resellers com pelo menos 1 pedido de device no mês" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="pedidos">Dev. Pedidos <span title="Total de devices pedidos no mês" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="ativos">Dev. Ativos <span title="Devices ativados (com transação) no mês" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="tpv_m0">TPV M0 <span title="TPV dos sellers captados no mês (M0 = mês de entrada)" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="tpv_m1">TPV M1 <span title="TPV desses mesmos sellers no mês seguinte" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="tpv_total">TPV Total <span title="TPV total da carteira do reseller no mês (todos os sellers, todas as safras)" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="ticket">Ticket Médio <span title="TPV M0 ÷ Resellers com compra — qualidade média do novo reseller" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="mom_resellers">MoM Resellers <span title="Variação % vs mês anterior" style="cursor:help;opacity:.6">?</span></th>
+        <th data-col="mom_tpv">MoM TPV M0 <span title="Variação % do TPV M0 vs mês anterior" style="cursor:help;opacity:.6">?</span></th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -341,7 +348,10 @@ canvas{max-height:320px}
 </div>
 
 </div>
-<div class="footer">Mercado Pago - Programa Renda na Mao - Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY</div>
+<div class="footer">
+  Mercado Pago · Programa Renda na Mão · Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY
+  <span style="margin-left:16px;color:#bbb">&#128197; Última atualização: 30/04/2026 17:54</span>
+</div>
 
 <script>
 const RAW = [
@@ -407,6 +417,21 @@ function getData(){
   return d;
 }
 
+// MoM helper — busca valor do mês anterior para o mesmo nível
+function getMoM(nivel, mes, field){
+  const idx=MES_ORDER.indexOf(mes);
+  if(idx<=0) return null;
+  const prev=RAW.find(r=>r.mes===MES_ORDER[idx-1]&&r.nivel===nivel);
+  return prev?prev[field]:null;
+}
+function momBadge(cur, prev){
+  if(prev==null||prev===0) return '';
+  const d=((cur-prev)/prev*100);
+  const color=d>=0?'#16a34a':'#dc2626';
+  const arrow=d>=0?'▲':'▼';
+  return `<span style="font-size:10px;font-weight:700;color:${color};margin-left:4px">${arrow}${Math.abs(d).toFixed(1)}%</span>`;
+}
+
 function renderTabela(){
   const data=getData();
   let html='';
@@ -414,6 +439,9 @@ function renderTabela(){
     const isLast=i===data.length-1||data[i+1].mes!==r.mes;
     const t=totals[r.mes]||{};
     const bp=Math.round((r.tpv_m0/maxTPV)*100);
+    const ticket=r.resellers?r.tpv_m0/r.resellers:0;
+    const prevRes=getMoM(r.nivel,r.mes,'resellers');
+    const prevTpv=getMoM(r.nivel,r.mes,'tpv_m0');
     html+=`<tr>
       <td><span class="mes-badge">${r.mes}</span></td>
       <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
@@ -423,14 +451,20 @@ function renderTabela(){
       <td><div class="bar-cell">${fmt(r.tpv_m0)}${pct(r.tpv_m0,t.tpv_m0)}<div class="bar-bg"><div class="bar-fill" style="width:${bp}%"></div></div></div></td>
       <td>${fmt(r.tpv_m1)}${r.tpv_m1!=null&&t.haM1?pct(r.tpv_m1,t.tpv_m1):''}</td>
       <td>${fmt(r.tpv_total)}${pct(r.tpv_total,t.tpv_total)}</td>
+      <td style="text-align:right">${ticket>=1e6?'R$ '+(ticket/1e6).toFixed(2).replace('.',',')+'M':'R$ '+fmtN(Math.round(ticket))}</td>
+      <td style="text-align:center">${fmtN(r.resellers)}${momBadge(r.resellers,prevRes)}</td>
+      <td style="text-align:center">${fmt(r.tpv_m0)}${momBadge(r.tpv_m0,prevTpv)}</td>
     </tr>`;
     if(isLast&&!activeMes&&!sortCol){
+      const totTicket=t.resellers?t.tpv_m0/t.resellers:0;
       html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td>
         <td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td>
-        <td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td><td>${fmt(t.tpv_total)}</td></tr>`;
+        <td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td><td>${fmt(t.tpv_total)}</td>
+        <td style="text-align:right">${totTicket>=1e6?'R$ '+(totTicket/1e6).toFixed(2).replace('.',',')+'M':'R$ '+fmtN(Math.round(totTicket))}</td>
+        <td></td><td></td></tr>`;
     }
   });
-  document.getElementById('tbody').innerHTML=html||'<tr><td colspan="8" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
+  document.getElementById('tbody').innerHTML=html||'<tr><td colspan="11" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>';
 }
 
 function renderFiltersTabela(){
@@ -448,6 +482,17 @@ function renderCardTabela(){
     <div class="card"><div class="card-label">TPV M0</div><div class="card-value">R$ ${(tm/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan-Abr/26</div></div>
     <div class="card"><div class="card-label">TPV M1</div><div class="card-value">R$ ${(tm1/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Fev-Abr/26</div></div>
     <div class="card"><div class="card-label">TPV Total Portfolio</div><div class="card-value">R$ ${(tt/1e6).toFixed(1).replace('.',',')}M</div><div class="card-sub">Jan-Abr/26</div></div>`;
+}
+
+function exportCSV(){
+  const data=getData();
+  const header=['Mes','Nivel','Resellers','Dev.Pedidos','Dev.Ativos','TPV_M0','TPV_M1','TPV_Total','Ticket_Medio'];
+  const rows=data.map(r=>[r.mes,r.nivel,r.resellers,r.pedidos,r.ativos,r.tpv_m0,r.tpv_m1||0,r.tpv_total,r.resellers?Math.round(r.tpv_m0/r.resellers):0].join(';'));
+  const csv=[header.join(';'),...rows].join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='resellers_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
 document.getElementById('mes-filters').addEventListener('click',e=>{if(!e.target.classList.contains('filter-btn'))return;activeMes=e.target.dataset.mes==='Todos'?null:e.target.dataset.mes;renderFiltersTabela();renderTabela();});
