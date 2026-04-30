@@ -92,6 +92,13 @@ canvas{max-height:320px}
 <div class="body">
 
 <div class="pane active" id="pane-tabela">
+
+  <!-- Funil visual -->
+  <div style="margin-bottom:24px">
+    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="funil-mes-filter"></div>
+    <div id="funil-visual" style="display:flex;gap:0;align-items:stretch;justify-content:center;flex-wrap:wrap;gap:2px"></div>
+  </div>
+
   <div class="cards" id="cards-tabela"></div>
   <div class="controls">
     <div id="mes-filters" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -934,7 +941,48 @@ function renderEspecialista(){
   });
 }
 
-renderCardTabela();renderFiltersTabela();renderTabela();
+// ── FUNIL ABA 1 ──
+let funilMesTab = 'Todos';
+
+function renderFunilTab(){
+  const rows = funilMesTab === 'Todos'
+    ? RAW
+    : RAW.filter(r => r.mes === funilMesTab);
+
+  const pedidos  = rows.reduce((s,r) => s + r.pedidos, 0);
+  const ativos   = rows.reduce((s,r) => s + r.ativos, 0);
+  const tpvM0    = rows.reduce((s,r) => s + r.tpv_m0, 0);
+  const pctAtiv  = pedidos ? (ativos/pedidos*100).toFixed(1) : 0;
+
+  const stageStyle = (w, bg) =>
+    `display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;` +
+    `background:${bg};border-radius:12px;min-width:${w}px;flex:1;box-shadow:0 2px 8px rgba(0,0,0,.07);`;
+
+  const arrow = (label) =>
+    `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 8px;color:#999;font-size:11px;font-weight:700;white-space:nowrap">` +
+    `<div style="font-size:18px;color:#ddd">→</div><div>${label}</div></div>`;
+
+  const stage = (title, value, sub, bg, textColor='#1A1F6B') =>
+    `<div style="${stageStyle(180, bg)}">` +
+    `<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${textColor}88;margin-bottom:6px">${title}</div>` +
+    `<div style="font-size:26px;font-weight:900;color:${textColor};line-height:1">${value}</div>` +
+    `${sub ? `<div style="font-size:11px;color:${textColor}99;margin-top:4px">${sub}</div>` : ''}` +
+    `</div>`;
+
+  document.getElementById('funil-visual').innerHTML =
+    stage('Devices Pedidos', fmtN(pedidos), funilMesTab === 'Todos' ? 'Jan–Abr/26' : funilMesTab, '#1A1F6B', '#fff') +
+    arrow(pctAtiv + '% ativados') +
+    stage('Devices Ativos', fmtN(ativos), `${pctAtiv}% dos pedidos`, '#FFE600', '#1A1F6B') +
+    arrow('TPV') +
+    stage('TPV M0', tpvM0>=1e6 ? 'R$ '+(tpvM0/1e6).toFixed(2).replace('.',',')+'M' : 'R$ '+fmtN(tpvM0), 'sellers captados no mês', '#f0f9ff', '#1A1F6B');
+
+  document.getElementById('funil-mes-filter').innerHTML =
+    ['Todos', ...MES_ORDER].map(m =>
+      `<button class="filter-btn${funilMesTab===m?' active':''}" onclick="funilMesTab='${m}';renderFunilTab()">${m}</button>`
+    ).join('');
+}
+
+renderCardTabela();renderFiltersTabela();renderTabela();renderFunilTab();
 </script>
 </body>
 </html>
