@@ -281,6 +281,28 @@ canvas{max-height:320px}
     <div class="chart-sub">Quantidade de resellers Aprendiz por faixa de devices (acumulado no mês)</div>
     <canvas id="chartAprendiz"></canvas>
   </div>
+
+  <!-- ESPECIALISTA -->
+  <div style="font-size:18px;font-weight:900;color:#3b82f6;text-transform:uppercase;letter-spacing:.08em;margin:32px 0 20px;border-left:5px solid #3b82f6;padding-left:14px">Especialista — Distribuição de Devices</div>
+  <div class="cards" id="cards-especialista"></div>
+  <div class="grid-wrapper" style="margin-bottom:24px">
+    <table>
+      <thead><tr>
+        <th>Mês</th>
+        <th style="text-align:right">Até 4</th>
+        <th style="text-align:right">5 a 10</th>
+        <th style="text-align:right">11 a 15</th>
+        <th style="text-align:right">20+</th>
+        <th style="text-align:right">Total</th>
+      </tr></thead>
+      <tbody id="tbody-especialista"></tbody>
+    </table>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-title">Distribuição de Devices por Mês — Especialista</div>
+    <div class="chart-sub">Quantidade de resellers Especialista por faixa de devices (acumulado no mês)</div>
+    <canvas id="chartEspecialista"></canvas>
+  </div>
 </div>
 
 </div>
@@ -756,6 +778,7 @@ function renderAprendiz(){
     <div class="card" style="border-left-color:#FFE600"><div class="card-label">4+ Devices</div><div class="card-value">${fmtN(APR_DEVICES.reduce((s,r)=>s+r.d4,0))}</div><div class="card-sub">${(APR_DEVICES.reduce((s,r)=>s+r.d4,0)/totGeral*100).toFixed(1)}% do total</div></div>`;
 
   // Gráfico empilhado
+  renderEspecialista();
   if(chartAprendiz)chartAprendiz.destroy();
   chartAprendiz=new Chart(document.getElementById('chartAprendiz').getContext('2d'),{
     type:'bar',
@@ -764,6 +787,59 @@ function renderAprendiz(){
       {label:'2 Devices',data:APR_DEVICES.map(r=>r.d2),backgroundColor:'#6366f1',borderRadius:0},
       {label:'3 Devices',data:APR_DEVICES.map(r=>r.d3),backgroundColor:'#1A1F6B',borderRadius:0},
       {label:'4+ Devices',data:APR_DEVICES.map(r=>r.d4),backgroundColor:'#FFE600',borderRadius:4},
+    ]},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
+      tooltip:{mode:'index',intersect:false,callbacks:{
+        label:i=>`${i.dataset.label}: ${fmtN(i.raw)}`,
+        footer:items=>'TOTAL: '+fmtN(items.reduce((s,i)=>s+(i.raw||0),0))
+      }}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,ticks:{font:{size:10}},grid:{color:'#f0f0f0'}}}}
+  });
+}
+
+// ── ESPECIALISTA DEVICES ──
+const ESP_DEVICES = [
+  {mes:"Jan/26", d4:37, d10:50, d15:10, d20:16},
+  {mes:"Fev/26", d4:37, d10:38, d15:14, d20:28},
+  {mes:"Mar/26", d4:27, d10:33, d15:9,  d20:14},
+  {mes:"Abr/26", d4:40, d10:27, d15:4,  d20:6 },
+];
+const ESP_COLORS = ["#dbeafe","#93c5fd","#3b82f6","#1e3a8a"];
+
+function renderEspecialista(){
+  const pctFmt=(v,t)=>t?` (${(v/t*100).toFixed(1)}%)`:'';
+  const tdE='padding:11px 16px;text-align:right;font-size:13px;border-bottom:1px solid #f0f0f0';
+
+  let html='';
+  ESP_DEVICES.forEach(r=>{
+    const total=r.d4+r.d10+r.d15+r.d20;
+    html+=`<tr>
+      <td><span class="mes-badge">${r.mes}</span></td>
+      <td style="${tdE}">${fmtN(r.d4)}<span class="pct">${pctFmt(r.d4,total)}</span></td>
+      <td style="${tdE}">${fmtN(r.d10)}<span class="pct">${pctFmt(r.d10,total)}</span></td>
+      <td style="${tdE}">${fmtN(r.d15)}<span class="pct">${pctFmt(r.d15,total)}</span></td>
+      <td style="${tdE}">${fmtN(r.d20)}<span class="pct">${pctFmt(r.d20,total)}</span></td>
+      <td style="${tdE};font-weight:700;color:#3b82f6">${fmtN(total)}</td>
+    </tr>`;
+  });
+  document.getElementById('tbody-especialista').innerHTML=html;
+
+  const totG=ESP_DEVICES.reduce((s,r)=>s+r.d4+r.d10+r.d15+r.d20,0);
+  document.getElementById('cards-especialista').innerHTML=`
+    <div class="card" style="border-left-color:#3b82f6"><div class="card-label">Total Especialista c/ Compra</div><div class="card-value" style="color:#3b82f6">${fmtN(totG)}</div><div class="card-sub">Jan–Abr/26</div></div>
+    <div class="card" style="border-left-color:#dbeafe"><div class="card-label">Até 4 devices</div><div class="card-value">${fmtN(ESP_DEVICES.reduce((s,r)=>s+r.d4,0))}</div><div class="card-sub">${(ESP_DEVICES.reduce((s,r)=>s+r.d4,0)/totG*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#93c5fd"><div class="card-label">5 a 10 devices</div><div class="card-value">${fmtN(ESP_DEVICES.reduce((s,r)=>s+r.d10,0))}</div><div class="card-sub">${(ESP_DEVICES.reduce((s,r)=>s+r.d10,0)/totG*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#3b82f6"><div class="card-label">11 a 15 devices</div><div class="card-value">${fmtN(ESP_DEVICES.reduce((s,r)=>s+r.d15,0))}</div><div class="card-sub">${(ESP_DEVICES.reduce((s,r)=>s+r.d15,0)/totG*100).toFixed(1)}% do total</div></div>
+    <div class="card" style="border-left-color:#1e3a8a"><div class="card-label">20+ devices</div><div class="card-value">${fmtN(ESP_DEVICES.reduce((s,r)=>s+r.d20,0))}</div><div class="card-sub">${(ESP_DEVICES.reduce((s,r)=>s+r.d20,0)/totG*100).toFixed(1)}% do total</div></div>`;
+
+  const existingE=Chart.getChart('chartEspecialista');if(existingE)existingE.destroy();
+  new Chart(document.getElementById('chartEspecialista').getContext('2d'),{
+    type:'bar',
+    data:{labels:ESP_DEVICES.map(r=>r.mes),datasets:[
+      {label:'Até 4',   data:ESP_DEVICES.map(r=>r.d4), backgroundColor:'#dbeafe',borderRadius:0},
+      {label:'5 a 10',  data:ESP_DEVICES.map(r=>r.d10),backgroundColor:'#93c5fd',borderRadius:0},
+      {label:'11 a 15', data:ESP_DEVICES.map(r=>r.d15),backgroundColor:'#3b82f6',borderRadius:0},
+      {label:'20+',     data:ESP_DEVICES.map(r=>r.d20),backgroundColor:'#1e3a8a',borderRadius:4},
     ]},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},usePointStyle:true}},
       tooltip:{mode:'index',intersect:false,callbacks:{
