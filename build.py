@@ -1049,7 +1049,11 @@ function renderFunilTab(){
     ).join('');
 }
 
-renderCardTabela();renderFiltersTabela();renderTabela();renderFunilTab();
+try {
+  renderCardTabela();renderFiltersTabela();renderTabela();renderFunilTab();
+} catch(e) {
+  document.body.innerHTML = '<div style="padding:40px;font-family:monospace;color:red;background:#fff"><h2>Erro JS detectado:</h2><pre>'+e.message+'\\n'+e.stack+'</pre></div>';
+}
 </script>
 </body>
 </html>"""
