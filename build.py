@@ -252,12 +252,6 @@ canvas{max-height:320px}
     </div>
   </div>
 
-  <div style="overflow-x:auto">
-    <table id="table-diar" style="min-width:600px">
-      <thead><tr id="thead-diar-row"></tr></thead>
-      <tbody id="tbody-diar"></tbody>
-    </table>
-  </div>
 </div>
 
 <!-- ── TAB SUBIDAS DE NÍVEL ── -->
