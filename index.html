@@ -467,8 +467,7 @@ function exportCSV(){
   const data=getData();
   const header=['Mes','Nivel','Resellers','Dev.Pedidos','Dev.Ativos','TPV_M0','TPV_M1','TPV_Total','Ticket_Medio'];
   const rows=data.map(r=>[r.mes,r.nivel,r.resellers,r.pedidos,r.ativos,r.tpv_m0,r.tpv_m1||0,r.tpv_total,r.resellers?Math.round(r.tpv_m0/r.resellers):0].join(';'));
-  const csv=[header.join(';'),...rows].join('
-');
+  const csv=[header.join(';'),...rows].join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
   a.download='resellers_'+new Date().toISOString().slice(0,10)+'.csv';
