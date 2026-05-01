@@ -98,7 +98,16 @@ canvas{max-height:320px}
 
   <!-- Funil visual -->
   <div style="margin-bottom:24px">
-    <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="funil-mes-filter"></div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Mês</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="funil-mes-filter"></div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Nível</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="funil-nivel-filter"></div>
+      </div>
+    </div>
     <div id="funil-visual"></div>
   </div>
 
@@ -987,12 +996,12 @@ function renderEspecialista(){
 }
 
 // ── FUNIL ABA 1 ──
-let funilMesTab = 'Todos';
+let funilMesTab = 'Todos', funilNivelTab = 'Todos';
 
 function renderFunilTab(){
-  const rows = funilMesTab === 'Todos'
-    ? RAW
-    : RAW.filter(r => r.mes === funilMesTab);
+  const rows = RAW
+    .filter(r => funilMesTab === 'Todos' || r.mes === funilMesTab)
+    .filter(r => funilNivelTab === 'Todos' || r.nivel === funilNivelTab);
 
   const pedidos  = rows.reduce((s,r) => s + r.pedidos, 0);
   const ativos   = rows.reduce((s,r) => s + r.ativos, 0);
@@ -1025,6 +1034,10 @@ function renderFunilTab(){
   document.getElementById('funil-mes-filter').innerHTML =
     ['Todos', ...MES_ORDER].map(m =>
       `<button class="filter-btn${funilMesTab===m?' active':''}" onclick="funilMesTab='${m}';renderFunilTab()">${m}</button>`
+    ).join('');
+  document.getElementById('funil-nivel-filter').innerHTML =
+    ['Todos', ...NIV_ORDER].map(n =>
+      `<button class="filter-btn${funilNivelTab===n?' active':''}" onclick="funilNivelTab='${n}';renderFunilTab()">${n}</button>`
     ).join('');
 }
 
