@@ -359,32 +359,36 @@ canvas{max-height:320px}
 </div>
 <div class="footer">
   Mercado Pago · Programa Renda na Mão · Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY
-  <span style="margin-left:16px;color:#bbb">&#128197; Última atualização: 30/04/2026 17:54</span>
+  <span style="margin-left:16px;color:#bbb">&#128197; Última atualização: 03/05/2026</span>
 </div>
 
 <script>
 const RAW = [
-  {mes:"Jan/26",nivel:"Aprendiz",        resellers:914, pedidos:2884, ativos:2392, tpv_m0:2211690, tpv_m1:null,      tpv_total:2211690,  pedidos_pro:2610, pedidos_smart:268, ativos_pro:2176, ativos_smart:211},
-  {mes:"Jan/26",nivel:"Especialista",     resellers:113, pedidos:1397, ativos:1173, tpv_m0:2255581, tpv_m1:null,      tpv_total:2255581,  pedidos_pro:1245, pedidos_smart:152, ativos_pro:1038, ativos_smart:135},
-  {mes:"Jan/26",nivel:"Empreendedor",     resellers:50,  pedidos:938,  ativos:830,  tpv_m0:2910252, tpv_m1:null,      tpv_total:2910252,  pedidos_pro:777,  pedidos_smart:161, ativos_pro:694,  ativos_smart:136},
-  {mes:"Jan/26",nivel:"Top Empreendedor", resellers:38,  pedidos:1739, ativos:1650, tpv_m0:5931725, tpv_m1:null,      tpv_total:5931725,  pedidos_pro:1273, pedidos_smart:466, ativos_pro:1207, ativos_smart:443},
-  {mes:"Fev/26",nivel:"Aprendiz",        resellers:983, pedidos:2834, ativos:2151, tpv_m0:1962846, tpv_m1:1940610,  tpv_total:3903456,  pedidos_pro:2576, pedidos_smart:257, ativos_pro:1974, ativos_smart:177},
-  {mes:"Fev/26",nivel:"Especialista",     resellers:117, pedidos:1338, ativos:1111, tpv_m0:2751770, tpv_m1:3159259,  tpv_total:5911029,  pedidos_pro:1216, pedidos_smart:122, ativos_pro:1026, ativos_smart:85},
-  {mes:"Fev/26",nivel:"Empreendedor",     resellers:52,  pedidos:1246, ativos:1003, tpv_m0:2537155, tpv_m1:4573078,  tpv_total:7110233,  pedidos_pro:1061, pedidos_smart:185, ativos_pro:856,  ativos_smart:147},
-  {mes:"Fev/26",nivel:"Top Empreendedor", resellers:38,  pedidos:2111, ativos:1784, tpv_m0:5790677, tpv_m1:11683107, tpv_total:17473784, pedidos_pro:1331, pedidos_smart:780, ativos_pro:1129, ativos_smart:655},
-  {mes:"Mar/26",nivel:"Aprendiz",        resellers:922, pedidos:2467, ativos:1493, tpv_m0:2268275, tpv_m1:812114,   tpv_total:4671474,  pedidos_pro:2163, pedidos_smart:301, ativos_pro:1305, ativos_smart:186},
-  {mes:"Mar/26",nivel:"Especialista",     resellers:83,  pedidos:896,  ativos:531,  tpv_m0:2332724, tpv_m1:3047702,  tpv_total:7647216,  pedidos_pro:802,  pedidos_smart:94,  ativos_pro:472,  ativos_smart:59},
-  {mes:"Mar/26",nivel:"Empreendedor",     resellers:48,  pedidos:1341, ativos:840,  tpv_m0:3745008, tpv_m1:4849151,  tpv_total:12815918, pedidos_pro:1113, pedidos_smart:228, ativos_pro:698,  ativos_smart:142},
-  {mes:"Mar/26",nivel:"Top Empreendedor", resellers:39,  pedidos:1966, ativos:1421, tpv_m0:7637929, tpv_m1:10886088, tpv_total:30250150, pedidos_pro:1510, pedidos_smart:456, ativos_pro:1119, ativos_smart:302},
-  {mes:"Abr/26",nivel:"Aprendiz",        resellers:700, pedidos:1506, ativos:561,  tpv_m0:2005313, tpv_m1:846887,   tpv_total:4005551,  pedidos_pro:1324, pedidos_smart:179, ativos_pro:493,  ativos_smart:66},
-  {mes:"Abr/26",nivel:"Especialista",     resellers:77,  pedidos:555,  ativos:159,  tpv_m0:1698542, tpv_m1:2843066,  tpv_total:8610129,  pedidos_pro:449,  pedidos_smart:106, ativos_pro:130,  ativos_smart:29},
-  {mes:"Abr/26",nivel:"Empreendedor",     resellers:37,  pedidos:579,  ativos:186,  tpv_m0:1916173, tpv_m1:4615107,  tpv_total:12503276, pedidos_pro:471,  pedidos_smart:108, ativos_pro:132,  ativos_smart:54},
-  {mes:"Abr/26",nivel:"Top Empreendedor", resellers:41,  pedidos:1916, ativos:721,  tpv_m0:6039045, tpv_m1:13532350, tpv_total:39005237, pedidos_pro:1468, pedidos_smart:448, ativos_pro:575,  ativos_smart:146},
+  {mes:"Jan/26",nivel:"Aprendiz",        resellers:914, pedidos:2884, ativos:2408, tpv_m0:2205883, tpv_m1:null,      tpv_total:2205883,  pedidos_pro:2610, pedidos_smart:268, ativos_pro:2192, ativos_smart:211},
+  {mes:"Jan/26",nivel:"Especialista",     resellers:113, pedidos:1397, ativos:1184, tpv_m0:2266098, tpv_m1:null,      tpv_total:2266098,  pedidos_pro:1245, pedidos_smart:152, ativos_pro:1048, ativos_smart:136},
+  {mes:"Jan/26",nivel:"Empreendedor",     resellers:50,  pedidos:938,  ativos:838,  tpv_m0:2908862, tpv_m1:null,      tpv_total:2908862,  pedidos_pro:777,  pedidos_smart:161, ativos_pro:699,  ativos_smart:139},
+  {mes:"Jan/26",nivel:"Top Empreendedor", resellers:38,  pedidos:1739, ativos:1656, tpv_m0:5930725, tpv_m1:null,      tpv_total:5930725,  pedidos_pro:1273, pedidos_smart:466, ativos_pro:1213, ativos_smart:443},
+  {mes:"Fev/26",nivel:"Aprendiz",        resellers:983, pedidos:2834, ativos:2177, tpv_m0:1962846, tpv_m1:1940610,  tpv_total:3903456,  pedidos_pro:2576, pedidos_smart:257, ativos_pro:1998, ativos_smart:179},
+  {mes:"Fev/26",nivel:"Especialista",     resellers:117, pedidos:1338, ativos:1126, tpv_m0:2708027, tpv_m1:3267762,  tpv_total:5975789,  pedidos_pro:1216, pedidos_smart:122, ativos_pro:1038, ativos_smart:88},
+  {mes:"Fev/26",nivel:"Empreendedor",     resellers:52,  pedidos:1246, ativos:1017, tpv_m0:2529109, tpv_m1:4578312,  tpv_total:7107420,  pedidos_pro:1061, pedidos_smart:185, ativos_pro:869,  ativos_smart:148},
+  {mes:"Fev/26",nivel:"Top Empreendedor", resellers:38,  pedidos:2111, ativos:1803, tpv_m0:5796033, tpv_m1:11655855, tpv_total:17451888, pedidos_pro:1331, pedidos_smart:780, ativos_pro:1140, ativos_smart:663},
+  {mes:"Mar/26",nivel:"Aprendiz",        resellers:922, pedidos:2467, ativos:1553, tpv_m0:2271880, tpv_m1:812114,   tpv_total:4675079,  pedidos_pro:2163, pedidos_smart:301, ativos_pro:1362, ativos_smart:189},
+  {mes:"Mar/26",nivel:"Especialista",     resellers:83,  pedidos:896,  ativos:548,  tpv_m0:2342188, tpv_m1:3001133,  tpv_total:7745754,  pedidos_pro:802,  pedidos_smart:94,  ativos_pro:485,  ativos_smart:63},
+  {mes:"Mar/26",nivel:"Empreendedor",     resellers:48,  pedidos:1341, ativos:884,  tpv_m0:3726576, tpv_m1:4845824,  tpv_total:12787839, pedidos_pro:1113, pedidos_smart:228, ativos_pro:738,  ativos_smart:146},
+  {mes:"Mar/26",nivel:"Top Empreendedor", resellers:39,  pedidos:1966, ativos:1461, tpv_m0:7628371, tpv_m1:10902556, tpv_total:30211366, pedidos_pro:1510, pedidos_smart:456, ativos_pro:1147, ativos_smart:314},
+  {mes:"Abr/26",nivel:"Aprendiz",        resellers:768, pedidos:1643, ativos:663,  tpv_m0:2232834, tpv_m1:979016,   tpv_total:4342896,  pedidos_pro:1443, pedidos_smart:194, ativos_pro:589,  ativos_smart:71},
+  {mes:"Abr/26",nivel:"Especialista",     resellers:83,  pedidos:643,  ativos:232,  tpv_m0:2069663, tpv_m1:2863010,  tpv_total:9450430,  pedidos_pro:518,  pedidos_smart:125, ativos_pro:193,  ativos_smart:39},
+  {mes:"Abr/26",nivel:"Empreendedor",     resellers:38,  pedidos:630,  ativos:217,  tpv_m0:1959677, tpv_m1:4881035,  tpv_total:12348046, pedidos_pro:512,  pedidos_smart:118, ativos_pro:154,  ativos_smart:63},
+  {mes:"Abr/26",nivel:"Top Empreendedor", resellers:44,  pedidos:2379, ativos:936,  tpv_m0:7143043, tpv_m1:14990788, tpv_total:43925326, pedidos_pro:1890, pedidos_smart:489, ativos_pro:750,  ativos_smart:186},
+  {mes:"Mai/26",nivel:"Aprendiz",        resellers:9,   pedidos:20,   ativos:0,    tpv_m0:96,      tpv_m1:1281,     tpv_total:2154,     pedidos_pro:15,   pedidos_smart:5,   ativos_pro:0,    ativos_smart:0},
+  {mes:"Mai/26",nivel:"Especialista",     resellers:1,   pedidos:2,    ativos:0,    tpv_m0:137,     tpv_m1:247,      tpv_total:7997,     pedidos_pro:2,    pedidos_smart:0,   ativos_pro:0,    ativos_smart:0},
+  {mes:"Mai/26",nivel:"Empreendedor",     resellers:2,   pedidos:15,   ativos:0,    tpv_m0:445,     tpv_m1:24919,    tpv_total:70371,    pedidos_pro:15,   pedidos_smart:0,   ativos_pro:0,    ativos_smart:0},
+  {mes:"Mai/26",nivel:"Top Empreendedor", resellers:2,   pedidos:55,   ativos:0,    tpv_m0:6009,    tpv_m1:108656,   tpv_total:290518,   pedidos_pro:43,   pedidos_smart:12,  ativos_pro:0,    ativos_smart:0},
 ];
 
 const DAILY = """ + daily_json + """;
 
-const MES_ORDER=["Jan/26","Fev/26","Mar/26","Abr/26"];
+const MES_ORDER=["Jan/26","Fev/26","Mar/26","Abr/26","Mai/26"];
 const NIV_ORDER=["Aprendiz","Especialista","Empreendedor","Top Empreendedor"];
 const NIV_CLASS={"Aprendiz":"nivel-aprendiz","Especialista":"nivel-especialista","Empreendedor":"nivel-empreendedor","Top Empreendedor":"nivel-top"};
 const NIV_COLOR={"Aprendiz":"#9ca3af","Especialista":"#3b82f6","Empreendedor":"#f59e0b","Top Empreendedor":"#1A1F6B"};
@@ -615,7 +619,7 @@ function renderChartDevices(){
 
 // ── DIARIZADO ──
 const LEADS = """ + leads_json + """;
-const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+const MES_PREFIX={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04","Mai/26":"2026-05"};
 const PRIMEIRA_COMPRA={"2026-01-02":14,"2026-01-03":3,"2026-01-04":6,"2026-01-05":11,"2026-01-06":11,"2026-01-07":8,"2026-01-08":8,"2026-01-09":5,"2026-01-10":5,"2026-01-11":5,"2026-01-12":10,"2026-01-13":8,"2026-01-14":6,"2026-01-15":12,"2026-01-16":7,"2026-01-17":4,"2026-01-18":4,"2026-01-19":8,"2026-01-20":7,"2026-01-21":6,"2026-01-22":7,"2026-01-23":9,"2026-01-24":3,"2026-01-25":4,"2026-01-26":11,"2026-01-27":8,"2026-01-28":12,"2026-01-29":7,"2026-01-30":7,"2026-01-31":10,"2026-02-01":3,"2026-02-02":9,"2026-02-03":19,"2026-02-04":17,"2026-02-05":15,"2026-02-06":17,"2026-02-07":13,"2026-02-08":1,"2026-02-09":12,"2026-02-10":14,"2026-02-11":11,"2026-02-12":8,"2026-02-13":6,"2026-02-14":6,"2026-02-15":4,"2026-02-16":3,"2026-02-17":2,"2026-02-18":12,"2026-02-19":14,"2026-02-20":18,"2026-02-21":7,"2026-02-22":3,"2026-02-23":11,"2026-02-24":16,"2026-02-25":13,"2026-02-26":14,"2026-02-27":8,"2026-02-28":5,"2026-03-01":7,"2026-03-02":13,"2026-03-03":12,"2026-03-04":6,"2026-03-05":10,"2026-03-06":8,"2026-03-07":16,"2026-03-08":5,"2026-03-09":10,"2026-03-10":14,"2026-03-11":11,"2026-03-12":12,"2026-03-13":12,"2026-03-14":8,"2026-03-15":4,"2026-03-16":15,"2026-03-17":10,"2026-03-18":6,"2026-03-19":12,"2026-03-20":8,"2026-03-21":8,"2026-03-22":3,"2026-03-23":17,"2026-03-24":10,"2026-03-25":15,"2026-03-26":12,"2026-03-27":12,"2026-03-28":13,"2026-03-29":2,"2026-03-30":9,"2026-03-31":15,"2026-04-01":20,"2026-04-02":7,"2026-04-03":8,"2026-04-04":3,"2026-04-05":4,"2026-04-06":9,"2026-04-07":14,"2026-04-08":9,"2026-04-09":8,"2026-04-10":6,"2026-04-11":3,"2026-04-12":5,"2026-04-13":12,"2026-04-14":7,"2026-04-15":10,"2026-04-16":6,"2026-04-17":9,"2026-04-18":8,"2026-04-19":5,"2026-04-20":7,"2026-04-21":3,"2026-04-22":6,"2026-04-23":8,"2026-04-24":9,"2026-04-25":5,"2026-04-26":4,"2026-04-27":11,"2026-04-28":3};
 
 let activeMesDiar=null,activeNivelDiar='Todos',searchDiar='',sortColD=null,sortDirD=1,funilActiveNivel='Todos',tpvDiaMes='Fev/26',tpvDiaNivel='Todos';
@@ -773,7 +777,7 @@ function renderDiarizado(){
 
   // Gráfico 1 — Cadastrados vs Convertidos por mês
   const mesesDiar=["Jan/26","Fev/26","Mar/26","Abr/26"];
-  const prefDiar={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04"};
+  const prefDiar={"Jan/26":"2026-01","Fev/26":"2026-02","Mar/26":"2026-03","Abr/26":"2026-04","Mai/26":"2026-05"};
   const cadMes=mesesDiar.map(m=>LEADS.filter(r=>r.data.startsWith(prefDiar[m])).reduce((s,r)=>s+r.cadastrados,0));
   const convMes=mesesDiar.map(m=>LEADS.filter(r=>r.data.startsWith(prefDiar[m])).reduce((s,r)=>s+r.convertidos,0));
   const primMes=mesesDiar.map(m=>Object.entries(PRIMEIRA_COMPRA).filter(([d])=>d.startsWith(prefDiar[m])).reduce((s,[,v])=>s+v,0));
@@ -790,7 +794,7 @@ function renderDiarizado(){
 
   // Gráfico 2 — Aprendiz com compra no mês vs 1ª compra
   const aprendizComCompra=mesesDiar.map(m=>RAW.find(r=>r.mes===m&&r.nivel==='Aprendiz')?.resellers||0);
-  const aprendizPrimeira=[226,281,315,209];
+  const aprendizPrimeira=[213,282,313,235,7];
   const ex2=Chart.getChart('chartDiarPrimeira');if(ex2)ex2.destroy();
   const pctNovos=aprendizComCompra.map((v,i)=>v?+(aprendizPrimeira[i]/v*100).toFixed(1):0);
   new Chart(document.getElementById('chartDiarPrimeira').getContext('2d'),{
@@ -911,7 +915,8 @@ const APR_DEVICES = [
   {mes:"Jan/26", d1:133, d2:549, d3:3,  d4:229},
   {mes:"Fev/26", d1:166, d2:595, d3:0,  d4:222},
   {mes:"Mar/26", d1:159, d2:588, d3:5,  d4:170},
-  {mes:"Abr/26", d1:228, d2:381, d3:0,  d4:91 },
+  {mes:"Abr/26", d1:241, d2:432, d3:0,  d4:95 },
+  {mes:"Mai/26", d1:0,   d2:8,   d3:0,  d4:1  },
 ];
 const DEV_COLORS = ["#e0e7ff","#6366f1","#1A1F6B","#FFE600"];
 
@@ -968,7 +973,8 @@ const ESP_DEVICES = [
   {mes:"Jan/26", d4:37, d10:50, d15:10, d20:16},
   {mes:"Fev/26", d4:37, d10:38, d15:14, d20:28},
   {mes:"Mar/26", d4:27, d10:33, d15:9,  d20:14},
-  {mes:"Abr/26", d4:40, d10:27, d15:4,  d20:6 },
+  {mes:"Abr/26", d4:39, d10:29, d15:9,  d20:6 },
+  {mes:"Mai/26", d4:1,  d10:0,  d15:0,  d20:0 },
 ];
 const ESP_COLORS = ["#dbeafe","#93c5fd","#3b82f6","#1e3a8a"];
 
