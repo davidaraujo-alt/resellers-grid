@@ -435,8 +435,9 @@ function renderTabela(){
     const prevRes=getMoM(r.nivel,r.mes,'resellers');
     const prevTpv=getMoM(r.nivel,r.mes,'tpv_m0');
     const mesBg=['#ffffff','#f2f2f2','#ffffff','#f2f2f2','#ffffff'][MES_ORDER.indexOf(r.mes)%5]||'#fff';
+    const isFirst=i===0||data[i-1].mes!==r.mes;
     html+=`<tr style="background:${mesBg}">
-      <td><span class="mes-badge">${r.mes}</span></td>
+      <td style="border-left:3px solid ${mesBg==='#ffffff'?'#1A1F6B':'#888'}">${isFirst?`<span class="mes-badge">${r.mes}</span>`:''}</td>
       <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
       <td>${fmtN(r.resellers)}${pct(r.resellers,t.resellers)}</td>
       <td>${fmtN(r.pedidos)}${pct(r.pedidos,t.pedidos)}</td>
