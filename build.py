@@ -19,6 +19,13 @@ with open(r'C:\Users\daviaraujo\resellers-grid\daily_tpv.csv') as f:
 
 daily_json = json.dumps(daily)
 
+perfil_daily = []
+with open(r'C:\Users\daviaraujo\resellers-grid\perfilamento_daily.csv') as f:
+    for row in csv.DictReader(f):
+        if row.get('data','').startswith('2026'):
+            perfil_daily.append({'data':row['data'],'perfil':row['perfil'],'cadastrados':int(row['cadastrados'] or 0),'compra':int(row['com_primeira_compra'] or 0)})
+perfil_json_placeholder = json.dumps(perfil_daily)
+
 html = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -241,17 +248,12 @@ canvas{max-height:320px}
   </div>
 
   <!-- Perfilamento -->
-  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 14px;border-left:5px solid #009EE3;padding-left:14px">Perfilamento</div>
-  <div style="font-size:11px;color:#888;margin-bottom:12px">Fonte: Formulário de cadastro · Nível de experiência com revenda de máquinas</div>
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 8px;border-left:5px solid #009EE3;padding-left:14px">Perfilamento</div>
+  <div style="font-size:11px;color:#888;margin-bottom:12px">Fonte: Formulário de cadastro · Nível de experiência · disponível a partir de 08/04/26</div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="mes-filter-perfil"></div>
-  <div class="grid-wrapper" style="margin-bottom:24px">
-    <table>
-      <thead><tr>
-        <th>Perfil</th>
-        <th style="text-align:right">Cadastrados</th>
-        <th style="text-align:right">1ª Compra</th>
-        <th style="text-align:right">Taxa Conv. %</th>
-      </tr></thead>
+  <div style="overflow-x:auto;margin-bottom:24px">
+    <table style="min-width:500px">
+      <thead><tr id="thead-perfil-row"></tr></thead>
       <tbody id="tbody-perfil"></tbody>
     </table>
   </div>
@@ -738,51 +740,48 @@ function renderDiarizado(){
   document.getElementById('mes-filter-funil-diar').innerHTML=MES_ORDER.map(m=>
     `<button class="filter-btn${funilDiarMes===m?' active':''}" onclick="funilDiarMes='${m}';renderDiarizado()">${m}</button>`).join('');
 
-  // ── Perfilamento ──
-  const PERFIL_RAW = [
-    {mes:'2026-04', perfil:'Iniciante',     cadastrados:3490, compra:40},
-    {mes:'2026-04', perfil:'Intermediario', cadastrados:802,  compra:15},
-    {mes:'2026-04', perfil:'Especialista',  cadastrados:349,  compra:10},
-    {mes:'2026-05', perfil:'Iniciante',     cadastrados:368,  compra:1},
-    {mes:'2026-05', perfil:'Intermediario', cadastrados:91,   compra:1},
-    {mes:'2026-05', perfil:'Especialista',  cadastrados:48,   compra:1},
-  ];
-  const MES_PERFIL_LABEL = {'2026-04':'Abr/26','2026-05':'Mai/26'};
+  // ── Perfilamento diário ──
+  const PERFIL_DAILY = """ + perfil_json_placeholder + """;  // eslint-disable-line
   const PERFIS = ['Iniciante','Intermediario','Especialista'];
   const PERFIL_COLOR = {'Iniciante':'#9ca3af','Intermediario':'#f59e0b','Especialista':'#3b82f6'};
+  const MES_PERFIL = {'2026-04':'Abr/26','2026-05':'Mai/26'};
 
-  const perfilMeses = [...new Set(PERFIL_RAW.map(r=>r.mes))].sort();
-  if(!window._perfilMes) window._perfilMes = perfilMeses[0];
-  const perfilMesAtivo = window._perfilMes;
+  if(!window._perfilMes) window._perfilMes = '2026-04';
+  const perfilPref = window._perfilMes;
+  const perfilDias = [...new Set(PERFIL_DAILY.filter(r=>r.data.startsWith(perfilPref)).map(r=>r.data))].sort();
+  const shortP = d=>d.slice(8)+'/'+d.slice(5,7);
 
-  const perfilFiltrado = PERFIL_RAW.filter(r=>r.mes===perfilMesAtivo);
-  const totCadP = perfilFiltrado.reduce((s,r)=>s+r.cadastrados,0);
-  const totCompP = perfilFiltrado.reduce((s,r)=>s+r.compra,0);
+  const thP='background:#009EE3;color:#fff;padding:10px 12px;font-size:11px;white-space:nowrap;text-align:right';
+  document.getElementById('thead-perfil-row').innerHTML=
+    `<th style="${thP};text-align:left">Perfil / Métrica</th>`+
+    perfilDias.map(d=>`<th style="${thP}">${shortP(d)}</th>`).join('')+
+    `<th style="${thP};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
 
-  let perfilHtml = '';
-  PERFIS.forEach(p=>{
-    const r = perfilFiltrado.find(x=>x.perfil===p);
-    if(!r) return;
-    const taxa = r.cadastrados?(r.compra/r.cadastrados*100).toFixed(1)+'%':'—';
-    perfilHtml+=`<tr>
-      <td><span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px">
-        <span style="width:8px;height:8px;border-radius:50%;background:${PERFIL_COLOR[p]};flex-shrink:0"></span>${p}
-      </span></td>
-      <td style="text-align:right">${fmtN(r.cadastrados)}${pct(r.cadastrados,totCadP)}</td>
-      <td style="text-align:right">${fmtN(r.compra)}${pct(r.compra,totCompP)}</td>
-      <td style="text-align:right;font-weight:700;color:#1A1F6B">${taxa}</td>
+  function perfilRow(label,color,nums){
+    const cs=colorScale(nums);
+    const tot=nums.reduce((s,v)=>s+v,0);
+    return `<tr>
+      <td style="padding:8px 14px;font-size:12px;font-weight:600;background:#f9f9ff;border-bottom:1px solid #f0f0f0;white-space:nowrap">
+        <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:${color}"></span>${label}</span>
+      </td>
+      ${nums.map((v,i)=>`<td style="padding:8px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${cs[i]}">${fmtN(v)}</td>`).join('')}
+      <td style="padding:8px 12px;text-align:right;font-size:12px;background:#fffde7;font-weight:800;color:#1A1F6B;border-bottom:1px solid #f0f0f0">${fmtN(tot)}</td>
     </tr>`;
-  });
-  perfilHtml+=`<tr style="background:#f5f5ff;font-weight:700;color:#1A1F6B">
-    <td>TOTAL</td>
-    <td style="text-align:right">${fmtN(totCadP)}</td>
-    <td style="text-align:right">${fmtN(totCompP)}</td>
-    <td style="text-align:right">${totCadP?(totCompP/totCadP*100).toFixed(1)+'%':'—'}</td>
-  </tr>`;
-  document.getElementById('tbody-perfil').innerHTML = perfilHtml;
+  }
 
-  document.getElementById('mes-filter-perfil').innerHTML = perfilMeses.map(m=>
-    `<button class="filter-btn${perfilMesAtivo===m?' active':''}" onclick="window._perfilMes='${m}';renderDiarizado()">${MES_PERFIL_LABEL[m]||m}</button>`
+  let perfilHtml='';
+  PERFIS.forEach(p=>{
+    const cadVals = perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.cadastrados:0;});
+    const compVals= perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.compra:0;});
+    const totCad=cadVals.reduce((s,v)=>s+v,0), totComp=compVals.reduce((s,v)=>s+v,0);
+    const taxa=totCad?(totComp/totCad*100).toFixed(1)+'%':'—';
+    perfilHtml+=perfilRow(`${p} — Cadastrados`, PERFIL_COLOR[p], cadVals);
+    perfilHtml+=perfilRow(`${p} — 1ª Compra (${taxa})`, PERFIL_COLOR[p], compVals);
+  });
+  document.getElementById('tbody-perfil').innerHTML=perfilHtml||'<tr><td colspan="33" style="text-align:center;color:#ccc;padding:20px">Sem dados</td></tr>';
+
+  document.getElementById('mes-filter-perfil').innerHTML=Object.keys(MES_PERFIL).map(m=>
+    `<button class="filter-btn${perfilPref===m?' active':''}" onclick="window._perfilMes='${m}';renderDiarizado()">${MES_PERFIL[m]}</button>`
   ).join('');
 
   // ── TPV Diário transposto ──

@@ -220,17 +220,12 @@ canvas{max-height:320px}
   </div>
 
   <!-- Perfilamento -->
-  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 14px;border-left:5px solid #009EE3;padding-left:14px">Perfilamento</div>
-  <div style="font-size:11px;color:#888;margin-bottom:12px">Fonte: Formulário de cadastro · Nível de experiência com revenda de máquinas</div>
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 8px;border-left:5px solid #009EE3;padding-left:14px">Perfilamento</div>
+  <div style="font-size:11px;color:#888;margin-bottom:12px">Fonte: Formulário de cadastro · Nível de experiência · disponível a partir de 08/04/26</div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="mes-filter-perfil"></div>
-  <div class="grid-wrapper" style="margin-bottom:24px">
-    <table>
-      <thead><tr>
-        <th>Perfil</th>
-        <th style="text-align:right">Cadastrados</th>
-        <th style="text-align:right">1ª Compra</th>
-        <th style="text-align:right">Taxa Conv. %</th>
-      </tr></thead>
+  <div style="overflow-x:auto;margin-bottom:24px">
+    <table style="min-width:500px">
+      <thead><tr id="thead-perfil-row"></tr></thead>
       <tbody id="tbody-perfil"></tbody>
     </table>
   </div>
@@ -717,51 +712,48 @@ function renderDiarizado(){
   document.getElementById('mes-filter-funil-diar').innerHTML=MES_ORDER.map(m=>
     `<button class="filter-btn${funilDiarMes===m?' active':''}" onclick="funilDiarMes='${m}';renderDiarizado()">${m}</button>`).join('');
 
-  // ── Perfilamento ──
-  const PERFIL_RAW = [
-    {mes:'2026-04', perfil:'Iniciante',     cadastrados:3490, compra:40},
-    {mes:'2026-04', perfil:'Intermediario', cadastrados:802,  compra:15},
-    {mes:'2026-04', perfil:'Especialista',  cadastrados:349,  compra:10},
-    {mes:'2026-05', perfil:'Iniciante',     cadastrados:368,  compra:1},
-    {mes:'2026-05', perfil:'Intermediario', cadastrados:91,   compra:1},
-    {mes:'2026-05', perfil:'Especialista',  cadastrados:48,   compra:1},
-  ];
-  const MES_PERFIL_LABEL = {'2026-04':'Abr/26','2026-05':'Mai/26'};
+  // ── Perfilamento diário ──
+  const PERFIL_DAILY = [{"data": "2026-04-08", "perfil": "Especialista", "cadastrados": 6, "compra": 0}, {"data": "2026-04-08", "perfil": "Iniciante", "cadastrados": 65, "compra": 1}, {"data": "2026-04-08", "perfil": "Intermediario", "cadastrados": 16, "compra": 0}, {"data": "2026-04-09", "perfil": "Especialista", "cadastrados": 20, "compra": 2}, {"data": "2026-04-09", "perfil": "Iniciante", "cadastrados": 165, "compra": 1}, {"data": "2026-04-09", "perfil": "Intermediario", "cadastrados": 36, "compra": 1}, {"data": "2026-04-10", "perfil": "Especialista", "cadastrados": 10, "compra": 1}, {"data": "2026-04-10", "perfil": "Iniciante", "cadastrados": 93, "compra": 3}, {"data": "2026-04-10", "perfil": "Intermediario", "cadastrados": 34, "compra": 1}, {"data": "2026-04-11", "perfil": "Especialista", "cadastrados": 11, "compra": 0}, {"data": "2026-04-11", "perfil": "Iniciante", "cadastrados": 145, "compra": 4}, {"data": "2026-04-11", "perfil": "Intermediario", "cadastrados": 23, "compra": 0}, {"data": "2026-04-12", "perfil": "Especialista", "cadastrados": 13, "compra": 0}, {"data": "2026-04-12", "perfil": "Iniciante", "cadastrados": 111, "compra": 3}, {"data": "2026-04-12", "perfil": "Intermediario", "cadastrados": 27, "compra": 1}, {"data": "2026-04-13", "perfil": "Especialista", "cadastrados": 13, "compra": 1}, {"data": "2026-04-13", "perfil": "Iniciante", "cadastrados": 116, "compra": 3}, {"data": "2026-04-13", "perfil": "Intermediario", "cadastrados": 33, "compra": 1}, {"data": "2026-04-14", "perfil": "Especialista", "cadastrados": 15, "compra": 0}, {"data": "2026-04-14", "perfil": "Iniciante", "cadastrados": 108, "compra": 0}, {"data": "2026-04-14", "perfil": "Intermediario", "cadastrados": 31, "compra": 1}, {"data": "2026-04-15", "perfil": "Especialista", "cadastrados": 26, "compra": 1}, {"data": "2026-04-15", "perfil": "Iniciante", "cadastrados": 276, "compra": 2}, {"data": "2026-04-15", "perfil": "Intermediario", "cadastrados": 63, "compra": 1}, {"data": "2026-04-16", "perfil": "Especialista", "cadastrados": 17, "compra": 0}, {"data": "2026-04-16", "perfil": "Iniciante", "cadastrados": 204, "compra": 3}, {"data": "2026-04-16", "perfil": "Intermediario", "cadastrados": 57, "compra": 0}, {"data": "2026-04-17", "perfil": "Especialista", "cadastrados": 12, "compra": 0}, {"data": "2026-04-17", "perfil": "Iniciante", "cadastrados": 165, "compra": 0}, {"data": "2026-04-17", "perfil": "Intermediario", "cadastrados": 36, "compra": 0}, {"data": "2026-04-18", "perfil": "Especialista", "cadastrados": 13, "compra": 0}, {"data": "2026-04-18", "perfil": "Iniciante", "cadastrados": 156, "compra": 1}, {"data": "2026-04-18", "perfil": "Intermediario", "cadastrados": 28, "compra": 2}, {"data": "2026-04-19", "perfil": "Especialista", "cadastrados": 14, "compra": 0}, {"data": "2026-04-19", "perfil": "Iniciante", "cadastrados": 172, "compra": 0}, {"data": "2026-04-19", "perfil": "Intermediario", "cadastrados": 31, "compra": 0}, {"data": "2026-04-20", "perfil": "Especialista", "cadastrados": 8, "compra": 0}, {"data": "2026-04-20", "perfil": "Iniciante", "cadastrados": 177, "compra": 0}, {"data": "2026-04-20", "perfil": "Intermediario", "cadastrados": 35, "compra": 0}, {"data": "2026-04-21", "perfil": "Especialista", "cadastrados": 18, "compra": 0}, {"data": "2026-04-21", "perfil": "Iniciante", "cadastrados": 178, "compra": 3}, {"data": "2026-04-21", "perfil": "Intermediario", "cadastrados": 25, "compra": 0}, {"data": "2026-04-22", "perfil": "Especialista", "cadastrados": 27, "compra": 1}, {"data": "2026-04-22", "perfil": "Iniciante", "cadastrados": 188, "compra": 1}, {"data": "2026-04-22", "perfil": "Intermediario", "cadastrados": 41, "compra": 0}, {"data": "2026-04-23", "perfil": "Especialista", "cadastrados": 21, "compra": 1}, {"data": "2026-04-23", "perfil": "Iniciante", "cadastrados": 154, "compra": 2}, {"data": "2026-04-23", "perfil": "Intermediario", "cadastrados": 44, "compra": 2}, {"data": "2026-04-24", "perfil": "Especialista", "cadastrados": 21, "compra": 1}, {"data": "2026-04-24", "perfil": "Iniciante", "cadastrados": 171, "compra": 2}, {"data": "2026-04-24", "perfil": "Intermediario", "cadastrados": 42, "compra": 1}, {"data": "2026-04-25", "perfil": "Especialista", "cadastrados": 17, "compra": 0}, {"data": "2026-04-25", "perfil": "Iniciante", "cadastrados": 141, "compra": 2}, {"data": "2026-04-25", "perfil": "Intermediario", "cadastrados": 44, "compra": 0}, {"data": "2026-04-26", "perfil": "Especialista", "cadastrados": 16, "compra": 0}, {"data": "2026-04-26", "perfil": "Iniciante", "cadastrados": 122, "compra": 1}, {"data": "2026-04-26", "perfil": "Intermediario", "cadastrados": 34, "compra": 1}, {"data": "2026-04-27", "perfil": "Especialista", "cadastrados": 15, "compra": 0}, {"data": "2026-04-27", "perfil": "Iniciante", "cadastrados": 155, "compra": 2}, {"data": "2026-04-27", "perfil": "Intermediario", "cadastrados": 36, "compra": 1}, {"data": "2026-04-28", "perfil": "Especialista", "cadastrados": 9, "compra": 2}, {"data": "2026-04-28", "perfil": "Iniciante", "cadastrados": 147, "compra": 2}, {"data": "2026-04-28", "perfil": "Intermediario", "cadastrados": 36, "compra": 0}, {"data": "2026-04-29", "perfil": "Especialista", "cadastrados": 12, "compra": 0}, {"data": "2026-04-29", "perfil": "Iniciante", "cadastrados": 160, "compra": 3}, {"data": "2026-04-29", "perfil": "Intermediario", "cadastrados": 29, "compra": 2}, {"data": "2026-04-30", "perfil": "Especialista", "cadastrados": 15, "compra": 0}, {"data": "2026-04-30", "perfil": "Iniciante", "cadastrados": 121, "compra": 1}, {"data": "2026-04-30", "perfil": "Intermediario", "cadastrados": 21, "compra": 0}, {"data": "2026-05-01", "perfil": "Especialista", "cadastrados": 17, "compra": 0}, {"data": "2026-05-01", "perfil": "Iniciante", "cadastrados": 156, "compra": 1}, {"data": "2026-05-01", "perfil": "Intermediario", "cadastrados": 41, "compra": 1}, {"data": "2026-05-02", "perfil": "Especialista", "cadastrados": 16, "compra": 1}, {"data": "2026-05-02", "perfil": "Iniciante", "cadastrados": 108, "compra": 0}, {"data": "2026-05-02", "perfil": "Intermediario", "cadastrados": 23, "compra": 0}, {"data": "2026-05-03", "perfil": "Especialista", "cadastrados": 15, "compra": 0}, {"data": "2026-05-03", "perfil": "Iniciante", "cadastrados": 104, "compra": 0}, {"data": "2026-05-03", "perfil": "Intermediario", "cadastrados": 27, "compra": 0}];  // eslint-disable-line
   const PERFIS = ['Iniciante','Intermediario','Especialista'];
   const PERFIL_COLOR = {'Iniciante':'#9ca3af','Intermediario':'#f59e0b','Especialista':'#3b82f6'};
+  const MES_PERFIL = {'2026-04':'Abr/26','2026-05':'Mai/26'};
 
-  const perfilMeses = [...new Set(PERFIL_RAW.map(r=>r.mes))].sort();
-  if(!window._perfilMes) window._perfilMes = perfilMeses[0];
-  const perfilMesAtivo = window._perfilMes;
+  if(!window._perfilMes) window._perfilMes = '2026-04';
+  const perfilPref = window._perfilMes;
+  const perfilDias = [...new Set(PERFIL_DAILY.filter(r=>r.data.startsWith(perfilPref)).map(r=>r.data))].sort();
+  const shortP = d=>d.slice(8)+'/'+d.slice(5,7);
 
-  const perfilFiltrado = PERFIL_RAW.filter(r=>r.mes===perfilMesAtivo);
-  const totCadP = perfilFiltrado.reduce((s,r)=>s+r.cadastrados,0);
-  const totCompP = perfilFiltrado.reduce((s,r)=>s+r.compra,0);
+  const thP='background:#009EE3;color:#fff;padding:10px 12px;font-size:11px;white-space:nowrap;text-align:right';
+  document.getElementById('thead-perfil-row').innerHTML=
+    `<th style="${thP};text-align:left">Perfil / Métrica</th>`+
+    perfilDias.map(d=>`<th style="${thP}">${shortP(d)}</th>`).join('')+
+    `<th style="${thP};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
 
-  let perfilHtml = '';
-  PERFIS.forEach(p=>{
-    const r = perfilFiltrado.find(x=>x.perfil===p);
-    if(!r) return;
-    const taxa = r.cadastrados?(r.compra/r.cadastrados*100).toFixed(1)+'%':'—';
-    perfilHtml+=`<tr>
-      <td><span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px">
-        <span style="width:8px;height:8px;border-radius:50%;background:${PERFIL_COLOR[p]};flex-shrink:0"></span>${p}
-      </span></td>
-      <td style="text-align:right">${fmtN(r.cadastrados)}${pct(r.cadastrados,totCadP)}</td>
-      <td style="text-align:right">${fmtN(r.compra)}${pct(r.compra,totCompP)}</td>
-      <td style="text-align:right;font-weight:700;color:#1A1F6B">${taxa}</td>
+  function perfilRow(label,color,nums){
+    const cs=colorScale(nums);
+    const tot=nums.reduce((s,v)=>s+v,0);
+    return `<tr>
+      <td style="padding:8px 14px;font-size:12px;font-weight:600;background:#f9f9ff;border-bottom:1px solid #f0f0f0;white-space:nowrap">
+        <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:${color}"></span>${label}</span>
+      </td>
+      ${nums.map((v,i)=>`<td style="padding:8px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${cs[i]}">${fmtN(v)}</td>`).join('')}
+      <td style="padding:8px 12px;text-align:right;font-size:12px;background:#fffde7;font-weight:800;color:#1A1F6B;border-bottom:1px solid #f0f0f0">${fmtN(tot)}</td>
     </tr>`;
-  });
-  perfilHtml+=`<tr style="background:#f5f5ff;font-weight:700;color:#1A1F6B">
-    <td>TOTAL</td>
-    <td style="text-align:right">${fmtN(totCadP)}</td>
-    <td style="text-align:right">${fmtN(totCompP)}</td>
-    <td style="text-align:right">${totCadP?(totCompP/totCadP*100).toFixed(1)+'%':'—'}</td>
-  </tr>`;
-  document.getElementById('tbody-perfil').innerHTML = perfilHtml;
+  }
 
-  document.getElementById('mes-filter-perfil').innerHTML = perfilMeses.map(m=>
-    `<button class="filter-btn${perfilMesAtivo===m?' active':''}" onclick="window._perfilMes='${m}';renderDiarizado()">${MES_PERFIL_LABEL[m]||m}</button>`
+  let perfilHtml='';
+  PERFIS.forEach(p=>{
+    const cadVals = perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.cadastrados:0;});
+    const compVals= perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.compra:0;});
+    const totCad=cadVals.reduce((s,v)=>s+v,0), totComp=compVals.reduce((s,v)=>s+v,0);
+    const taxa=totCad?(totComp/totCad*100).toFixed(1)+'%':'—';
+    perfilHtml+=perfilRow(`${p} — Cadastrados`, PERFIL_COLOR[p], cadVals);
+    perfilHtml+=perfilRow(`${p} — 1ª Compra (${taxa})`, PERFIL_COLOR[p], compVals);
+  });
+  document.getElementById('tbody-perfil').innerHTML=perfilHtml||'<tr><td colspan="33" style="text-align:center;color:#ccc;padding:20px">Sem dados</td></tr>';
+
+  document.getElementById('mes-filter-perfil').innerHTML=Object.keys(MES_PERFIL).map(m=>
+    `<button class="filter-btn${perfilPref===m?' active':''}" onclick="window._perfilMes='${m}';renderDiarizado()">${MES_PERFIL[m]}</button>`
   ).join('');
 
   // ── TPV Diário transposto ──
