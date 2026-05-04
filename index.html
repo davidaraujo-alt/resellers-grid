@@ -637,48 +637,13 @@ function renderDiarizado(){
     <div class="card"><div class="card-label">Convertidos</div><div class="card-value">${fmtN(totConv)}</div><div class="card-sub">fizeram 1a venda</div></div>
     <div class="card"><div class="card-label">Taxa Conversao</div><div class="card-value">${totCad?(totConv/totCad*100).toFixed(2)+'%':'—'}</div><div class="card-sub">convertidos / cadastrados</div></div>`;
 
-  // Cabeçalho: Métrica | dia1 | dia2 | ...
-  const dates=data.map(r=>r.data);
-  const shortDate=d=>d.slice(8)+'/'+d.slice(5,7); // dd/mm
-  const thStyle='background:#1A1F6B;color:#FFE600;padding:10px 12px;text-align:right;font-size:11px;white-space:nowrap';
-  document.getElementById('thead-diar-row').innerHTML=
-    `<th style="${thStyle};text-align:left;letter-spacing:.05em;text-transform:uppercase">Metrica</th>`+
-    dates.map(d=>`<th style="${thStyle}">${shortDate(d)}</th>`).join('')+
-    `<th style="${thStyle};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
-
-  // Escala de cor por terciis (ruim=vermelho, medio=amarelo, bom=verde)
+  // Escala de cor por terciis
   function colorScale(nums){
     const sorted=[...nums].sort((a,b)=>a-b);
     const p33=sorted[Math.floor(sorted.length*0.33)];
     const p66=sorted[Math.floor(sorted.length*0.66)];
     return nums.map(v=>v<=p33?'background:#ffe5e5':v<=p66?'background:#fffde7':'background:#e6f9ec');
   }
-
-  const tdTotal='padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B';
-
-  function colorRow(label, nums, fmt, total){
-    const colors=colorScale(nums);
-    return `<tr>
-      <td style="padding:10px 14px;font-weight:600;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
-      ${nums.map((v,i)=>`<td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmt(v)}</td>`).join('')}
-      <td style="${tdTotal}">${total}</td>
-    </tr>`;
-  }
-
-  const cadNums      = data.map(r=>r.cadastrados);
-  const convNums     = data.map(r=>r.convertidos);
-  const taxaNums     = data.map(r=>r.cadastrados?r.convertidos/r.cadastrados*100:0);
-  const primeiroNums = data.map(r=>PRIMEIRA_COMPRA[r.data]||0);
-  const totCadAll    = cadNums.reduce((s,v)=>s+v,0);
-  const totConvAll   = convNums.reduce((s,v)=>s+v,0);
-  const totPrimeiro  = primeiroNums.reduce((s,v)=>s+v,0);
-
-  document.getElementById('tbody-diar').innerHTML = data.length ? [
-    colorRow('Cadastrados',   cadNums,      v=>fmtN(v),          fmtN(totCadAll)),
-    colorRow('Convertidos',   convNums,     v=>fmtN(v),          fmtN(totConvAll)),
-    colorRow('1ª Compra',     primeiroNums, v=>fmtN(v),          fmtN(totPrimeiro)),
-    colorRow('Taxa Conv. %',  taxaNums,     v=>v.toFixed(2)+'%', (totCadAll?totConvAll/totCadAll*100:0).toFixed(2)+'%'),
-  ].join('') : `<tr><td colspan="${dates.length+2}" style="text-align:center;color:#ccc;padding:32px">Sem resultados</td></tr>`;
 
   // ── Funil mensal transposto ──
   const funilNivel=funilActiveNivel||'Todos';
