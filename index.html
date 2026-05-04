@@ -672,13 +672,14 @@ function renderDiarizado(){
     funilDias.map(d=>`<th style="${thFS}">${shortFD(d)}</th>`).join('')+
     `<th style="${thFS};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
 
-  function funilRow(label,nums,fmtFn){
+  function funilRow(label,nums,fmtFn,totOverride){
     const colors=colorScale(nums);
     const tot=nums.reduce((s,v)=>s+v,0);
+    const totDisplay=totOverride!==undefined?totOverride:fmtFn(tot);
     return `<tr>
       <td style="padding:10px 14px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
       ${nums.map((v,i)=>`<td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmtFn(v)}</td>`).join('')}
-      <td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${fmtFn(tot)}</td>
+      <td style="padding:10px 12px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${totDisplay}</td>
     </tr>`;
   }
 
@@ -686,10 +687,15 @@ function renderDiarizado(){
   const funilConvDia   = funilDias.map(d=>LEADS.filter(r=>r.data===d).reduce((s,r)=>s+r.convertidos,0));
   const primeiraCompDia= funilDias.map(d=>PRIMEIRA_COMPRA[d]||0);
 
+  const totCadF   = cadDia.reduce((s,v)=>s+v,0);
+  const totConvF  = funilConvDia.reduce((s,v)=>s+v,0);
+  const totPrimF  = primeiraCompDia.reduce((s,v)=>s+v,0);
+  const taxaConvF = totCadF ? (totConvF/totCadF*100).toFixed(1)+'%' : '—';
+
   document.getElementById('tbody-funil').innerHTML=funilDias.length?[
-    funilRow('Cadastrados',              cadDia,          v=>fmtN(v)),
-    funilRow('Aprendizes Funil 1ª Compra', funilConvDia,  v=>fmtN(v)),
-    funilRow('1ª Compra no Dia',         primeiraCompDia, v=>fmtN(v)),
+    funilRow('Cadastrados',                cadDia,          v=>fmtN(v),  fmtN(totCadF)),
+    funilRow('Aprendizes Funil 1ª Compra', funilConvDia,    v=>fmtN(v),  `${fmtN(totConvF)} <span style="font-size:11px;color:#1A1F6B;font-weight:900">(${taxaConvF})</span>`),
+    funilRow('1ª Compra no Dia',           primeiraCompDia, v=>fmtN(v),  fmtN(totPrimF)),
   ].join(''):'<tr><td colspan="33" style="text-align:center;color:#ccc;padding:20px">Selecione um mês</td></tr>';
 
   document.getElementById('mes-filter-funil-diar').innerHTML=MES_ORDER.map(m=>
