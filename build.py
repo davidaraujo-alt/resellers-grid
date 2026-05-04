@@ -359,7 +359,7 @@ canvas{max-height:320px}
 </div>
 <div class="footer">
   Mercado Pago · Programa Renda na Mão · Fonte: BD_CUST_RESELLER_INFO / BD_CUST_RESELLER_INFO_DAILY
-  <span style="margin-left:16px;color:#bbb">&#128197; Última atualização: 03/05/2026</span>
+  <span style="margin-left:16px;color:#bbb">&#128197; Última atualização: 04/05/2026</span>
 </div>
 
 <script>
