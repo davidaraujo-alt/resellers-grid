@@ -682,12 +682,14 @@ function renderDiarizado(){
     </tr>`;
   }
 
-  const cadDia    = funilDias.map(d=>LEADS.filter(r=>r.data===d).reduce((s,r)=>s+r.cadastrados,0));
-  const compraDia = funilDias.map(d=>PRIMEIRA_COMPRA[d]||0);
+  const cadDia         = funilDias.map(d=>LEADS.filter(r=>r.data===d).reduce((s,r)=>s+r.cadastrados,0));
+  const funilConvDia   = funilDias.map(d=>LEADS.filter(r=>r.data===d).reduce((s,r)=>s+r.convertidos,0));
+  const primeiraCompDia= funilDias.map(d=>PRIMEIRA_COMPRA[d]||0);
 
   document.getElementById('tbody-funil').innerHTML=funilDias.length?[
-    funilRow('Cadastrados',       cadDia,    v=>fmtN(v)),
-    funilRow('Resellers c/ Compra', compraDia, v=>fmtN(v)),
+    funilRow('Cadastrados',              cadDia,          v=>fmtN(v)),
+    funilRow('Aprendizes Funil 1ª Compra', funilConvDia,  v=>fmtN(v)),
+    funilRow('1ª Compra no Dia',         primeiraCompDia, v=>fmtN(v)),
   ].join(''):'<tr><td colspan="33" style="text-align:center;color:#ccc;padding:20px">Selecione um mês</td></tr>';
 
   document.getElementById('mes-filter-funil-diar').innerHTML=MES_ORDER.map(m=>
