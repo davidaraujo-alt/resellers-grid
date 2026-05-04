@@ -219,6 +219,22 @@ canvas{max-height:320px}
     </table>
   </div>
 
+  <!-- Perfilamento -->
+  <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 14px;border-left:5px solid #009EE3;padding-left:14px">Perfilamento</div>
+  <div style="font-size:11px;color:#888;margin-bottom:12px">Fonte: Formulário de cadastro · Nível de experiência com revenda de máquinas</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="mes-filter-perfil"></div>
+  <div class="grid-wrapper" style="margin-bottom:24px">
+    <table>
+      <thead><tr>
+        <th>Perfil</th>
+        <th style="text-align:right">Cadastrados</th>
+        <th style="text-align:right">1ª Compra</th>
+        <th style="text-align:right">Taxa Conv. %</th>
+      </tr></thead>
+      <tbody id="tbody-perfil"></tbody>
+    </table>
+  </div>
+
   <!-- TPV Diário transposto -->
   <div style="font-size:16px;font-weight:900;color:#1A1F6B;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 14px;border-left:5px solid #009EE3;padding-left:14px">TPV Diário</div>
   <div style="background:#fff;border-radius:12px;padding:12px 18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)">
@@ -700,6 +716,53 @@ function renderDiarizado(){
 
   document.getElementById('mes-filter-funil-diar').innerHTML=MES_ORDER.map(m=>
     `<button class="filter-btn${funilDiarMes===m?' active':''}" onclick="funilDiarMes='${m}';renderDiarizado()">${m}</button>`).join('');
+
+  // ── Perfilamento ──
+  const PERFIL_RAW = [
+    {mes:'2026-04', perfil:'Iniciante',     cadastrados:3490, compra:40},
+    {mes:'2026-04', perfil:'Intermediario', cadastrados:802,  compra:15},
+    {mes:'2026-04', perfil:'Especialista',  cadastrados:349,  compra:10},
+    {mes:'2026-05', perfil:'Iniciante',     cadastrados:368,  compra:1},
+    {mes:'2026-05', perfil:'Intermediario', cadastrados:91,   compra:1},
+    {mes:'2026-05', perfil:'Especialista',  cadastrados:48,   compra:1},
+  ];
+  const MES_PERFIL_LABEL = {'2026-04':'Abr/26','2026-05':'Mai/26'};
+  const PERFIS = ['Iniciante','Intermediario','Especialista'];
+  const PERFIL_COLOR = {'Iniciante':'#9ca3af','Intermediario':'#f59e0b','Especialista':'#3b82f6'};
+
+  const perfilMeses = [...new Set(PERFIL_RAW.map(r=>r.mes))].sort();
+  if(!window._perfilMes) window._perfilMes = perfilMeses[0];
+  const perfilMesAtivo = window._perfilMes;
+
+  const perfilFiltrado = PERFIL_RAW.filter(r=>r.mes===perfilMesAtivo);
+  const totCadP = perfilFiltrado.reduce((s,r)=>s+r.cadastrados,0);
+  const totCompP = perfilFiltrado.reduce((s,r)=>s+r.compra,0);
+
+  let perfilHtml = '';
+  PERFIS.forEach(p=>{
+    const r = perfilFiltrado.find(x=>x.perfil===p);
+    if(!r) return;
+    const taxa = r.cadastrados?(r.compra/r.cadastrados*100).toFixed(1)+'%':'—';
+    perfilHtml+=`<tr>
+      <td><span style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px">
+        <span style="width:8px;height:8px;border-radius:50%;background:${PERFIL_COLOR[p]};flex-shrink:0"></span>${p}
+      </span></td>
+      <td style="text-align:right">${fmtN(r.cadastrados)}${pct(r.cadastrados,totCadP)}</td>
+      <td style="text-align:right">${fmtN(r.compra)}${pct(r.compra,totCompP)}</td>
+      <td style="text-align:right;font-weight:700;color:#1A1F6B">${taxa}</td>
+    </tr>`;
+  });
+  perfilHtml+=`<tr style="background:#f5f5ff;font-weight:700;color:#1A1F6B">
+    <td>TOTAL</td>
+    <td style="text-align:right">${fmtN(totCadP)}</td>
+    <td style="text-align:right">${fmtN(totCompP)}</td>
+    <td style="text-align:right">${totCadP?(totCompP/totCadP*100).toFixed(1)+'%':'—'}</td>
+  </tr>`;
+  document.getElementById('tbody-perfil').innerHTML = perfilHtml;
+
+  document.getElementById('mes-filter-perfil').innerHTML = perfilMeses.map(m=>
+    `<button class="filter-btn${perfilMesAtivo===m?' active':''}" onclick="window._perfilMes='${m}';renderDiarizado()">${MES_PERFIL_LABEL[m]||m}</button>`
+  ).join('');
 
   // ── TPV Diário transposto ──
   const prefDiario=MES_PREFIX[tpvDiaMes]||'2026-02';
