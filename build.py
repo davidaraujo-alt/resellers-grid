@@ -770,13 +770,21 @@ function renderDiarizado(){
   }
 
   let perfilHtml='';
-  PERFIS.forEach(p=>{
+  PERFIS.forEach((p,pi)=>{
     const cadVals = perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.cadastrados:0;});
     const compVals= perfilDias.map(d=>{const r=PERFIL_DAILY.find(x=>x.data===d&&x.perfil===p);return r?r.compra:0;});
     const totCad=cadVals.reduce((s,v)=>s+v,0), totComp=compVals.reduce((s,v)=>s+v,0);
     const taxa=totCad?(totComp/totCad*100).toFixed(1)+'%':'—';
-    perfilHtml+=perfilRow(`${p} — Cadastrados`, PERFIL_COLOR[p], cadVals);
-    perfilHtml+=perfilRow(`${p} — 1ª Compra (${taxa})`, PERFIL_COLOR[p], compVals);
+    const col=PERFIL_COLOR[p];
+    // Linha de cabeçalho do grupo
+    const nCols=perfilDias.length+2;
+    perfilHtml+=`<tr style="background:${col}15;border-top:2px solid ${col}">
+      <td colspan="${nCols}" style="padding:7px 14px;font-size:12px;font-weight:900;color:${col};letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid ${col}33">
+        ● ${p} &nbsp;·&nbsp; <span style="font-weight:400;font-size:11px">${fmtN(totCad)} cadastrados · ${fmtN(totComp)} com 1ª compra · ${taxa} conversão</span>
+      </td>
+    </tr>`;
+    perfilHtml+=perfilRow('Cadastrados', col, cadVals);
+    perfilHtml+=perfilRow(`1ª Compra`, col, compVals);
   });
   document.getElementById('tbody-perfil').innerHTML=perfilHtml||'<tr><td colspan="33" style="text-align:center;color:#ccc;padding:20px">Sem dados</td></tr>';
 
