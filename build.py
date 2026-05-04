@@ -455,7 +455,8 @@ function renderTabela(){
     const ticket=r.resellers?r.tpv_m0/r.resellers:0;
     const prevRes=getMoM(r.nivel,r.mes,'resellers');
     const prevTpv=getMoM(r.nivel,r.mes,'tpv_m0');
-    html+=`<tr>
+    const mesBg=['#ffffff','#f2f2f2','#ffffff','#f2f2f2','#ffffff'][MES_ORDER.indexOf(r.mes)%5]||'#fff';
+    html+=`<tr style="background:${mesBg}">
       <td><span class="mes-badge">${r.mes}</span></td>
       <td><span class="nivel-badge ${NIV_CLASS[r.nivel]||''}"><span class="nivel-dot"></span>${r.nivel}</span></td>
       <td>${fmtN(r.resellers)}${pct(r.resellers,t.resellers)}</td>
@@ -470,7 +471,8 @@ function renderTabela(){
     </tr>`;
     if(isLast&&!activeMes&&!sortCol){
       const totTicket=t.resellers?t.tpv_m0/t.resellers:0;
-      html+=`<tr class="group-total"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td>
+      const totBg=mesBg==='#ffffff'?'#e8e8e8':'#dcdcdc';
+      html+=`<tr class="group-total" style="background:${totBg}"><td><span class="mes-badge">${r.mes}</span></td><td style="font-size:11px">TOTAL</td>
         <td>${fmtN(t.resellers)}</td><td>${fmtN(t.pedidos)}</td><td>${fmtN(t.ativos)}</td>
         <td>${fmt(t.tpv_m0)}</td><td>${t.haM1?fmt(t.tpv_m1):fmt(null)}</td><td>${fmt(t.tpv_total)}</td>
         <td style="text-align:right">${totTicket>=1e6?'R$ '+(totTicket/1e6).toFixed(2).replace('.',',')+'M':'R$ '+fmtN(Math.round(totTicket))}</td>
