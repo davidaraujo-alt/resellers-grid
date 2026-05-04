@@ -668,7 +668,7 @@ function renderDiarizado(){
   }
 
   // ── Funil mensal transposto ──
-  const funilNivel=funilActiveNivel||'Todos';
+  const funilNivel='Todos';
   const funilData=MES_ORDER.map(m=>{
     const rows=RAW.filter(r=>r.mes===m&&(funilNivel==='Todos'||r.nivel===funilNivel));
     return {
