@@ -392,7 +392,7 @@ function showTab(id,el){
   document.getElementById('pane-'+id).classList.add('active');
   if(id==='chart-tpv')renderChartTpv();
   if(id==='chart-devices')renderChartDevices();
-  if(id==='diarizado')renderDiarizado();
+  if(id==='diarizado'){try{renderDiarizado();}catch(e){document.getElementById('pane-diarizado').innerHTML='<div style="padding:40px;font-family:monospace;color:red;background:#fff;border-radius:8px"><b>Erro no Diarizado:</b><br>'+e.message+'<br><pre>'+e.stack+'</pre></div>';}}
   if(id==='niveis')renderNiveis();
   if(id==='aprendiz')renderAprendiz();
 }
