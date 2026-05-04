@@ -680,28 +680,31 @@ function renderDiarizado(){
     };
   });
 
+  // Dados mensais do LEADS_TAN
+  const mesesFunil=MES_ORDER;
+  const prefF=MES_PREFIX;
+  const cadMesFunil=mesesFunil.map(m=>LEADS.filter(r=>r.data.startsWith(prefF[m]||'')).reduce((s,r)=>s+r.cadastrados,0));
+  const compraMesFunil=mesesFunil.map(m=>Object.entries(PRIMEIRA_COMPRA).filter(([d])=>d.startsWith(prefF[m]||'')).reduce((s,[,v])=>s+v,0));
+
   const thFS='background:#1A1F6B;color:#FFE600;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;text-align:right';
   document.getElementById('thead-funil-row').innerHTML=
     `<th style="${thFS};text-align:left">Métrica</th>`+
-    MES_ORDER.map(m=>`<th style="${thFS}">${m}</th>`).join('')+
+    mesesFunil.map(m=>`<th style="${thFS}">${m}</th>`).join('')+
     `<th style="${thFS};background:#FFE600;color:#1A1F6B;font-weight:900">TOTAL</th>`;
 
-  function funilRow(label,nums,fmt,totFmt){
+  function funilRow(label,nums,fmtFn){
     const colors=colorScale(nums);
     const tot=nums.reduce((s,v)=>s+v,0);
     return `<tr>
       <td style="padding:10px 14px;font-weight:700;color:#1A1F6B;background:#f9f9ff;white-space:nowrap;font-size:12px;border-bottom:1px solid #f0f0f0">${label}</td>
-      ${nums.map((v,i)=>`<td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmt(v)}</td>`).join('')}
-      <td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${totFmt?totFmt(tot):fmt(tot)}</td>
+      ${nums.map((v,i)=>`<td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;${colors[i]}">${fmtFn(v)}</td>`).join('')}
+      <td style="padding:10px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f0f0f0;background:#fffde7;font-weight:800;color:#1A1F6B">${fmtFn(tot)}</td>
     </tr>`;
   }
 
   document.getElementById('tbody-funil').innerHTML=[
-    funilRow('Pedidos de Device', funilData.map(r=>r.pedidos),   v=>fmtN(v)),
-    funilRow('Devices Ativos',    funilData.map(r=>r.ativos),    v=>fmtN(v)),
-    funilRow('TPV M0',            funilData.map(r=>r.tpv_m0),    v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_m0,0))),
-    funilRow('TPV M1',            funilData.map(r=>r.tpv_m1),    v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_m1,0))),
-    funilRow('TPV Total',         funilData.map(r=>r.tpv_total), v=>fmt(v),  _=>fmt(funilData.reduce((s,r)=>s+r.tpv_total,0))),
+    funilRow('Cadastrados por Dia', cadMesFunil,    v=>fmtN(v)),
+    funilRow('Resellers c/ Compra', compraMesFunil, v=>fmtN(v)),
   ].join('');
 
   document.getElementById('nivel-filter-funil').innerHTML=['Todos',...NIV_ORDER].map(n=>
