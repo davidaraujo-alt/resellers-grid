@@ -296,9 +296,13 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 .sim-table-wrap { border-radius:8px; overflow:hidden; border:1px solid var(--border); margin-bottom:10px; }
 .sim-table { width:100%; border-collapse:collapse; font-size:13.5px; }
 .sim-table thead tr { background:var(--mp-navy); }
-.sim-table th { padding:4px 8px; color:#fff; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; text-align:left; }
-.sim-table th:not(:first-child) { text-align:right; }
-.sim-table td { padding:3px 8px; border-bottom:1px solid #F0F5FB; font-size:11px; color:var(--text-1); }
+.sim-table { table-layout:fixed; }
+.sim-table th { padding:4px 6px; color:#fff; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; text-align:left; }
+.sim-table th:first-child { width:52px; }
+.sim-table th:nth-child(2) { width:44px; text-align:right; }
+.sim-table th:nth-child(3) { width:70px; text-align:right; }
+.sim-table th:nth-child(4) { width:74px; text-align:right; }
+.sim-table td { padding:3px 6px; border-bottom:1px solid #F0F5FB; font-size:11px; color:var(--text-1); overflow:hidden; }
 .sim-table td:not(:first-child) { text-align:right; }
 .sim-table td:first-child { font-size:10.5px; }
 .sim-table tr:nth-child(even) td { background:#FAFCFF; }
