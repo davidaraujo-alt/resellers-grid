@@ -296,9 +296,9 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 .sim-table-wrap { border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:16px; }
 .sim-table { width:100%; border-collapse:collapse; font-size:13.5px; }
 .sim-table thead tr { background:var(--mp-navy); }
-.sim-table th { padding:11px 14px; color:#fff; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; text-align:left; }
+.sim-table th { padding:7px 12px; color:#fff; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; text-align:left; }
 .sim-table th:not(:first-child) { text-align:right; }
-.sim-table td { padding:11px 14px; border-bottom:1px solid #F0F5FB; font-size:13.5px; color:var(--text-1); }
+.sim-table td { padding:6px 12px; border-bottom:1px solid #F0F5FB; font-size:13px; color:var(--text-1); }
 .sim-table td:not(:first-child) { text-align:right; }
 .sim-table tr:nth-child(even) td { background:#FAFCFF; }
 .sim-table tr:last-child td { border-bottom:none; }
@@ -545,7 +545,7 @@ body.ss-mode .ss-exit-btn { display: block; }
             <th>Parcelas</th>
             <th>Taxa</th>
             <th>Desconto (R$)</th>
-            <th>Seller recebe</th>
+            <th>Valor líquido</th>
           </tr>
         </thead>
         <tbody id="simBody">
@@ -556,6 +556,28 @@ body.ss-mode .ss-exit-btn { display: block; }
     <div id="simBestBox" style="display:none;" class="sim-best-box">
       <span style="font-size:20px;">🏆</span>
       <div id="simBestText"></div>
+    </div>
+
+    <div id="simExportRow" style="display:none; margin-top:16px;">
+      <button class="btn-dark" id="btnSimDownload" onclick="downloadSim()" style="width:100%;">
+        📲 Salvar simulação para WhatsApp
+      </button>
+    </div>
+
+    <!-- Card visual para exportação -->
+    <div id="simCard" style="display:none; margin-top:20px; background:#fff; border-radius:14px; overflow:hidden; box-shadow:0 8px 32px rgba(0,55,123,.13); width:350px;">
+      <div style="background:linear-gradient(135deg,#0A2240,#009EE3); padding:14px 16px; display:flex; align-items:center; gap:10px;">
+        <div id="simCardLogo"></div>
+        <div>
+          <div style="color:#fff; font-size:13px; font-weight:800;">Simulação de Venda</div>
+          <div style="color:rgba(255,255,255,.65); font-size:10px;" id="simCardSub"></div>
+        </div>
+      </div>
+      <div style="padding:14px;">
+        <table style="width:100%; border-collapse:collapse; font-size:11px;" id="simCardTable"></table>
+        <div id="simCardBest" style="margin-top:10px; background:#E3F4FD; border-radius:8px; padding:9px 12px; font-size:11px; color:#0A5C8A;"></div>
+      </div>
+      <div style="background:#F5F9FE; border-top:1px solid #DDE6EF; padding:9px 16px; font-size:9.5px; color:#8E9BB0; text-align:right;" id="simCardFooter"></div>
     </div>
   </div>
 
@@ -961,7 +983,102 @@ function buildSimulation() {
 
   tbody.innerHTML = html;
   bestBox.style.display = 'flex';
-  bestTxt.innerHTML = `Melhor opção para o seller: <strong>${best.label}</strong> — recebe <strong>${fmtBRL(ticket - ticket * best.rate)}</strong> de <strong>${fmtBRL(ticket)}</strong>`;
+  bestTxt.innerHTML = `Melhor opção: <strong>${best.label}</strong> — valor líquido <strong>${fmtBRL(ticket - ticket * best.rate)}</strong> de <strong>${fmtBRL(ticket)}</strong>`;
+
+  document.getElementById('simExportRow').style.display = 'block';
+  buildSimCard(simRows, best, ticket, brand);
+}
+
+function buildSimCard(simRows, best, ticket, brand) {
+  const brandNames = { master:'Mastercard', visa:'Visa', elo:'Elo', amex:'Amex' };
+  const client = document.getElementById('f_client')?.value?.trim() || '';
+  const consultant = document.getElementById('f_consultant')?.value?.trim() || 'David Araujo';
+  const date = document.getElementById('f_date')?.value?.trim() || '';
+
+  // Logo no header do card
+  const logoImg = document.getElementById('uploadedImg');
+  const logoEl = document.getElementById('simCardLogo');
+  if (logoImg && logoImg.src && logoImg.src.startsWith('data:')) {
+    logoEl.innerHTML = `<div style="background:#fff;border-radius:5px;padding:3px 7px;display:inline-flex;align-items:center;"><img src="${logoImg.src}" style="height:22px;display:block;"></div>`;
+  } else {
+    logoEl.innerHTML = `<div style="background:#FFE600;border-radius:5px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:10px;color:#0A2240;">MP</div>`;
+  }
+
+  document.getElementById('simCardSub').textContent = `${brandNames[brand]} · Venda de ${fmtBRL(ticket)}${client ? ' · ' + client : ''}`;
+
+  // Tabela do card
+  const sjAte = parseInt(document.getElementById('f_sj')?.value || '0');
+  let rows = `<thead><tr>
+    <th style="padding:5px 8px;background:#0A2240;color:#fff;font-size:9px;text-align:left;border-radius:4px 0 0 0;">Parcelas</th>
+    <th style="padding:5px 8px;background:#0A2240;color:#fff;font-size:9px;text-align:right;">Taxa</th>
+    <th style="padding:5px 8px;background:#0A2240;color:#fff;font-size:9px;text-align:right;">Desconto</th>
+    <th style="padding:5px 8px;background:#0A2240;color:#fff;font-size:9px;text-align:right;border-radius:0 4px 0 0;">Valor líquido</th>
+  </tr></thead><tbody>`;
+
+  simRows.forEach((r, idx) => {
+    const fee = ticket * r.rate;
+    const net = ticket - fee;
+    const isBest = r === best;
+    let badge = '';
+    if (sjAte > 0 && r.num > 0) {
+      badge = r.num <= sjAte
+        ? ' <span style="font-size:7px;background:rgba(209,250,229,.7);color:#059669;border-radius:3px;padding:1px 3px;font-weight:800;">SJ</span>'
+        : ' <span style="font-size:7px;background:rgba(254,243,199,.7);color:#B45309;border-radius:3px;padding:1px 3px;font-weight:800;">CJ</span>';
+    }
+    rows += `<tr style="${isBest ? 'background:#EDF6FD;' : idx%2===0 ? '' : 'background:#FAFCFF;'}">
+      <td style="padding:5px 8px;font-size:10px;font-weight:600;color:#4A5C75;border-bottom:1px solid #F0F5FB;">${r.label}${badge}${isBest ? ' 🏆' : ''}</td>
+      <td style="padding:5px 8px;font-size:10px;text-align:right;border-bottom:1px solid #F0F5FB;">${(r.rate*100).toFixed(2).replace('.',',')}%</td>
+      <td style="padding:5px 8px;font-size:10px;text-align:right;color:#8E9BB0;border-bottom:1px solid #F0F5FB;">${fmtBRL(fee)}</td>
+      <td style="padding:5px 8px;font-size:10px;text-align:right;font-weight:700;color:${isBest?'#009EE3':'#0A2240'};border-bottom:1px solid #F0F5FB;">${fmtBRL(net)}</td>
+    </tr>`;
+  });
+  rows += '</tbody>';
+  document.getElementById('simCardTable').innerHTML = rows;
+  document.getElementById('simCardBest').innerHTML = `🏆 Melhor opção: <strong>${best.label}</strong> — valor líquido <strong>${fmtBRL(ticket - ticket*best.rate)}</strong>`;
+  document.getElementById('simCardFooter').textContent = `${consultant} · ${date}`;
+}
+
+async function downloadSim() {
+  const btn = document.getElementById('btnSimDownload');
+  btn.textContent = '⏳ Gerando...';
+  btn.disabled = true;
+
+  const card = document.getElementById('simCard');
+  card.style.display = 'block';
+
+  try {
+    await new Promise(r => setTimeout(r, 100));
+    const padding = 18, scale = 2, radius = 14 * scale;
+    const cardCanvas = await html2canvas(card, { backgroundColor: null, scale, useCORS: true, logging: false });
+
+    const out = document.createElement('canvas');
+    out.width  = cardCanvas.width  + padding * scale * 2;
+    out.height = cardCanvas.height + padding * scale * 2;
+    const ctx = out.getContext('2d');
+    ctx.fillStyle = '#EEF3F8';
+    ctx.fillRect(0, 0, out.width, out.height);
+
+    const x = padding*scale, y = padding*scale, w = cardCanvas.width, h = cardCanvas.height;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x+radius, y); ctx.lineTo(x+w-radius, y);
+    ctx.arcTo(x+w, y, x+w, y+radius, radius); ctx.lineTo(x+w, y+h-radius);
+    ctx.arcTo(x+w, y+h, x+w-radius, y+h, radius); ctx.lineTo(x+radius, y+h);
+    ctx.arcTo(x, y+h, x, y+h-radius, radius); ctx.lineTo(x, y+radius);
+    ctx.arcTo(x, y, x+radius, y, radius); ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(cardCanvas, x, y);
+    ctx.restore();
+
+    const link = document.createElement('a');
+    link.download = 'simulacao_mp.png';
+    link.href = out.toDataURL('image/png');
+    link.click();
+  } finally {
+    card.style.display = 'none';
+    btn.textContent = '📲 Salvar simulação para WhatsApp';
+    btn.disabled = false;
+  }
 }
 
 /* ──── DOWNLOAD COM BORDAS ARREDONDADAS ──── */
