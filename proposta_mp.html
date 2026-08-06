@@ -283,6 +283,38 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 .pf-consultant strong { display: block; font-size: 11px; color: var(--text-1); }
 .pf-consultant span { font-size: 9.5px; color: var(--text-3); }
 
+/* ─── Simulação ─── */
+.sim-header { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:22px; }
+.sim-input-group { display:flex; flex-direction:column; gap:6px; }
+.sim-input-group label { font-size:11px; font-weight:700; color:var(--text-2); text-transform:uppercase; letter-spacing:.5px; }
+.sim-input-group input, .sim-input-group select {
+  padding:11px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  font-size:15px; font-weight:600; color:var(--text-1); outline:none; background:#FAFCFF;
+  transition:border .2s;
+}
+.sim-input-group input:focus, .sim-input-group select:focus { border-color:var(--mp-blue); box-shadow:0 0 0 3px rgba(0,158,227,.12); }
+.sim-table-wrap { border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:16px; }
+.sim-table { width:100%; border-collapse:collapse; font-size:13.5px; }
+.sim-table thead tr { background:var(--mp-navy); }
+.sim-table th { padding:11px 14px; color:#fff; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; text-align:left; }
+.sim-table th:not(:first-child) { text-align:right; }
+.sim-table td { padding:11px 14px; border-bottom:1px solid #F0F5FB; font-size:13.5px; color:var(--text-1); }
+.sim-table td:not(:first-child) { text-align:right; }
+.sim-table tr:nth-child(even) td { background:#FAFCFF; }
+.sim-table tr:last-child td { border-bottom:none; }
+.sim-table tr.sim-best td { background:#EDF6FD !important; font-weight:700; }
+.sim-table tr.sim-best td:last-child { color:var(--mp-blue); }
+.sim-table td:first-child { font-weight:600; color:var(--text-2); display:flex; align-items:center; gap:6px; }
+.sim-net { font-weight:700; color:var(--text-1); }
+.sim-fee { color:var(--text-3); }
+.sim-best-box {
+  background:linear-gradient(135deg, #E3F4FD, #EFF7FD);
+  border:1px solid #B8DEF5; border-radius:10px;
+  padding:13px 16px; font-size:13px; color:#0A5C8A;
+  display:flex; gap:10px; align-items:center;
+}
+.sim-empty { text-align:center; padding:32px; color:var(--text-3); font-size:13px; }
+
 /* ─── Screenshot Mode ─── */
 body.ss-mode .page-header,
 body.ss-mode .tab-nav,
@@ -333,6 +365,7 @@ body.ss-mode .ss-exit-btn { display: block; }
   <div class="tab-nav">
     <button class="tab-btn active" onclick="showTab('input')">📋 Aba 1 — Dados da Proposta</button>
     <button class="tab-btn" onclick="showTab('proposal')">✨ Aba 2 — Proposta Final</button>
+    <button class="tab-btn" onclick="showTab('sim')">📊 Aba 3 — Simulação de Venda</button>
   </div>
 
   <!-- ═══ TAB 1: INPUT ═══ -->
@@ -487,6 +520,45 @@ body.ss-mode .ss-exit-btn { display: block; }
     </div>
   </div>
 </div>
+
+  <!-- ═══ TAB 3: SIMULAÇÃO ═══ -->
+  <div id="tab-sim" class="tab-content">
+    <div class="sim-header">
+      <div class="sim-input-group">
+        <label>💰 Valor da venda (R$)</label>
+        <input type="number" id="sim_ticket" placeholder="400,00" min="0" step="0.01" oninput="buildSimulation()">
+      </div>
+      <div class="sim-input-group">
+        <label>💳 Bandeira</label>
+        <select id="sim_brand" onchange="buildSimulation()">
+          <option value="master">Mastercard</option>
+          <option value="visa">Visa</option>
+          <option value="elo">Elo</option>
+          <option value="amex">Amex</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sim-table-wrap">
+      <table class="sim-table">
+        <thead>
+          <tr>
+            <th>Parcelas</th>
+            <th>Taxa</th>
+            <th>Desconto (R$)</th>
+            <th>Seller recebe</th>
+          </tr>
+        </thead>
+        <tbody id="simBody">
+          <tr><td colspan="4" class="sim-empty">Informe o valor da venda acima para simular.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="simBestBox" style="display:none;" class="sim-best-box">
+      <span style="font-size:20px;">🏆</span>
+      <div id="simBestText"></div>
+    </div>
+  </div>
 
 <!-- Exit screenshot btn (always in DOM) -->
 <button class="ss-exit-btn" onclick="exitSS()">✕ Sair do modo screenshot</button>
@@ -807,9 +879,88 @@ function generateAndShow() {
 
 /* ──── TAB SWITCH ──── */
 function showTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (tab === 'input' && i === 0) || (tab === 'proposal' && i === 1)));
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (tab==='input' && i===0)||(tab==='proposal' && i===1)||(tab==='sim' && i===2));
+  });
   document.getElementById('tab-input').classList.toggle('active', tab === 'input');
   document.getElementById('tab-proposal').classList.toggle('active', tab === 'proposal');
+  document.getElementById('tab-sim').classList.toggle('active', tab === 'sim');
+  if (tab === 'sim') buildSimulation();
+}
+
+/* ──── SIMULAÇÃO ──── */
+function getFormRate(rowIdx, col) {
+  const el = document.getElementById(`r_${rowIdx}_${col}`);
+  const val = (el?.value || '').trim();
+  if (!val || val === '-') return null;
+  const num = parseFloat(val.replace('%','').replace(',','.'));
+  return isNaN(num) ? null : num / 100;
+}
+
+function fmtBRL(v) {
+  return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function buildSimulation() {
+  const ticketRaw = document.getElementById('sim_ticket')?.value || '';
+  const ticket = parseFloat(ticketRaw.replace(',','.'));
+  const brand  = document.getElementById('sim_brand')?.value || 'master';
+  const sjAte  = parseInt(document.getElementById('f_sj')?.value || '0');
+
+  const tbody   = document.getElementById('simBody');
+  const bestBox = document.getElementById('simBestBox');
+  const bestTxt = document.getElementById('simBestText');
+
+  if (!ticket || ticket <= 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="sim-empty">Informe o valor da venda acima para simular.</td></tr>';
+    bestBox.style.display = 'none';
+    return;
+  }
+
+  // Linhas ativas com taxa definida
+  const simRows = [];
+  ROWS.forEach((row, i) => {
+    if (row.label === 'Recorrente') return;
+    const rate = getFormRate(i, brand);
+    if (rate === null) return;
+    const num = parseInt(row.label);
+    simRows.push({ label: row.label, idx: i, rate, num: isNaN(num) ? 0 : num });
+  });
+
+  if (simRows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="sim-empty">Nenhuma taxa definida. Preencha a Aba 1 primeiro.</td></tr>';
+    bestBox.style.display = 'none';
+    return;
+  }
+
+  // Melhor opção = maior valor líquido (menor taxa)
+  const best = simRows.reduce((a, b) => (a.rate <= b.rate ? a : b));
+
+  let html = '';
+  simRows.forEach(r => {
+    const fee = ticket * r.rate;
+    const net = ticket - fee;
+    const isBest = r === best;
+
+    let badge = '';
+    if (sjAte > 0 && r.num > 0) {
+      badge = r.num <= sjAte
+        ? '<span class="badge-sj">SJ</span>'
+        : '<span class="badge-cj">CJ</span>';
+    }
+    if (isBest) badge += ' <span style="font-size:10px;">🏆</span>';
+
+    html += `<tr${isBest ? ' class="sim-best"' : ''}>
+      <td>${r.label}${badge}</td>
+      <td>${(r.rate*100).toFixed(2).replace('.',',')}%</td>
+      <td class="sim-fee">${fmtBRL(fee)}</td>
+      <td class="sim-net">${fmtBRL(net)}</td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = html;
+  bestBox.style.display = 'flex';
+  bestTxt.innerHTML = `Melhor opção para o seller: <strong>${best.label}</strong> — recebe <strong>${fmtBRL(ticket - ticket * best.rate)}</strong> de <strong>${fmtBRL(ticket)}</strong>`;
 }
 
 /* ──── DOWNLOAD COM BORDAS ARREDONDADAS ──── */
