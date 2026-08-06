@@ -296,7 +296,9 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 .sim-table-wrap { border-radius:8px; overflow:hidden; border:1px solid var(--border); margin-bottom:10px; }
 .sim-table { width:100%; border-collapse:collapse; font-size:13.5px; }
 .sim-table thead tr { background:var(--mp-navy); }
-.sim-table { table-layout:fixed; }
+.sim-wrapper { display:flex; justify-content:center; }
+.sim-inner { width:350px; }
+.sim-table { table-layout:fixed; width:100%; }
 .sim-table th { padding:4px 6px; color:#fff; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; text-align:left; }
 .sim-table th:first-child { width:52px; }
 .sim-table th:nth-child(2) { width:44px; text-align:right; }
@@ -527,6 +529,7 @@ body.ss-mode .ss-exit-btn { display: block; }
 
   <!-- ═══ TAB 3: SIMULAÇÃO ═══ -->
   <div id="tab-sim" class="tab-content">
+    <div class="sim-wrapper"><div class="sim-inner">
     <div class="sim-header">
       <div class="sim-input-group">
         <label>💰 Valor da venda (R$)</label>
@@ -563,6 +566,8 @@ body.ss-mode .ss-exit-btn { display: block; }
       <div id="simBestText"></div>
     </div>
 
+    </div></div><!-- /sim-inner /sim-wrapper -->
+    <div class="sim-wrapper"><div class="sim-inner">
     <div id="simExportRow" style="display:none; margin-top:16px;">
       <button class="btn-dark" id="btnSimDownload" onclick="downloadSim()" style="width:100%;">
         📲 Salvar simulação para WhatsApp
@@ -584,6 +589,7 @@ body.ss-mode .ss-exit-btn { display: block; }
       </div>
       <div style="background:#F5F9FE; border-top:1px solid #DDE6EF; padding:9px 16px; font-size:9.5px; color:#8E9BB0; text-align:right;" id="simCardFooter"></div>
     </div>
+    </div></div><!-- /sim-inner /sim-wrapper -->
   </div>
 
 </div><!-- /container -->
