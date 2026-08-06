@@ -1045,12 +1045,12 @@ async function downloadSim() {
   btn.disabled = true;
 
   const card = document.getElementById('simCard');
-  card.style.display = 'block';
+  card.style.cssText = 'display:block; position:fixed; left:-9999px; top:0; z-index:-1;';
 
   try {
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 200));
     const padding = 18, scale = 2, radius = 14 * scale;
-    const cardCanvas = await html2canvas(card, { backgroundColor: null, scale, useCORS: true, logging: false });
+    const cardCanvas = await html2canvas(card, { backgroundColor: '#ffffff', scale, useCORS: true, allowTaint: true, logging: false });
 
     const out = document.createElement('canvas');
     out.width  = cardCanvas.width  + padding * scale * 2;
@@ -1075,8 +1075,11 @@ async function downloadSim() {
     link.download = 'simulacao_mp.png';
     link.href = out.toDataURL('image/png');
     link.click();
+  } catch(e) {
+    alert('Erro ao gerar imagem: ' + e.message);
+    console.error(e);
   } finally {
-    card.style.display = 'none';
+    card.style.cssText = 'display:none;';
     btn.textContent = '📲 Salvar simulação para WhatsApp';
     btn.disabled = false;
   }
@@ -1099,6 +1102,7 @@ async function downloadCard() {
       backgroundColor: null,
       scale: scale,
       useCORS: true,
+      allowTaint: true,
       logging: false,
     });
 
