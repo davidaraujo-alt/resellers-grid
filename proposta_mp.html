@@ -322,6 +322,52 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 }
 .sim-empty { text-align:center; padding:32px; color:var(--text-3); font-size:13px; }
 
+/* ─── Antifraude ─── */
+.af-wrapper { max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+.af-total-row { background:var(--mp-navy); border-radius:var(--radius-sm); padding:13px 18px; display:flex; align-items:center; justify-content:space-between; }
+.af-total-label { font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:#fff; }
+.af-total-right { display:flex; align-items:center; gap:4px; }
+.af-total-currency { color:rgba(255,255,255,.7); font-size:12px; font-weight:700; }
+.af-total-input { background:transparent; border:none; border-bottom:1.5px solid rgba(255,255,255,.35); color:#fff; font-size:15px; font-weight:800; width:140px; text-align:right; outline:none; padding:2px 0; }
+.af-total-input:focus { border-bottom-color:var(--mp-yellow); }
+.af-breakdown { width:100%; border-collapse:collapse; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+.af-breakdown td { padding:9px 14px; font-size:13px; border-bottom:1px solid var(--border); }
+.af-breakdown tr:last-child td { border-bottom:none; }
+.af-breakdown tr:nth-child(even) td { background:#FAFCFF; }
+.af-bd-label { font-weight:600; color:var(--text-1); }
+.af-bd-pct { color:var(--text-2); font-weight:600; text-align:center; width:80px; }
+.af-bd-pct-wrap { display:flex; align-items:center; justify-content:center; gap:3px; width:80px; }
+.af-bd-pct-wrap input { width:44px; padding:4px 6px; border:1.5px solid var(--border); border-radius:5px; font-size:12px; font-weight:700; text-align:center; outline:none; color:var(--text-1); }
+.af-bd-pct-wrap input:focus { border-color:var(--mp-blue); }
+.af-bd-pct-wrap span { font-size:12px; color:var(--text-2); }
+.af-bd-val { font-weight:700; color:var(--text-1); text-align:right; font-size:13px; }
+.af-compare { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.af-panel { border:1.5px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; }
+.af-panel-title { padding:9px 14px; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.5px; color:#fff; }
+.af-panel-mp .af-panel-title { background:var(--mp-navy); }
+.af-panel-comp .af-panel-title { background:var(--text-2); }
+.af-panel-body { padding:14px; display:flex; flex-direction:column; gap:12px; }
+.af-field-row label { display:block; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--text-2); margin-bottom:5px; }
+.af-pct-wrap { display:flex; align-items:center; gap:4px; }
+.af-pct-wrap input { width:60px; padding:8px 10px; border:1.5px solid var(--border); border-radius:6px; font-size:15px; font-weight:800; text-align:center; outline:none; color:var(--text-1); }
+.af-pct-wrap input:focus { border-color:var(--mp-blue); }
+.af-pct-wrap span { font-size:15px; font-weight:700; color:var(--text-2); }
+.af-vbt { border-radius:7px; padding:10px 12px; }
+.af-panel-mp .af-vbt { background:#E3F4FD; }
+.af-panel-comp .af-vbt { background:#FFF3E0; }
+.af-vbt-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; margin-bottom:4px; }
+.af-panel-mp .af-vbt-label { color:#0A5C8A; }
+.af-panel-comp .af-vbt-label { color:#8D4E00; }
+.af-vbt-val { font-size:16px; font-weight:900; }
+.af-panel-mp .af-vbt-val { color:var(--mp-navy); }
+.af-panel-comp .af-vbt-val { color:#5C3200; }
+.af-result-wrap { background:linear-gradient(135deg,#E3F4FD,#EFF7FD); border:1px solid #B8DEF5; border-radius:var(--radius-sm); overflow:hidden; }
+.af-result-table { width:100%; border-collapse:collapse; }
+.af-result-table td { padding:10px 16px; font-size:13px; border-bottom:1px solid rgba(0,158,227,.15); }
+.af-result-table tr:last-child td { border-bottom:none; }
+.af-res-label { font-weight:600; color:#0A5C8A; }
+.af-res-val { font-weight:800; color:var(--mp-navy); text-align:right; }
+
 /* ─── Screenshot Mode ─── */
 body.ss-mode .page-header,
 body.ss-mode .tab-nav,
@@ -373,6 +419,7 @@ body.ss-mode .ss-exit-btn { display: block; }
     <button class="tab-btn active" onclick="showTab('input')">📋 Aba 1 — Dados da Proposta</button>
     <button class="tab-btn" onclick="showTab('proposal')">✨ Aba 2 — Proposta Final</button>
     <button class="tab-btn" onclick="showTab('sim')">📊 Aba 3 — Simulação de Venda</button>
+    <button class="tab-btn" onclick="showTab('antifraude')">🛡️ Aba 4 — Antifraude</button>
   </div>
 
   <!-- ═══ TAB 1: INPUT ═══ -->
@@ -589,6 +636,91 @@ body.ss-mode .ss-exit-btn { display: block; }
       <div style="background:#F5F9FE; border-top:1px solid #DDE6EF; padding:9px 16px; font-size:9.5px; color:#8E9BB0; text-align:right;" id="simCardFooter"></div>
     </div>
     </div></div><!-- /sim-inner /sim-wrapper -->
+  </div>
+
+  <!-- ═══ TAB 4: ANTIFRAUDE ═══ -->
+  <div id="tab-antifraude" class="tab-content">
+    <div class="af-wrapper">
+
+      <div class="af-total-row">
+        <div class="af-total-label">Faturamento Total</div>
+        <div class="af-total-right">
+          <span class="af-total-currency">R$</span>
+          <input type="number" id="af_total" class="af-total-input" value="400000" min="0" step="1000" oninput="buildAntifraud()">
+        </div>
+      </div>
+
+      <table class="af-breakdown">
+        <tbody>
+          <tr>
+            <td class="af-bd-label">Não-cartões</td>
+            <td class="af-bd-pct" id="af_ncard_pct">25%</td>
+            <td class="af-bd-val" id="af_ncard_val">R$ 100.000,00</td>
+          </tr>
+          <tr>
+            <td class="af-bd-label">Cartões</td>
+            <td>
+              <div class="af-bd-pct-wrap">
+                <input type="number" id="af_card_pct" min="0" max="100" value="75" oninput="buildAntifraud()">
+                <span>%</span>
+              </div>
+            </td>
+            <td class="af-bd-val" id="af_card_val">R$ 300.000,00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="af-compare">
+        <div class="af-panel af-panel-mp">
+          <div class="af-panel-title">Mercado Pago</div>
+          <div class="af-panel-body">
+            <div class="af-field-row">
+              <label>Taxa de aprovação</label>
+              <div class="af-pct-wrap">
+                <input type="number" id="af_taxa_mp" min="0" max="100" step="0.1" value="79" oninput="buildAntifraud()">
+                <span>%</span>
+              </div>
+            </div>
+            <div class="af-vbt">
+              <div class="af-vbt-label">Valor bruto transacionado</div>
+              <div class="af-vbt-val" id="af_vbt_mp">R$ 237.000,00</div>
+            </div>
+          </div>
+        </div>
+        <div class="af-panel af-panel-comp">
+          <div class="af-panel-title">Concorrência</div>
+          <div class="af-panel-body">
+            <div class="af-field-row">
+              <label>Taxa de aprovação</label>
+              <div class="af-pct-wrap">
+                <input type="number" id="af_taxa_comp" min="0" max="100" step="0.1" value="78" oninput="buildAntifraud()">
+                <span>%</span>
+              </div>
+            </div>
+            <div class="af-vbt">
+              <div class="af-vbt-label">Valor bruto transacionado</div>
+              <div class="af-vbt-val" id="af_vbt_comp">R$ 234.000,00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="af-result-wrap">
+        <table class="af-result-table">
+          <tbody>
+            <tr>
+              <td class="af-res-label">Diferença mensal</td>
+              <td class="af-res-val" id="af_diff_month">R$ 3.000,00</td>
+            </tr>
+            <tr>
+              <td class="af-res-label">Diferença anual</td>
+              <td class="af-res-val" id="af_diff_year">R$ 36.000,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
   </div>
 
 </div><!-- /container -->
@@ -1091,6 +1223,30 @@ async function downloadSim() {
     btn.textContent = '📲 Salvar simulação para WhatsApp';
     btn.disabled = false;
   }
+}
+
+/* ──── ANTIFRAUDE ──── */
+function buildAntifraud() {
+  const total    = parseFloat(document.getElementById('af_total').value) || 0;
+  const cardPct  = (parseFloat(document.getElementById('af_card_pct').value) || 0) / 100;
+  const taxaMp   = (parseFloat(document.getElementById('af_taxa_mp').value) || 0) / 100;
+  const taxaComp = (parseFloat(document.getElementById('af_taxa_comp').value) || 0) / 100;
+
+  const cardVal  = total * cardPct;
+  const nCardPct = 1 - cardPct;
+  const nCardVal = total * nCardPct;
+  const vbtMp    = cardVal * taxaMp;
+  const vbtComp  = cardVal * taxaComp;
+  const diffM    = vbtMp - vbtComp;
+  const diffY    = diffM * 12;
+
+  document.getElementById('af_ncard_pct').textContent  = Math.round(nCardPct * 100) + '%';
+  document.getElementById('af_ncard_val').textContent  = fmtBRL(nCardVal);
+  document.getElementById('af_card_val').textContent   = fmtBRL(cardVal);
+  document.getElementById('af_vbt_mp').textContent     = fmtBRL(vbtMp);
+  document.getElementById('af_vbt_comp').textContent   = fmtBRL(vbtComp);
+  document.getElementById('af_diff_month').textContent = fmtBRL(diffM);
+  document.getElementById('af_diff_year').textContent  = fmtBRL(diffY);
 }
 
 /* ──── DOWNLOAD COM BORDAS ARREDONDADAS ──── */
