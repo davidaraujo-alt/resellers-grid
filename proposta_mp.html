@@ -1045,12 +1045,14 @@ function generateAndShow() {
 /* ──── TAB SWITCH ──── */
 function showTab(tab) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (tab==='input' && i===0)||(tab==='proposal' && i===1)||(tab==='sim' && i===2));
+    b.classList.toggle('active', (tab==='input' && i===0)||(tab==='proposal' && i===1)||(tab==='sim' && i===2)||(tab==='antifraude' && i===3));
   });
   document.getElementById('tab-input').classList.toggle('active', tab === 'input');
   document.getElementById('tab-proposal').classList.toggle('active', tab === 'proposal');
   document.getElementById('tab-sim').classList.toggle('active', tab === 'sim');
+  document.getElementById('tab-antifraude').classList.toggle('active', tab === 'antifraude');
   if (tab === 'sim') buildSimulation();
+  if (tab === 'antifraude') buildAntifraud();
 }
 
 /* ──── SIMULAÇÃO ──── */
