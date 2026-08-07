@@ -982,7 +982,7 @@ function buildSimulation() {
         : '<span class="badge-cj">CJ</span>';
     }
 
-    html += `<tr${isBest ? ' class="sim-best"' : ''}>
+    html += `<tr>
       <td>${r.label}${badge}</td>
       <td>${(r.rate*100).toFixed(2).replace('.',',')}%</td>
       <td class="sim-fee">${fmtBRL(fee)}</td>
