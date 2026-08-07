@@ -311,7 +311,7 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--mp-blue)
 .sim-table tr:last-child td { border-bottom:none; }
 .sim-table tr.sim-best td { background:#EDF6FD !important; font-weight:700; }
 .sim-table tr.sim-best td:last-child { color:var(--mp-blue); }
-.sim-table td:first-child { font-weight:600; color:var(--text-2); display:flex; align-items:center; gap:6px; }
+.sim-table td:first-child { font-weight:600; color:var(--text-2); display:flex; align-items:center; justify-content:space-between; gap:6px; }
 .sim-net { font-weight:700; color:var(--text-1); }
 .sim-fee { color:var(--text-3); }
 .sim-best-box {
@@ -562,7 +562,6 @@ body.ss-mode .ss-exit-btn { display: block; }
       </table>
     </div>
     <div id="simBestBox" style="display:none;" class="sim-best-box">
-      <span style="font-size:20px;">🏆</span>
       <div id="simBestText"></div>
     </div>
 
@@ -982,7 +981,6 @@ function buildSimulation() {
         ? '<span class="badge-sj">SJ</span>'
         : '<span class="badge-cj">CJ</span>';
     }
-    if (isBest) badge += ' <span style="font-size:10px;">🏆</span>';
 
     html += `<tr${isBest ? ' class="sim-best"' : ''}>
       <td>${r.label}${badge}</td>
@@ -1037,7 +1035,7 @@ function buildSimCard(simRows, best, ticket, brand) {
         : ' <span style="font-size:7px;background:rgba(254,243,199,.7);color:#B45309;border-radius:3px;padding:1px 3px;font-weight:800;">CJ</span>';
     }
     rows += `<tr style="${isBest ? 'background:#EDF6FD;' : idx%2===0 ? '' : 'background:#FAFCFF;'}">
-      <td style="padding:5px 8px;font-size:10px;font-weight:600;color:#4A5C75;border-bottom:1px solid #F0F5FB;">${r.label}${badge}${isBest ? ' 🏆' : ''}</td>
+      <td style="padding:5px 8px;font-size:10px;font-weight:600;color:#4A5C75;border-bottom:1px solid #F0F5FB;">${r.label}${badge}</td>
       <td style="padding:5px 8px;font-size:10px;text-align:right;border-bottom:1px solid #F0F5FB;">${(r.rate*100).toFixed(2).replace('.',',')}%</td>
       <td style="padding:5px 8px;font-size:10px;text-align:right;color:#8E9BB0;border-bottom:1px solid #F0F5FB;">${fmtBRL(fee)}</td>
       <td style="padding:5px 8px;font-size:10px;text-align:right;font-weight:700;color:${isBest?'#009EE3':'#0A2240'};border-bottom:1px solid #F0F5FB;">${fmtBRL(net)}</td>
@@ -1045,7 +1043,7 @@ function buildSimCard(simRows, best, ticket, brand) {
   });
   rows += '</tbody>';
   document.getElementById('simCardTable').innerHTML = rows;
-  document.getElementById('simCardBest').innerHTML = `🏆 Melhor opção: <strong>${best.label}</strong> — valor líquido <strong>${fmtBRL(ticket - ticket*best.rate)}</strong>`;
+  document.getElementById('simCardBest').innerHTML = `Melhor opção: <strong>${best.label}</strong> — valor líquido <strong>${fmtBRL(ticket - ticket*best.rate)}</strong>`;
   document.getElementById('simCardFooter').textContent = `${consultant} · ${date}`;
 }
 
