@@ -462,9 +462,15 @@ body.ss-mode .ss-exit-btn { display: block; }
       </div>
       <div class="form-row">
         <div class="form-group">
+          <label>WhatsApp do Consultor</label>
+          <input type="text" id="f_whatsapp" placeholder="Ex: (11) 99999-9999">
+        </div>
+        <div class="form-group">
           <label>Validade da Proposta</label>
           <input type="text" id="f_validity" value="7 dias">
         </div>
+      </div>
+      <div class="form-row">
         <div class="form-group">
           <label>Data da Proposta</label>
           <input type="text" id="f_date" value="">
@@ -972,6 +978,7 @@ function fmtOther(v) {
 function buildProposalHTML() {
   const client     = getField('f_client');
   const consultant = getField('f_consultant');
+  const whatsapp   = getField('f_whatsapp');
   const validity   = getField('f_validity');
   const date       = getField('f_date');
   const receb      = getField('f_recebimento');
@@ -1075,6 +1082,7 @@ function buildProposalHTML() {
     <div class="pf-consultant">
       <strong>${consultant || 'Gerente Big Sellers'}</strong>
       <span>Gerente Comercial (Mercado Pago)</span>
+      ${whatsapp ? `<span style="font-size:9px;color:var(--mp-blue);font-weight:600;">📲 ${whatsapp}</span>` : ''}
     </div>
   </div>`;
 }
