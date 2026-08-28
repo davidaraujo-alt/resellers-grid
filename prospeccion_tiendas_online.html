@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prospecção de Lojas Online — Online Payments MP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --yellow:#FFE600;
+    --black:#1A1A1A;
+    --gray-bg:#F4F4F4;
+    --white:#FFFFFF;
+    --border:#E0E0E0;
+    --muted:#888888;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--gray-bg);
+    color:var(--black);
+  }
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--black);
+    color:var(--white);
+    padding:14px 40px;
+    display:flex; align-items:center; gap:10px;
+    font-weight:800; font-size:15px;
+  }
+  .topbar .dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);}
+  .hero{
+    background:var(--yellow);
+    padding:36px 40px 28px;
+  }
+  .hero .badge{
+    display:inline-block;
+    background:var(--black);
+    color:var(--yellow);
+    font-size:11px; font-weight:800;
+    padding:5px 12px; border-radius:20px;
+    letter-spacing:.5px; text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .hero h1{margin:0 0 8px; font-size:30px; font-weight:900;}
+  .hero p{margin:0; font-size:14px; color:#2c2c2c; max-width:820px; line-height:1.5;}
+
+  .stats-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    padding:24px 40px 0;
+  }
+  .stat-card{
+    background:var(--black);
+    color:var(--white);
+    border-radius:10px;
+    padding:16px 18px;
+  }
+  .stat-card.total{background:var(--yellow); color:var(--black);}
+  .stat-card .num{font-size:28px; font-weight:900; line-height:1;}
+  .stat-card .label{font-size:12px; color:#bbb; margin-top:6px;}
+  .stat-card.total .label{color:#3a3a3a;}
+
+  .controls{
+    padding:24px 40px 0;
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  }
+  .chip{
+    border:1.5px solid var(--border);
+    background:var(--white);
+    color:var(--black);
+    font-size:12.5px; font-weight:600;
+    padding:7px 14px; border-radius:20px;
+    cursor:pointer; user-select:none;
+    transition:.15s;
+  }
+  .chip:hover{border-color:var(--black);}
+  .chip.active{background:var(--black); color:var(--yellow); border-color:var(--black);}
+  .searchbox{
+    margin-left:auto;
+    border:1.5px solid var(--border);
+    border-radius:20px;
+    padding:7px 14px;
+    font-size:12.5px;
+    font-family:inherit;
+    min-width:220px;
+  }
+  .conf-filters{display:flex; gap:8px;}
+  .conf-filters .chip{padding:6px 12px; font-size:11.5px;}
+
+  .table-wrap{
+    padding:20px 40px 12px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:var(--white);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  thead th{
+    background:#2D2D2D;
+    color:var(--white);
+    text-align:left;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    padding:12px 14px;
+    cursor:pointer;
+    white-space:nowrap;
+    user-select:none;
+  }
+  thead th:hover{background:#3a3a3a;}
+  thead th .arrow{opacity:.5; font-size:10px; margin-left:4px;}
+  tbody td{
+    padding:11px 14px;
+    font-size:13px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  tbody tr:hover{background:#FFFBEA;}
+  tbody tr.hidden{display:none;}
+  .tienda-name{font-weight:700;}
+  .tienda-url{font-size:11.5px; color:var(--muted);}
+  a{color:inherit; text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  .sector-tag{
+    display:inline-block;
+    background:var(--gray-bg);
+    border:1px solid var(--border);
+    font-size:11px; font-weight:700;
+    padding:3px 9px; border-radius:12px;
+    white-space:nowrap;
+  }
+  .badge{
+    display:inline-block;
+    font-size:11px; font-weight:800;
+    padding:3px 10px; border-radius:12px;
+    white-space:nowrap;
+  }
+  .badge.alta{background:var(--black); color:var(--yellow);}
+  .badge.media-alta{background:#555; color:#fff;}
+  .badge.media{background:#999; color:#fff;}
+  .badge.media-baja{background:#ccc; color:#333;}
+  .badge.baja{background:var(--border); color:var(--muted);}
+
+  .gateway-competitor{font-weight:700; color:#8a5300;}
+  .gateway-none{color:var(--muted); font-style:italic;}
+
+  .flag{
+    display:block;
+    margin-top:5px;
+    font-size:11px;
+    color:#B00020;
+    font-weight:600;
+  }
+
+  .footnote{
+    padding:18px 40px 34px;
+  }
+  .footnote p{
+    font-size:11.5px; color:#999; line-height:1.6; margin:0 0 6px;
+    max-width:900px;
+  }
+  .count-line{
+    padding:0 40px; font-size:12px; color:var(--muted); margin-top:6px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar"><span class="dot"></span> MERCADO PAGO · Strategy &amp; Planning LT&amp;SMBs</div>
+
+  <div class="hero">
+    <span class="badge">Prospecção comercial</span>
+    <h1>Prospecção de Lojas Online — Online Payments</h1>
+    <p>Lista de leads potenciais para o time comercial de Online Payments, montada por pesquisa pública na
+    internet (não são dados internos de Mercado Pago). O critério é volume estimado de faturamento acima de
+    R$ 500 mil/mês, inferido por sinais indiretos (redes sociais, avaliações, imprensa). Lojas com uso
+    confirmado de Mercado Pago já foram excluídas desta lista.</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card total">
+      <div class="num" id="stat-total">–</div>
+      <div class="label">Lojas na lista</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="stat-setores">–</div>
+      <div class="label">Setores cobertos</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="stat-alta">–</div>
+      <div class="label">Confiança alta</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="stat-gateway">–</div>
+      <div class="label">Com gateway concorrente confirmado</div>
+    </div>
+  </div>
+
+  <div class="controls" id="sector-filters"></div>
+  <div class="controls">
+    <div class="conf-filters" id="conf-filters"></div>
+    <input class="searchbox" id="searchbox" type="text" placeholder="Buscar loja...">
+  </div>
+
+  <div class="count-line" id="count-line"></div>
+
+  <div class="table-wrap">
+    <table id="leads-table">
+      <thead>
+        <tr>
+          <th data-sort="tienda">Loja <span class="arrow">↕</span></th>
+          <th data-sort="sector">Setor <span class="arrow">↕</span></th>
+          <th data-sort="senal" style="min-width:260px;">Sinal(is) de volume</th>
+          <th data-sort="gateway" style="min-width:160px;">Gateway detectado</th>
+          <th data-sort="confianzaNum">Confiança <span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="footnote">
+    <p><strong>Metodologia:</strong> pesquisa 100% em fontes públicas da internet (WebSearch/WebFetch) —
+    rankings de e-commerce (ABComm, Neotrust), redes sociais, Reclame Aqui, imprensa especializada
+    (Exame, InfoMoney, NeoFeed, Bloomberg Línea) e, quando acessível, inspeção do HTML do checkout em
+    busca de strings de gateways de pagamento conhecidos. Nenhum valor de faturamento é um dado confirmado
+    pela empresa — são estimativas baseadas em sinais indiretos cruzados (mínimo 2 por loja).</p>
+    <p><strong>Gateway detectado</strong> ≠ Mercado Pago confirma que a loja usa um concorrente hoje
+    (lead de troca), útil para a abordagem comercial. Lojas com uso confirmado de Mercado Pago foram
+    excluídas desta lista na fase de pesquisa. "Não determinado" significa que não foi possível confirmar
+    por bloqueio anti-bot ou checkout dinâmico via JS — não significa que a loja não use MP.</p>
+    <p style="color:#B00020;"><strong>⚠ Marcadas para validação manual antes de qualquer abordagem:</strong>
+    Growth Supplements (indício de baixa qualidade não confirmado de que já usaria Mercado Pago + PagSeguro),
+    KaBuM! (pertence ao grupo Magazine Luiza — verificar relação corporativa existente), Wine.com.br
+    (grupo grande, possivelmente multi-gateway — verificar relação corporativa existente).</p>
+    <p>Fontes: pesquisa web pública · Prospecção de tiendas online · Atualizado em Agosto/2026.</p>
+  </div>
+
+<script>
+const DATA = [
+  // MODA
+  {tienda:"Shop2gether", url:"shop2gether.com.br", sector:"Moda", senal:"Faturamento projetado R$350-400mi (2024, InfoMoney/Exame) + 143K seguidores em conta secundária", gateway:"Não determinado", confianza:"Média-alta"},
+  {tienda:"Amaro", url:"amaro.com.br", sector:"Moda", senal:"~1M seguidores (não verificado direto) + histórico de faturamento 2018-2020 (desatualizado)", gateway:"Não determinado", confianza:"Média"},
+  {tienda:"Farm Rio", url:"farmrio.com.br", sector:"Moda", senal:"Receita R$3,4bi (2025, Grupo Soma/Azzas 2154), 87% das vendas globais online, +2M seguidores", gateway:"Não determinado (VTEX)", confianza:"Alta"},
+  {tienda:"NV (by NV)", url:"bynv.com.br", sector:"Moda", senal:"Receita R$100-170mi na época da aquisição pelo Grupo Soma (dado ~2020) + ~460K seguidores da marca", gateway:"Não determinado", confianza:"Média"},
+  {tienda:"Reserva", url:"usereserva.com", sector:"Moda", senal:"+2M seguidores Instagram, case de imprensa de integração físico-digital, parte da Azzas 2154", gateway:"Não determinado", confianza:"Média-alta"},
+
+  // PET
+  {tienda:"Zee.Dog", url:"zeedog.com.br", sector:"Pet", senal:"645K seguidores + histórico R$100-230mi (2019-20, desatualizado) — hoje parte do grupo Petz", gateway:"Não determinado", confianza:"Média", flag:"Dado de faturamento desatualizado; validar relação com Petz"},
+  {tienda:"Petlove", url:"petlove.com.br", sector:"Pet", senal:"Receita R$1,5bi (2024), projeção R$2,45bi (2025), nota 8,4/10 Reclame Aqui", gateway:"Não determinado (bloqueio anti-bot)", confianza:"Alta"},
+  {tienda:"PetCamp", url:"petcamp.com.br", sector:"Pet", senal:"Aporte de até R$100mi de BR Partners (2ª/3ª maior rede pet), nota 8,1/10 RA (94 reclamações), 53K seguidores", gateway:"Não determinado", confianza:"Média-alta"},
+
+  // ELETRÔNICOS
+  {tienda:"Pichau", url:"pichau.com.br", sector:"Eletrônicos", senal:"~R$2 bilhões/ano (NSC Total) + partnership Amazon + CD de 50.000m² em Joinville", gateway:"Não determinado (bloqueio anti-bot)", confianza:"Alta"},
+  {tienda:"Terabyte Shop", url:"terabyteshop.com.br", sector:"Eletrônicos", senal:"Tráfego estimado 6-9M visitas/mês (fonte secundária, não verificado direto)", gateway:"Não determinado (403)", confianza:"Baixa"},
+  {tienda:"KaBuM!", url:"kabum.com.br", sector:"Eletrônicos", senal:"~2M seguidores; faturamento próximo de R$5bi na aquisição pela Magazine Luiza (2021); RA 8,2/10, 11.816 reclamações, 96% respondidas", gateway:"Não determinado (checkout só mostra PIX/boleto/cartão/NuPay)", confianza:"Alta", flag:"Pertence ao grupo Magazine Luiza — validar relação corporativa existente com MP"},
+  {tienda:"Gigantec (Fagundez Tecnologia)", url:"gigantec.com.br", sector:"Eletrônicos", senal:"Meta de entrar no Top 4 de informática do Brasil (Adrenaline, ago/2025), 20+ anos de trajetória; RA1000 em 2020 e 2023, nota 8,4/10", gateway:"Não determinado (Cloudflare)", confianza:"Média"},
+
+  // BELEZA
+  {tienda:"Sallve", url:"sallve.com.br", sector:"Beleza", senal:"+500K seguidores + rodadas de R$60mi e R$110mi (Astella, Canary, Kaszek, Waldencast)", gateway:"Não determinado (bloqueio anti-bot)", confianza:"Alta"},
+  {tienda:"Bruna Tavares (BT Skin)", url:"linhabrunatavares.com", sector:"Beleza", senal:"Projeção R$250mi/ano, +5.000 PDVs, na Sephora desde 2018, ~2M seguidores, RA 8,58/10", gateway:"Pagar.me + Pagaleve (confirmado no checkout)", confianza:"Alta"},
+  {tienda:"Boca Rosa Beauty", url:"bocarosa.com.br", sector:"Beleza", senal:"Faturamento atual ~R$120mi/ano, projeção R$400mi em 2026 (Exame); ~1,5M seguidores; RA 9,1/10", gateway:"Não determinado", confianza:"Média-alta"},
+  {tienda:"Skelt Cosméticos", url:"skelt.com.br", sector:"Beleza", senal:"Faturamento R$56mi (2023), meta >R$100mi (Exame); 819K seguidores ativos; RA 4,5/5 (1.209 avaliações)", gateway:"Não determinado (VTEX)", confianza:"Média-alta"},
+
+  // SAÚDE / SUPLEMENTOS
+  {tienda:"Growth Supplements", url:"gsuplementos.com.br", sector:"Saúde/Suplementos", senal:"Faturamento superou R$1bi em 2024, aquisição pela Merama (aporte US$215mi); 6M seguidores Instagram", gateway:"Não determinado (site bloqueado)", confianza:"Alta", flag:"⚠ Indício de baixa qualidade não confirmado de que já usaria Mercado Pago + PagSeguro — VALIDAR antes de prospectar"},
+  {tienda:"Integralmédica", url:"integralmedica.com.br", sector:"Saúde/Suplementos", senal:"RA 6,9/10 (646 reclamações/6m, 100% resposta); RA Reviews 4,8/5 (694 avaliações); grupo GBR faturou R$1bi em 2023 (multicanal)", gateway:"Não determinado (Shopify)", confianza:"Alta"},
+  {tienda:"Max Titanium", url:"maxtitanium.com.br", sector:"Saúde/Suplementos", senal:"~2M seguidores; RA 7,5/10 (1.804 avaliações/6m); grupo Supley faturou R$967mi em 2023 (multicanal)", gateway:"Não determinado (VTEX)", confianza:"Média"},
+  {tienda:"Black Skull USA", url:"blackskullusa.com.br", sector:"Saúde/Suplementos", senal:"~1M seguidores (também presente em blackskullstore.com); RA 7,4/10 (119 reclamações, 99,3% resposta); planta própria +12.000m²", gateway:"Não determinado (VTEX)", confianza:"Média"},
+  {tienda:"Under Labz", url:"underlabz.com.br", sector:"Saúde/Suplementos", senal:"227K seguidores ativos; RA 6,3/10 (69 reclamações)", gateway:"Não determinado (Shopify)", confianza:"Média"},
+
+  // CASA / DECORAÇÃO
+  {tienda:"Artex", url:"artex.com.br", sector:"Casa/Decoração", senal:"974K seguidores + parte do grupo AMMO Varejo S.A.", gateway:"Não determinado", confianza:"Média"},
+  {tienda:"Trousseau", url:"trousseau.com.br", sector:"Casa/Decoração", senal:"280K seguidores + 34 anos de operação, 22 lojas físicas", gateway:"Não determinado", confianza:"Média-baixa"},
+  {tienda:"Buddemeyer", url:"buddemeyer.com.br", sector:"Casa/Decoração", senal:"Receita R$700mi (2024, Forbes/Exame), ~25% via canal online; RA 6,9/10 (107 reclamações)", gateway:"Não determinado", confianza:"Alta"},
+  {tienda:"Döhler", url:"dohler.com.br", sector:"Casa/Decoração", senal:"226K seguidores; RA 8,4/10 (141 reclamações)", gateway:"Não determinado", confianza:"Média-alta"},
+
+  // AUTOS
+  {tienda:"Connect Parts", url:"connectparts.com.br", sector:"Autos", senal:"463K seguidores Instagram + 700K Facebook + 94,9K YouTube; descrita como maior loja de som/acessórios automotivos da América Latina", gateway:"Não determinado (bloqueio)", confianza:"Média"},
+  {tienda:"PneuStore", url:"pneustore.com.br", sector:"Autos", senal:"105K seguidores + 72,9K Facebook; RA 7,0/10 (5.577 reclamações) + 6.561 avaliações (4,7/5)", gateway:"Não determinado (403)", confianza:"Média"},
+  {tienda:"TuningParts", url:"tuningparts.com.br", sector:"Autos", senal:"49K seguidores + 514K inscritos YouTube; tráfego estimado ~370K visitas/mês; RA 7,7/10", gateway:"Não determinado (HTML sem strings de gateway)", confianza:"Média"},
+  {tienda:"Sigma Car", url:"sigmacar.com.br", sector:"Autos", senal:"39K seguidores + marcas relacionadas (43K e 57K); operando desde 1995", gateway:"Vindi (confirmado no checkout)", confianza:"Média"},
+  {tienda:"Jocar Auto Peças", url:"jocar.com.br", sector:"Autos", senal:"31K seguidores; RA 7,6/10 (32 reclamações); desde 1971, 4 lojas físicas + loja virtual nacional", gateway:"Não determinado (403)", confianza:"Baixa-média"},
+
+  // ESPORTES / FITNESS
+  {tienda:"PWRD By Coffee", url:"pwrdbycoffee.com.br", sector:"Esportes/Fitness", senal:"Faturamento ~R$24-25mi/ano (case Nuvemshop, +110% vs 2023); +100K seguidores; 5 lojas físicas + rede de 500+ revendedoras", gateway:"Provável Nuvem Pago (não confirmado)", confianza:"Média"},
+  {tienda:"Bike Point", url:"bikepointsc.com.br", sector:"Esportes/Fitness", senal:"259K seguidores; autodenominada maior loja de ciclismo da América Latina, +4M produtos vendidos em 24 anos; reputação 7,2/10", gateway:"Não determinado (multi-gateway via Climba Commerce)", confianza:"Média"},
+  {tienda:"Madrugão Suplementos", url:"madrugaosuplementos.com.br", sector:"Esportes/Fitness", senal:"435K seguidores; reputação boa RA (~7,8/10); app com +100K downloads (4,5-4,6★); autodenominada maior loja de suplementos do Brasil", gateway:"Não determinado (Cloudflare 403)", confianza:"Média"},
+
+  // INFANTIL / BEBÊS
+  {tienda:"Ri Happy", url:"rihappy.com.br", sector:"Infantil/Bebês", senal:"Maior rede de brinquedos do Brasil (grupo com PBKids, receita >R$1bi); receita isolada já foi R$1,7bi (2017); 279 lojas físicas + e-commerce ativo", gateway:"Cielo (confirmado no HTML, stack VTEX)", confianza:"Alta"},
+  {tienda:"Milon (Grupo Kyly)", url:"loja.milon.com.br", sector:"Infantil/Bebês", senal:"Receita da rede >R$120mi em 2022 (+55% YoY); RA 8,4/10 (48 reclamações, 100% respondidas); grupo com +2.500 funcionários e +10K PDVs", gateway:"PagSeguro (confirmado no HTML)", confianza:"Alta"},
+  {tienda:"Kyly", url:"loja.kyly.com.br", sector:"Infantil/Bebês", senal:"Marca âncora do Grupo Kyly, uma das maiores de vestuário infantil do país; RA 8,6/10 (38 reclamações, 81,8% recompra)", gateway:"PagSeguro (confirmado — mesmo grupo que Milon)", confianza:"Alta"},
+  {tienda:"Grão de Gente", url:"graodegente.com.br", sector:"Infantil/Bebês", senal:"Receita R$201mi (2021), projeção R$236mi (2022); investimento de R$10mi em metaverso (NeoFeed); RA com 172 reclamações avaliadas", gateway:"Não determinado (Cloudflare)", confianza:"Média"},
+  {tienda:"Amura Baby", url:"amurababy.com.br", sector:"Infantil/Bebês", senal:"2M seguidores Instagram; autoposicionada como maior loja de bebê da América Latina; lojas físicas em SP", gateway:"Não determinado (HTTP 406)", confianza:"Média"},
+
+  // ALIMENTOS / BEBIDAS
+  {tienda:"Wine.com.br (Clube Wine)", url:"wine.com.br", sector:"Alimentos/Bebidas", senal:"445 mil assinantes ativos do Clube Wine (Q3 2024); faturamento do Grupo Wine de R$987mi em 2024 e R$611mi no 1º semestre", gateway:"NuPay (confirmado para Pix)", confianza:"Alta", flag:"Grupo grande, possivelmente multi-gateway — validar relação corporativa existente com MP"},
+  {tienda:"Clube do Malte", url:"clubedomalte.com.br", sector:"Alimentos/Bebidas", senal:"~156K seguidores; RA 8,6/10 (44 reclamações); projeção de R$25mi de faturamento após aquisição (Exame)", gateway:"Não determinado", confianza:"Média-alta"},
+  {tienda:"Coffee Mais / Coffee++", url:"coffeemais.com", sector:"Alimentos/Bebidas", senal:"257K seguidores; reportagem: 'Do 0 a 16 milhões Coffee++: faturamento surpreendente no 1º ano'", gateway:"Não determinado (Shopify)", confianza:"Média"},
+];
+
+const CONF_ORDER = {"Alta":4,"Média-alta":3,"Média":2,"Média-baixa":1.5,"Baixa-média":1.2,"Baixa":1};
+DATA.forEach(d=>{d.confianzaNum = CONF_ORDER[d.confianza] ?? 0;});
+
+const SECTORS = [...new Set(DATA.map(d=>d.sector))];
+let activeSector = "Todos";
+let activeConf = "Todas";
+let searchTerm = "";
+let sortKey = "confianzaNum";
+let sortDir = -1;
+
+function badgeClass(conf){
+  if(conf==="Alta") return "alta";
+  if(conf==="Média-alta") return "media-alta";
+  if(conf==="Média") return "media";
+  if(conf==="Média-baixa" || conf==="Baixa-média") return "media-baja";
+  return "baja";
+}
+
+function renderFilters(){
+  const wrap = document.getElementById('sector-filters');
+  const all = ["Todos", ...SECTORS];
+  wrap.innerHTML = all.map(s=>`<div class="chip ${s===activeSector?'active':''}" data-sector="${s}">${s} <span style="opacity:.6">(${s==='Todos'?DATA.length:DATA.filter(d=>d.sector===s).length})</span></div>`).join('');
+  wrap.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click',()=>{ activeSector = el.dataset.sector; renderFilters(); renderTable(); });
+  });
+
+  const confWrap = document.getElementById('conf-filters');
+  const confs = ["Todas","Alta","Média-alta","Média","Baixa"];
+  confWrap.innerHTML = confs.map(c=>`<div class="chip ${c===activeConf?'active':''}" data-conf="${c}">${c}</div>`).join('');
+  confWrap.querySelectorAll('.chip').forEach(el=>{
+    el.addEventListener('click',()=>{ activeConf = el.dataset.conf; renderFilters(); renderTable(); });
+  });
+}
+
+function matchesConf(conf, filter){
+  if(filter==="Todas") return true;
+  if(filter==="Alta") return conf==="Alta";
+  if(filter==="Média-alta") return conf==="Média-alta";
+  if(filter==="Média") return conf==="Média";
+  if(filter==="Baixa") return conf==="Baixa" || conf==="Baixa-média" || conf==="Média-baixa";
+  return true;
+}
+
+function renderTable(){
+  let rows = DATA.filter(d=>{
+    const secOk = activeSector==="Todos" || d.sector===activeSector;
+    const confOk = matchesConf(d.confianza, activeConf);
+    const searchOk = !searchTerm || d.tienda.toLowerCase().includes(searchTerm) || d.url.toLowerCase().includes(searchTerm);
+    return secOk && confOk && searchOk;
+  });
+
+  rows.sort((a,b)=>{
+    let av = a[sortKey], bv = b[sortKey];
+    if(typeof av === "string"){ av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if(av < bv) return -1*sortDir;
+    if(av > bv) return 1*sortDir;
+    return 0;
+  });
+
+  document.getElementById('table-body').innerHTML = rows.map(d=>`
+    <tr>
+      <td>
+        <div class="tienda-name">${d.tienda}</div>
+        <div class="tienda-url"><a href="https://${d.url}" target="_blank" rel="noopener">${d.url}</a></div>
+      </td>
+      <td><span class="sector-tag">${d.sector}</span></td>
+      <td>${d.senal}${d.flag ? `<span class="flag">⚠ ${d.flag}</span>` : ''}</td>
+      <td class="${d.gateway.toLowerCase().includes('não determinado') ? 'gateway-none' : 'gateway-competitor'}">${d.gateway}</td>
+      <td><span class="badge ${badgeClass(d.confianza)}">${d.confianza}</span></td>
+    </tr>
+  `).join('');
+
+  document.getElementById('count-line').textContent = `Mostrando ${rows.length} de ${DATA.length} lojas`;
+}
+
+function renderStats(){
+  document.getElementById('stat-total').textContent = DATA.length;
+  document.getElementById('stat-setores').textContent = SECTORS.length;
+  document.getElementById('stat-alta').textContent = DATA.filter(d=>d.confianza==="Alta").length;
+  document.getElementById('stat-gateway').textContent = DATA.filter(d=>!d.gateway.toLowerCase().includes('não determinado')).length;
+}
+
+document.querySelectorAll('#leads-table thead th[data-sort]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const key = th.dataset.sort;
+    if(sortKey===key){ sortDir *= -1; } else { sortKey = key; sortDir = key==='confianzaNum' ? -1 : 1; }
+    renderTable();
+  });
+});
+
+document.getElementById('searchbox').addEventListener('input',(e)=>{
+  searchTerm = e.target.value.toLowerCase();
+  renderTable();
+});
+
+renderStats();
+renderFilters();
+renderTable();
+</script>
+</body>
+</html>
