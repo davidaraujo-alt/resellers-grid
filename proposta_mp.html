@@ -860,22 +860,26 @@ async function runOCR() {
   try {
     const processed = preprocessForOCR(imgEl);
     status.textContent = '📥 Carregando motor de leitura...';
-    const { data: { text } } = await Tesseract.recognize(processed, 'por+eng', {
-      tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz%,.- /áéíóúãõâêîôûàèìòùç',
-      preserve_interword_spaces: '1',
-      tessedit_pageseg_mode: '4',
+    const worker = await Tesseract.createWorker('por+eng', 1, {
       logger: m => {
         if (m.status === 'recognizing text')
           status.textContent = `🔍 Lendo... ${Math.round(m.progress * 100)}%`;
       }
     });
+    await worker.setParameters({
+      tessedit_char_whitelist: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz%,.- /áéíóúãõâêîôûàèìòùç',
+      preserve_interword_spaces: '1',
+      tessedit_pageseg_mode: '4'
+    });
+    const { data: { text } } = await worker.recognize(processed);
+    await worker.terminate();
     const filled = fillRatesFromOCR(text);
     rebuildProposal();
     status.innerHTML = filled > 0
       ? `✅ <strong>${filled} linha(s)</strong> preenchida(s)! Confira os valores.`
       : '⚠️ Nenhuma linha identificada. Preencha manualmente.';
   } catch(e) {
-    status.textContent = '❌ Erro ao ler imagem.';
+    status.textContent = '❌ Erro ao ler imagem: ' + (e && e.message ? e.message : e);
     console.error(e);
   } finally {
     btn.disabled = false;
