@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proposta Comercial — Mercado Pago</title>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" onerror="window.__tessJsdelivrFail=true"></script>
 <style>
 /* ─── Reset & Base ─── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -847,6 +847,25 @@ function preprocessForOCR(imgEl) {
   return c.toDataURL('image/png');
 }
 
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const el = document.createElement('script');
+    el.src = src; el.onload = res; el.onerror = () => rej(new Error('não foi possível carregar ' + src));
+    document.head.appendChild(el);
+  });
+}
+
+// Se o CDN principal (jsdelivr) estiver bloqueado, usa unpkg como alternativa
+async function ensureTesseract() {
+  if (window.Tesseract) return {};
+  await loadScript('https://unpkg.com/tesseract.js@5/dist/tesseract.min.js');
+  return {
+    workerPath: 'https://unpkg.com/tesseract.js@5/dist/worker.min.js',
+    corePath:   'https://unpkg.com/tesseract.js-core@5/',
+    langPath:   'https://tessdata.projectnaptha.com/4.0.0'
+  };
+}
+
 async function runOCR() {
   const btn    = document.getElementById('btnOcr');
   const status = document.getElementById('ocrStatus');
@@ -860,7 +879,9 @@ async function runOCR() {
   try {
     const processed = preprocessForOCR(imgEl);
     status.textContent = '📥 Carregando motor de leitura...';
+    const cdnOpts = await ensureTesseract();
     const worker = await Tesseract.createWorker('por+eng', 1, {
+      ...cdnOpts,
       logger: m => {
         if (m.status === 'recognizing text')
           status.textContent = `🔍 Lendo... ${Math.round(m.progress * 100)}%`;
