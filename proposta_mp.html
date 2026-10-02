@@ -856,6 +856,11 @@ function loadScript(src) {
 }
 
 // Se o CDN principal (jsdelivr) estiver bloqueado, usa unpkg como alternativa
+async function ensureHtml2Canvas() {
+  if (window.html2canvas) return;
+  await loadScript('https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js');
+}
+
 async function ensureTesseract() {
   if (window.Tesseract) return {};
   await loadScript('https://unpkg.com/tesseract.js@5/dist/tesseract.min.js');
@@ -1295,6 +1300,7 @@ async function downloadSim() {
   try {
     await new Promise(r => setTimeout(r, 200));
     const padding = 18, scale = 2, radius = 14 * scale;
+    await ensureHtml2Canvas();
     const cardCanvas = await html2canvas(card, { backgroundColor: '#ffffff', scale, useCORS: true, allowTaint: true, logging: false });
 
     const out = document.createElement('canvas');
@@ -1384,6 +1390,7 @@ async function downloadAntifraud() {
   try {
     await new Promise(r => setTimeout(r, 200));
     const padding = 18, scale = 2, radius = 14 * scale;
+    await ensureHtml2Canvas();
     const cardCanvas = await html2canvas(card, { backgroundColor:'#ffffff', scale, useCORS:true, allowTaint:true, logging:false });
     const out = document.createElement('canvas');
     out.width  = cardCanvas.width  + padding * scale * 2;
@@ -1428,6 +1435,7 @@ async function downloadCard() {
 
   try {
     // Captura o card com fundo transparente
+    await ensureHtml2Canvas();
     const cardCanvas = await html2canvas(card, {
       backgroundColor: null,
       scale: scale,
@@ -1474,7 +1482,7 @@ async function downloadCard() {
     link.href = out.toDataURL('image/png');
     link.click();
   } catch(e) {
-    alert('Erro ao gerar imagem. Tente novamente.');
+    alert('Erro ao gerar imagem: ' + (e && e.message ? e.message : e));
     console.error(e);
   } finally {
     btn.textContent = '📲 Salvar para WhatsApp';
