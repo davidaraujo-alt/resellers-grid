@@ -536,6 +536,18 @@ body.ss-mode .ss-exit-btn { display: block; }
             <option value="10">10x</option>
             <option value="11">11x</option>
             <option value="12">12x</option>
+            <option value="13">13x</option>
+            <option value="14">14x</option>
+            <option value="15">15x</option>
+            <option value="16">16x</option>
+            <option value="17">17x</option>
+            <option value="18">18x</option>
+            <option value="19">19x</option>
+            <option value="20">20x</option>
+            <option value="21">21x</option>
+            <option value="22">22x</option>
+            <option value="23">23x</option>
+            <option value="24">24x</option>
             <option value="99">Todas sem juros</option>
           </select>
         </div>
@@ -802,6 +814,12 @@ const ROWS = [
   { id:'r16',       label:'16x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
   { id:'r17',       label:'17x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
   { id:'r18',       label:'18x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r19',       label:'19x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r20',       label:'20x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r21',       label:'21x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r22',       label:'22x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r23',       label:'23x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
+  { id:'r24',       label:'24x',           master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
   { id:'recorr',    label:'Recorrente',    master:'-',      visa:'-',      elo:'-',      hiper:'-',      amex:'-'      },
 ];
 
@@ -913,7 +931,13 @@ function fillRatesFromOCR(text) {
     { idx: 16, re: /^\s*16\s*[xX×]/ },
     { idx: 17, re: /^\s*17\s*[xX×]/ },
     { idx: 18, re: /^\s*18\s*[xX×]/ },
-    { idx: 19, re: /recorr/i },
+    { idx: 19, re: /^\s*19\s*[xX×]/ },
+    { idx: 20, re: /^\s*20\s*[xX×]/ },
+    { idx: 21, re: /^\s*21\s*[xX×]/ },
+    { idx: 22, re: /^\s*22\s*[xX×]/ },
+    { idx: 23, re: /^\s*23\s*[xX×]/ },
+    { idx: 24, re: /^\s*24\s*[xX×]/ },
+    { idx: 25, re: /recorr/i },
   ];
   const FORM_COLS = ['master','visa','elo','hiper','amex'];
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
